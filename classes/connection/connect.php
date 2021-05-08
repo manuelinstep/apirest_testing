@@ -72,6 +72,11 @@ class connect {
             return 0;
         }
     }
+
+    protected function encrypt($string){
+        return md5($string);
+        //Método mas sencillo de encriptación disponible
+    }
 }
 
 ?>
