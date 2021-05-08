@@ -13,7 +13,7 @@
                 "error_id" => "405",
                 "error_msg" => "metodo no permitido"
             );
-            return $response;
+            return $this->response;
         }
 
         public function error_200($string = "Datos incorrectos"){
@@ -22,7 +22,7 @@
                 "error_id" => "200",
                 "error_msg" => $string
             );
-            return $response;
+            return $this->response;
         }
 
         public function error_400(){
@@ -31,7 +31,7 @@
                 "error_id" => "400",
                 "error_msg" => "Datos enviados incompletos o con formato incorrecto"
             );
-            return $response;
+            return $this->response;
         }
     }
 
