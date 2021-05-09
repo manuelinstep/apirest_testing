@@ -53,19 +53,30 @@
 
             break;
         case "DELETE":
+            
+            $headers = getallheaders();
 
-            $postBody = file_get_contents("php://input");
+            if(isset($headers['token']) && isset($headers['pacienteId'])){
+                $send = [
+                    "token" => $headers["token"],
+                    "pacienteId" => $headers["pacienteId"]
+                ];
+                $postBody = json_encode($send);
+            }else{
+
+                $postBody = file_get_contents("php://input"); 
+            }
 
             $datosArray = $_pacientes->delete($postBody);
 
-             header('Content-type:application/json');
-             if(isset($datosArray["result"]["error_id"])){
-                 $responseCode = $datosArray["result"]["error_id"];
-                 http_response_code($responseCode);
-             }else{
-                 http_response_code(200);
-             }
-             echo json_encode($datosArray);
+            header('Content-type:application/json');
+            if(isset($datosArray["result"]["error_id"])){
+                  $responseCode = $datosArray["result"]["error_id"];
+                  http_response_code($responseCode);
+            }else{
+                http_response_code(200);
+            }
+            echo json_encode($datosArray);
             
             break;
         default:
