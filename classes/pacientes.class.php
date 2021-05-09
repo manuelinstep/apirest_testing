@@ -180,7 +180,7 @@
         }
 
         private function buscarToken(){
-            $query = "SELECT TokenId, UsuarioId, Estado, FROM usuarios_token" . " WHERE Token= '" . $this->token . "' AND Estado = 'Activo'";
+            $query = "SELECT TokenId, UsuarioId, Estado FROM usuarios_token" . " WHERE Token= '" . $this->token . "' AND Estado = 'Activo'";
             $resp = parent::obtenerDatos($query);
             if($resp){
                 return $resp;
