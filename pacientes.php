@@ -53,7 +53,20 @@
 
             break;
         case "DELETE":
-            echo "Esta usando delete";
+
+            $postBody = file_get_contents("php://input");
+
+            $datosArray = $_pacientes->delete($postBody);
+
+             header('Content-type:application/json');
+             if(isset($datosArray["result"]["error_id"])){
+                 $responseCode = $datosArray["result"]["error_id"];
+                 http_response_code($responseCode);
+             }else{
+                 http_response_code(200);
+             }
+             echo json_encode($datosArray);
+            
             break;
         default:
             
