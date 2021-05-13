@@ -1,9 +1,9 @@
 {
     "conexion":{
         "server" : "localhost" ,
-        "user" : "root" ,
-        "password" : "",
-        "database" : "apirestdb" ,
+        "user" : "fasttravelass1st_system" ,
+        "password" : "_}t!+P[ba1QR",
+        "database" : "fasttravelass1st_db0" ,
         "port" : "3306"
     }
 }
