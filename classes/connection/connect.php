@@ -48,7 +48,6 @@ class connect {
     public function obtenerDatos($sqlstr){
         //Se utiliza la instancia de la variable conexión que es una instancia de la clase mysqli
         $results = $this->conexion->query($sqlstr);
-
         $resultArray = array();
         foreach ($results as $key) {
             $resultArray[] = $key;
@@ -74,8 +73,12 @@ class connect {
     }
 
     protected function encrypt($string){
-        return md5($string);
-        //Método mas sencillo de encriptación disponible
+        $salt = "1NsT3pD3veL0p3R$";
+
+        $password = hash('sha256', $salt.$string);
+
+        return $password;
+        //Cambiada la encriptacion a la utlizada actualmente por las plataformas
     }
 }
 
