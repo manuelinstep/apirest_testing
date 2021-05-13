@@ -78,22 +78,22 @@
         private function insertarToken($datos){
             $val = true;
             $token = $this->valueRandom();
+            $ipuser = $_SERVER['REMOTE_ADDR'];
             //Hay que cambiar el como se genera la api_key
             /**
              * Esto se cambiará por un update
              * solo se accesará a esta función despues de que la validación confirme
              * que la IP es nueva y no existe un token
              */
-            if(!isset($datos[0]['api_key'])){
+            if(!isset($datos[0]['api_key']) or $ipuser != $datos[0]['ip_remote']){
                 /**
                  * El error 500 en este momento se da porque hay usuarios que tienen
                  * IP remote, pero no tiene apikey, entonces no entra aqui
                  */
-                $ipuser = $_SERVER['REMOTE_ADDR'];
                 $iduser = $datos[0]['id'];
                 $query = "UPDATE users SET api_key = '$token', ip_remote = '$ipuser' WHERE id = '$iduser'";
                 $verificar = parent::nonQuery($query);
-                if($resp >= 1){
+                if($verificar >= 1){
                     return $token;
                 }else{
                     return 0;
