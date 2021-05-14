@@ -10,9 +10,14 @@
             $getBody = file_get_contents("php://input");
             $result = $_information->get($getBody);
             header('Content-Type: application/json');
-            echo json_encode($result);
+            $results = $_respuestas->return_200($result);
+            echo json_encode($results);
+            /**
+             * La estructura funciona de manera que, llegado a este punto, no existe un error
+             * por tanto, el http response code siempre se deja en 200 al final
+             * porque solo otros métodos lo cambian
+             */
             http_response_code(200);  
-            # pasamos los request al método que los reciba
             break;
         
         default:

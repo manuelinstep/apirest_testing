@@ -22,49 +22,16 @@
          */
 
         public $response = [
-            'status' => "ok",
+            'status' => "OK",
             'result' => array()
         ];
 
-        public function return_100(){
-            //Belgica manaure manatisio
-        }
-
-        //Este se borrara, ya no es necesario
-        public function error_405(){
-            $this->response['status'] = 'error';
-            $this->response['result'] = array(
-                "error_id" => "405",
-                "error_msg" => "metodo no permitido"
-            );
-            return $this->response;
-        }
-
-        public function return_300(){
-            $this->response['status'] = 'error';
-            $this->response['result'] = array(
-                "error_id" => "405",
-                "error_msg" => "metodo no permitido"
-            );
-            return $this->response;
-        }
-
         //Este permanece
-        public function error_200($string = "Datos incorrectos"){
-            $this->response['status'] = 'error';
-            $this->response['result'] = array(
-                "error_id" => "200",
-                "error_msg" => $string
-            );
-            return $this->response;
-        }
-
-        //Este permanece
-        public function error_400(){
+        public function error_400($valor = "Error en el input"){
             $this->response['status'] = 'error';
             $this->response['result'] = array(
                 "error_id" => "400",
-                "error_msg" => "Datos enviados incompletos o con formato incorrecto"
+                "error_msg" => $valor
             );
             return $this->response;
         }
@@ -74,17 +41,7 @@
             $this->response['status'] = 'error';
             $this->response['result'] = array(
                 "error_id" => "500",
-                "error_msg" => "Error interno"
-            );
-            return $this->response;
-        }
-
-        //Este se borrará, ya no es necesario
-        public function error_401($valor = "No Autorizado"){
-            $this->response['status'] = 'error';
-            $this->response['result'] = array(
-                "error_id" => "401",
-                "error_msg" => $valor
+                "error_msg" => "Error interno del servidor"
             );
             return $this->response;
         }

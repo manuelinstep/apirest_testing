@@ -26,7 +26,7 @@
 
     }else{
         header('Content-type:application/json');
-        $datosArray = $_respuestas->error_405();
+        $datosArray = $_respuestas->error_400("Metodo no permitido");
         echo json_encode($datosArray);
     }
 ?>
