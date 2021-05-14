@@ -80,6 +80,16 @@ class connect {
         return $password;
         //Cambiada la encriptacion a la utlizada actualmente por las plataformas
     }
+
+    public function checkToken($token){
+        $query = "SELECT api_key, ip_remote, id_status, id FROM users WHERE api_key = '$token'";
+        $resp = $this->obtenerDatos($query);
+        if($resp){
+            return $resp;
+        }else{
+            return 0;
+        }
+    }
 }
 
 ?>
