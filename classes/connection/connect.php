@@ -9,6 +9,13 @@ class connect {
     private $port;
     private $conexion;
 
+    /**
+     * Dentro de la propia conexión, se deben 
+     * implementar los logs, de manera que puedan guardarse TODOS los movimientos
+     * realizados en el webservices
+     * incluso si hay un error
+     */
+
     //Esta función inicializa la clase en base a los datos guardados en config
     function __construct(){
         $listadatos = $this->datosConexion();

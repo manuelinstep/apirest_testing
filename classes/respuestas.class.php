@@ -45,6 +45,18 @@
             );
             return $this->response;
         }
+        
+        /**
+         * Dentro de esta clase se guardaran directamente toda la información recibida para ser enviada a la DB
+         * Al empezar cada función, se debe guardar una variable que registre
+         * todo el input del usuario, y se le pasa a la clase de respuestas
+         * para que, al registrarse cualquier error, sean guardados directamente
+         * los siguientes datos deben ser guardados
+         * datos del llamado
+         * método del llamado (get, post, put, delete, etc)
+         * error que causo que no se procediera
+         * los demás guardados dentro de las plataformas de forma regular  
+        */
     }
 
 ?>
