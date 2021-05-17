@@ -1,6 +1,6 @@
 <?php
-
-    class response{
+    require_once("connection/connect.php");
+    class response extends connect{
 
         /**
          * Recordar cambiar formato para las respuesta:
@@ -42,6 +42,22 @@
             $this->response['result'] = array(
                 "error_id" => "500",
                 "error_msg" => "Error interno del servidor"
+            );
+            return $this->response;
+        }
+
+        public function getError($id_error){
+            $query = "SELECT Error_Code,Message,Notes 
+            FROM 
+                trans_errors 
+            WHERE 
+            Error_Code = '$id_error'";
+            $result = parent::obtenerDatos($query);
+            $this->response['status'] = 'error';
+            $this->response['result'] = array(
+                "error_id" => $id_error,
+                "error_msg" => $result[0]['Message'],
+                "error_notes" => $result[0]['Notes']
             );
             return $this->response;
         }

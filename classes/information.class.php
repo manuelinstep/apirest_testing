@@ -8,8 +8,8 @@
      *-Función OBTENER VOUCHER // Implementar de primero // LISTO
      *-Función OBTENER MONEDAS // LISTO
      *-Función OBTENER PAÍSES // LISTO
-     *-Función OBTENER REGIONES
-     *-Función OBTENER PLANES
+     *-Función OBTENER REGIONES //LISTO
+     *-Función OBTENER PLANES 
      *-Función OBTENER COBERTURAS
      *-Función OBTENER PRECIO
      *-Función OBTENER LENGUAJES
@@ -147,6 +147,27 @@
                     }
 
                     
+                    break;
+                case 'get_plans':
+                    $checkToken = parent::checkToken($datos['token']);
+                    $cominghome = "llego hasta aquis";
+                    
+                    if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
+                        //Verificamos el lenguaje dentro del método
+                        $id_agencia = $this->get_id_agencia($checkToken[0]['id']);
+                        $response = $this->get_plans($id_agencia[0]['id_associate'],$datos['language'], true);
+                        /**
+                         * Crear método get plans que nos traiga los planes en base al usuario y su agencia
+                         */
+                        if(!empty($response)){
+                            return $response;
+                        }else{
+                            return $_respuesta->error_400("No se han encontrado planes","407");
+                        }
+                    }else{
+                        return $_respuesta->error_400("El token proporcionado no es válido","402");
+                    }
+                    # code...
                     break;
                 default:
                     /**
@@ -292,6 +313,68 @@
                 die($query);
             }
             return parent::obtenerDatos($query);
+        }
+
+        private function get_plans($id_agencia, $language, $details = false){
+            $_respuesta = new response;
+            $choicePlan = $this->selectDynamic('', 'broker', "id_broker='$id_agencia'", array("opcion_plan"))[0]['opcion_plan'];
+            $cominghome = 'ha llegado';
+            $query = "SELECT
+            plans.id ";
+            if ($details) {
+                $query .= ", plan_detail.titulo,
+                    plan_detail.description,
+                    plan_detail.language_id,
+                    plan_detail.plan_id,
+                    plans.id_plan_categoria,
+                    plans.num_pas,
+                    plans.min_tiempo,
+                    plans.max_tiempo,
+                    plans.id_currence,
+                    plans.family_plan,
+                    plans.min_age,
+                    plans.max_age,
+                    plans.normal_age,
+                    plans.plan_local,
+                    plans.modo_plan,
+                    plans.original_id ";
+            }
+            $query .= " FROM
+                    plans
+                    INNER JOIN plan_detail ON plans.id = plan_detail.plan_id
+                    INNER JOIN restriction ON plans.id = restriction.id_plans
+                ";
+                ($details) ?: $where[] = " plans.id = '$plan'";
+            (!$details && (empty($language))) ?: $where[] = " plan_detail.language_id = '$language'";
+            $where[] = " plans.activo = '1' ";
+            $where[] = " plans.eliminado = '1' ";
+            $where[] = "(
+                plans.modo_plan = 'W'
+                OR plans.modo_plan = 'T'
+            )";
+            if ($choicePlan == '1') {
+                $where[] =
+                    "(
+                    restriction.dirigido = 1
+                    OR (restriction.dirigido = 2 AND restriction.id_broker = $id_agencia)
+                    OR (restriction.dirigido = 6 AND restriction.id_broker = $id_agencia)
+                )";
+            } else if ($choicePlan == '2') {
+                $where[] =
+                    "(
+                    (restriction.dirigido = 2 AND restriction.id_broker = $id_agencia)
+                    OR (restriction.dirigido = 6 AND restriction.id_broker = $id_agencia)
+                )";
+            }
+            $query .= (count($where) > 0 ? " WHERE " . implode(' AND ', $where) : " ");
+
+            $response = $this->selectDynamic('' , '' , '' , '' , $query);
+
+            if (!$response) {
+                return $_respuesta->getError('1050');
+            } elseif ($details) {
+                return $response;
+            }
         }
     }
 ?>
