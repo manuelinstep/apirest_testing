@@ -5,9 +5,9 @@
     /**
      * En este apartado van los métodos para obtener información de la plataforma
      *-Función OBTENER API KEY // YA ESTA EN AUTH
-     *-Función OBTENER VOUCHER // Implementar de primero
-     *-Función OBTENER MONEDAS
-     *-Función OBTENER PAÍSES
+     *-Función OBTENER VOUCHER // Implementar de primero // LISTO
+     *-Función OBTENER MONEDAS // LISTO
+     *-Función OBTENER PAÍSES 
      *-Función OBTENER REGIONES
      *-Función OBTENER PLANES
      *-Función OBTENER COBERTURAS
@@ -91,9 +91,16 @@
 
                     break;
 
-                case "get_currency":
+                case "get_currencies":
 
-                    
+                    //Solo verifica que el API KEY sea correcta
+                    $checkToken = parent::checkToken($datos['token']);
+                    if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
+                        $response = $this->get_currencies();
+                        return (!empty($response)) ? $response : $_respuesta->error_400("No se han encontrado monedas","404");
+                    }else{
+                        return $_respuesta->error_400("El token proporcionado no es válido","402");
+                    }
 
                     break;
                 default:
@@ -180,6 +187,16 @@
                         users.id = user_associate.id_user 
                       where 
                         users.id = '$id_user'";
+            $response = parent::obtenerDatos($query);
+            if($response){
+                return $response;
+            }else{
+                return 0;
+            }
+        }
+
+        private function get_currencies(){
+            $query = "SELECT id_country, value_iso, desc_small FROM currency WHERE id_status = '1'";
             $response = parent::obtenerDatos($query);
             if($response){
                 return $response;
