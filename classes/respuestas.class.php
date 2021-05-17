@@ -27,10 +27,10 @@
         ];
 
         //Este permanece
-        public function error_400($valor = "Error en el input"){
+        public function error_400($valor = "Error en el input",$errorid = "400"){
             $this->response['status'] = 'error';
             $this->response['result'] = array(
-                "error_id" => "400",
+                "error_id" => $errorid,
                 "error_msg" => $valor
             );
             return $this->response;

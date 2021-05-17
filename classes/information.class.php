@@ -49,11 +49,13 @@
          * Esta es la clase GET que redistribuye el llamado a todas las funciones
          */
         public function get($data){
+            $_respuesta = new respuestas;
+
             $datos = json_decode($data,true);
             $request = $datos['request'];
             //Siempre se debe recibir el parametro request
             switch ($request) {
-                case "get_order":
+                case "get_voucher":
                     /**
                      * Se recibe
                      * Token de autenticación
@@ -76,20 +78,30 @@
                          * en base a esto, buscamos el voucher
                          */
                         $id_agencia = $this->get_id_agencia($checkToken[0]['id']);
-                        $response = ($id_agencia!=0) ? $this->get_voucher($datos['codigo'],$id_agencia[0]['id_associate']) : 0;
+                        $response = $this->get_voucher($datos['codigo'],$id_agencia[0]['id_associate']);
                         //TODOS los usuarios deben tener una agencia asociada
-                        return $response;
+                        if($response){
+                            return $response;
+                        }else{
+                            return $_respuesta->error_400("No se ha encontrado el voucher","403");
+                        }
                     }else{
-                        return 0;
+                        return $_respuesta->error_400("El token proporcionado no es válido","402");
                     }
 
                     break;
-                
+
+                case "get_currency":
+
+                    
+
+                    break;
                 default:
                     /**
                      * Se debe determinar si esta vacio, o si viene con un metodo
                      * no existente
                      */
+                    return $_respuesta->error_400("El método solicitado no existe o ha dejado el campo vacío","401");
                     break;
             }
         }

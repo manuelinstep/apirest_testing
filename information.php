@@ -10,8 +10,7 @@
             $getBody = file_get_contents("php://input");
             $result = $_information->get($getBody);
             header('Content-Type: application/json');
-            $results = $_respuestas->return_200($result);
-            echo json_encode($results);
+            echo json_encode($result);
             /**
              * La estructura funciona de manera que, llegado a este punto, no existe un error
              * por tanto, el http response code siempre se deja en 200 al final
@@ -22,6 +21,10 @@
         
         default:
             # codigo de error correspondiente
+            $result = $_respuestas->error_400("Método incorrecto","400");
+            header('Content-Type: application/json');
+            echo json_encode($result);
+            http_response_code(200);
             break;
     }
 ?>
