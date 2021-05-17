@@ -7,7 +7,7 @@
      *-Función OBTENER API KEY // YA ESTA EN AUTH
      *-Función OBTENER VOUCHER // Implementar de primero // LISTO
      *-Función OBTENER MONEDAS // LISTO
-     *-Función OBTENER PAÍSES 
+     *-Función OBTENER PAÍSES // LISTO
      *-Función OBTENER REGIONES
      *-Función OBTENER PLANES
      *-Función OBTENER COBERTURAS
@@ -29,7 +29,14 @@
      *-Función OBTENER DETALLE DE ASISTENCIA
      *-Función OBTENER LINEA DE TIEMPO
      *-Función OBTENGA BENEFICIOS DEL CASO
-     *-Función OBTENER PAISES - ESTADOS - CIUDADES
+     *-Función OBTENER PAISES - ESTADOS - CIUDADES 
+     * 
+     * Elementos que faltan por implementar:
+     * -Cada vez que se finalice una consulta, enviarla a log_consultas y a trans_all_webservices con sus respectivos datos
+     * -agregar los errores de la DB
+     * 
+     * Aparte de eso:
+     * -Agregar método para los query traido del webservices anterior (_SQL_tool/selectdynamic)
      */
 
     class information extends connect{
@@ -116,6 +123,30 @@
                         return $_respuesta->error_400("El token proporcionado no es válido","402");
                     }
 
+                    break;
+                
+                case "get_regions":
+                    
+                    /**
+                     * Solo verificamos el API KEY
+                     * podemos crear una función similar a SELECT DYNAMIC que haga lo mismo
+                     * De esta forma, para las consultas sencillas, solo pasamos el nombre de la tabla
+                     * y los filtros necesarios para poder utilizarla
+                     */
+                    $checkToken = parent::checkToken($datos['token']);
+                    if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
+                        //Verificamos el lenguaje dentro del método
+                        $response = $this->selectDynamic('', 'territory', "id_status='1'", ['id_territory', 'desc_small']);
+                        if(!empty($response)){
+                            return $response;
+                        }else{
+                            return $_respuesta->error_400("No se han encontrado regiones","407");
+                        }
+                    }else{
+                        return $_respuesta->error_400("El token proporcionado no es válido","402");
+                    }
+
+                    
                     break;
                 default:
                     /**
@@ -232,6 +263,35 @@
                         AND countries.c_status = 'Y'";
             $response = parent::obtenerDatos($query);
             return $response;
+        }
+
+        private function selectDynamic($filters, $table = string, $where = '1', $fields, $querys = '', $die = false, $limit = 6)
+        {
+            /**
+             * Este código viene del anterior webservices
+             * Funciona, asi que no debería haber problema implementandolo
+             * Lo único que aún no entiendo del todo es como funciona el apartado filters, pero de momento
+             * no se usará, buscare un ejemplo en el anterior webservices para cersiorarme de que es lo que sucede
+             */
+            if (empty($querys)) {
+                $fields = !empty($fields) ? implode(',', $fields) : "*";
+                $query = "SELECT $fields FROM $table WHERE $where ";
+                foreach ($filters as $campo => $value) {
+                    if (!empty($campo) && !empty($value)) {
+                        $valor   = addslashes($value);
+                        $valor   = (is_array($value)) ? implode(',', $value) : "'$valor'";
+                        $query  .= " AND $campo IN ($valor) ";
+                    }
+                }
+                $query .= " LIMIT $limit ";
+            } else {
+
+                $query = $querys;
+            }
+            if ($die) {
+                die($query);
+            }
+            return parent::obtenerDatos($query);
         }
     }
 ?>
