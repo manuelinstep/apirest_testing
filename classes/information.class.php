@@ -1,5 +1,5 @@
 <?php
-    require_once("respuestas.class.php");
+    require_once("response.class.php");
     require_once("connection/connect.php");
 
     /**
@@ -49,7 +49,7 @@
          * Esta es la clase GET que redistribuye el llamado a todas las funciones
          */
         public function get($data){
-            $_respuesta = new respuestas;
+            $_respuesta = new response;
 
             $datos = json_decode($data,true);
             $request = $datos['request'];

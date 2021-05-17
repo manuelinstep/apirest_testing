@@ -1,6 +1,6 @@
 <?php
 
-    class respuestas{
+    class response{
 
         /**
          * Recordar cambiar formato para las respuesta:

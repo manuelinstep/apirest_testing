@@ -1,8 +1,8 @@
 <?php 
-    require_once("classes/respuestas.class.php");
+    require_once("classes/response.class.php");
     require_once("classes/information.class.php");
 
-    $_respuestas = new respuestas;
+    $_respuestas = new response;
     $_information = new information;
     
     switch ($_SERVER['REQUEST_METHOD']) {

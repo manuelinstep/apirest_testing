@@ -1,12 +1,12 @@
 <?php 
     require_once("connection/connect.php");
-    require_once("respuestas.class.php");
+    require_once("response.class.php");
     
     class auth extends connect{
 
         //Creamos el método login
         public function login($json){
-            $_respuestas = new respuestas;
+            $_respuestas = new response;
             $datos = json_decode($json,true); //el true convierte el array en asociativo
             //Checkea que existan los campos user y password
             if(!isset($datos['usuario']) || !isset($datos['password'])){
