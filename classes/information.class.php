@@ -9,8 +9,8 @@
      *-Función OBTENER MONEDAS // LISTO
      *-Función OBTENER PAÍSES // LISTO
      *-Función OBTENER REGIONES //LISTO
-     *-Función OBTENER PLANES 
-     *-Función OBTENER COBERTURAS
+     *-Función OBTENER PLANES // LISTO
+     *-Función OBTENER COBERTURAS //
      *-Función OBTENER PRECIO
      *-Función OBTENER LENGUAJES
      *-Función OBTENER CATEGORÍA DE PLANES
