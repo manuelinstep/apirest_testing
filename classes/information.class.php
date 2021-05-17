@@ -103,6 +103,20 @@
                     }
 
                     break;
+
+                case "get_countries":
+
+                    //Verifica el API KEY y que haya un lenguaje, el cual será spa o eng
+                    $checkToken = parent::checkToken($datos['token']);
+                    if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
+                        //Verificamos el lenguaje dentro del método
+                        $response = ($datos['language'] == 'spa' or $datos['language'] == 'eng') ? $this->get_countries($datos['language']) : $_respuesta->error_400("Ha introducido un lenguaje invalido","405");
+                        return $response;
+                    }else{
+                        return $_respuesta->error_400("El token proporcionado no es válido","402");
+                    }
+
+                    break;
                 default:
                     /**
                      * Se debe determinar si esta vacio, o si viene con un metodo
@@ -203,6 +217,21 @@
             }else{
                 return 0;
             }
+        }
+
+        private function get_countries($language){
+            
+            $query = "SELECT
+                            countries_detail.iso_country,
+                            countries_detail.description
+                        FROM
+                            countries
+                        INNER JOIN countries_detail ON countries.iso_country = countries_detail.iso_country
+                        WHERE
+                            countries_detail.language_id = '$language'
+                        AND countries.c_status = 'Y'";
+            $response = parent::obtenerDatos($query);
+            return $response;
         }
     }
 ?>
