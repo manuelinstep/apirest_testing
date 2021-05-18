@@ -12,11 +12,11 @@
      *-Función OBTENER PLANES // LISTO
      *-Función OBTENER COBERTURAS // LISTO
      *-Función OBTENER PRECIO //
-     *-Función OBTENER LENGUAJES 
-     *-Función OBTENER CATEGORÍA DE PLANES
-     *-Función OBTENER CONDICIONES
-     *-Función OBTENER UPGRADE
-     *-Función PAÍSES DE ORIGEN RESTRINGIDOS
+     *-Función OBTENER LENGUAJES // LISTO 
+     *-Función OBTENER CATEGORÍA DE PLANES //LISTO
+     *-Función OBTENER CONDICIONES //LISTO
+     *-Función OBTENER UPGRADE/RAIDER // LISTO
+     *-Función PAÍSES DE ORIGEN RESTRINGIDOS 
      *-Función TASA DE CAMBIO POR PAÍS
      *-Función OBTENER REPORTE DE VENTAS
      *-Función OBTENER PAISES - CIUDADES
@@ -37,6 +37,8 @@
      * 
      * Aparte de eso:
      * -Agregar método para los query traido del webservices anterior (_SQL_tool/selectdynamic)
+     * 
+     * 9015 error cuando no hay resultados
      */
 
     class information extends connect{
@@ -89,7 +91,7 @@
                         if($response){
                             return $response;
                         }else{
-                            return $_respuesta->error_400("No se ha encontrado el voucher","403");
+                            return $_respuesta->getError('9015');
                         }
                     }else{
                         return $_respuesta->error_400("El token proporcionado no es válido","402");
@@ -103,7 +105,7 @@
                     $checkToken = parent::checkToken($datos['token']);
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         $response = $this->get_currencies();
-                        return (!empty($response)) ? $response : $_respuesta->error_400("No se han encontrado monedas","404");
+                        return (!empty($response)) ? $response : $_respuesta->getError('9015');
                     }else{
                         return $_respuesta->error_400("El token proporcionado no es válido","402");
                     }
@@ -139,7 +141,7 @@
                         if(!empty($response)){
                             return $response;
                         }else{
-                            return $_respuesta->error_400("No se han encontrado regiones","407");
+                            return $_respuesta->getError('9015');
                         }
                     }else{
                         return $_respuesta->error_400("El token proporcionado no es válido","402");
@@ -160,7 +162,7 @@
                         if(!empty($response)){
                             return $response;
                         }else{
-                            return $_respuesta->error_400("No se han encontrado planes","407");
+                            return $_respuesta->getError('9015');
                         }
                     }else{
                         return $_respuesta->error_400("El token proporcionado no es válido","402");
@@ -181,7 +183,7 @@
                         if(!empty($response)){
                             return $response;
                         }else{
-                            return $_respuesta->error_400("No se han encontrado planes","407");
+                            return $_respuesta->getError('9015');
                         }
                     }else{
                         return $_respuesta->error_400("El token proporcionado no es válido","402");
@@ -191,7 +193,129 @@
                     # code...
                     break;
                 case 'get_languages':
+                    /**
+                     * Obtenemos los lenguajes de la plataforma, solo requerimos el token
+                     */
+                    $checkToken = parent::checkToken($datos['token']);
+                    if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
+                        $response = $this->selectDynamic('', 'languages', "languages.active = '1'", ['id', 'lg_id', 'name', 'short_name']);
+                        if($response){
+                            return $response;
+                        }else{
+                            return $_respuesta->getError('9015');
+                        }
+                    }else{
+                        return $_respuesta->getError('1005');
+                    }
+
+                    break;
+                case 'get_plan_category':
                     # code...
+                    /**
+                     * Recibe
+                     * -Token
+                     * -Lenguaje
+                     */
+                    $checkToken = parent::checkToken($datos['token']);
+                    if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
+                        $response = (isset($datos['language'])) ? $this->dataPlanCategory($datos['language']) : $_respuesta->getError('6021') ;
+                        if($response){
+                            return $response;
+                        }else{
+                            return $_respuesta->getError('9015');
+                        }
+                    }else{
+                        return $_respuesta->getError('1005');
+                    }
+
+
+                    break;
+
+                case 'get_terms':
+                    /**
+                     * Recibimos, aparte del token, el id del plan y el lenguaje
+                     */
+                    $checkToken = parent::checkToken($datos['token']);
+                    if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
+                        $verify = $this->get_plans('',$datos['id_plan'],$datos['language'], true); //Verificamos que existe el plan master
+                        if(isset($verify[0]['id'])){
+                            $idplan = $datos['id_plan'];
+                            $data = $this->selectDynamic('', 'plans', "id='$idplan'", array("name", "description"));
+                            //Necesitamos el broker manaos
+                            $id_agencia = $this->get_id_agencia($checkToken[0]['id']);
+
+                            return [
+                                'id' => $idplan,#id del plan
+                                'name' => $data[0]['name'],#nombre del plan
+                                'description' => $data[0]['description'],#descripción del plan
+                                'terms' => $this->getTermsMaster($idplan,$datos['language'],$id_agencia)
+                            ];
+                        }else{
+                            return $_respuesta->getError('1050');
+                        }
+                        
+                    }else{
+                        return $_respuesta->getError('1005');
+                    }
+
+                    break;
+                case 'get_upgrade':
+                    //Requiere lenguaje y id del plan
+                    $checkToken = parent::checkToken($datos['token']);
+                    if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
+                        $verify = $this->get_plans('',$datos['id_plan'],$datos['language'], true);
+                        if(isset($verify[0]['id'])){
+                            //El plan existe, procedemos con el resto del método
+                            $arrTypeUpgrades	= [
+
+                                '1' => [
+                                    'type_raider' => 'Valor',
+                                    'rd_calc_type' => 'Comprobante'
+                                ],
+                                '2' => [
+                                    'type_raider' => 'Porcentage %',
+                                    'rd_calc_type' => 'Pasajero Especifico'
+                                ],
+                                '3' => [
+                                    'type_raider' => 'Valor',
+                                    'rd_calc_type' => 'Pasajero General'
+                                ],
+                                '4' => [
+                                    'type_raider' => 'Valor',
+                                    'rd_calc_type' => 'Por dia por Voucher'
+                                ],
+                                '5' => [
+                                    'type_raider' => 'Valor',
+                                    'rd_calc_type' => 'Por dia por Pasajero'
+                                ]
+                            ];
+
+                            $result = $this->dataUpgradesPlan($datos['id_plan'],$datos['language']);
+
+                            if ($result) {
+
+                                foreach ($result as $i => $value) {
+                                    $arrResult[]['type_raider']		= $arrTypeUpgrades[$value['type_raider']]['type_raider'];
+                                    $arrResult[$i]['rd_calc_type']	= $arrTypeUpgrades[$value['rd_calc_type']]['rd_calc_type'];
+                                    $arrResult[$i]['id_raider']		= $value['id_raider'];
+                                    $arrResult[$i]['cost_raider']	= $value['cost_raider'];
+                                    $arrResult[$i]['name_raider']	= $value['name_raider'];
+                                    $arrResult[$i]['value_raider']	= $value['value_raider'];
+                                }
+                    
+                    
+                                return $arrResult;
+                            } else {
+                                return $_respuesta->getError('5017');
+                            }
+                            //------------------
+                        }else{
+                            return $_respuesta->getError('1050');
+                        }
+                    }else{
+                        return $_respuesta->getError('1005');
+                    }
+
                     break;
 
                 default:
@@ -199,7 +323,7 @@
                      * Se debe determinar si esta vacio, o si viene con un metodo
                      * no existente
                      */
-                    return $_respuesta->error_400("El método solicitado no existe o ha dejado el campo vacío","401");
+                    return $_respuesta->getError('9030');
                     break;
             }
         }
@@ -426,6 +550,62 @@
             }*/
             $response = $this->selectDynamic('', '', '', '', $query);
             return (!empty($response)) ? $response : $_respuesta->getError('1050');
+        }
+
+        private function dataPlanCategory($language)
+        {
+            $query = "SELECT
+                        plan_categoria_detail.name_plan,
+                        plan_categoria_detail.id_plan_categoria
+                    FROM
+                        plan_categoria_detail
+                    INNER JOIN plan_category ON plan_categoria_detail.id_plan_categoria = plan_category.id_plan_categoria
+                    WHERE
+                        plan_categoria_detail.language_id = '$language' 
+                    AND
+                        plan_category.id_status = 1";
+            return $this->selectDynamic('', '', '', '', $query);
+        }
+
+        private function getTermsMaster($plan, $language, $idAgency)
+        {
+            $filters   = [
+                'id_status'     => '1',
+                'type_document' => '1',
+                'language_id'   => $language
+            ];
+            $termsPlan              = $this->selectDynamic($filters, 'plans_wording', "id_plan='$plan'", array("url_document"))[0]["url_document"];
+            $termsAgency            = $this->selectDynamic("language_id='$language'", 'broker_parameters_detail', "id_broker='$idAgency'", array("imagen"))[0]["imagen"];
+            $termsInsurance         = $this->selectDynamic("language_id='$language'", 'wording_parameter', "id_status='1'", array("url_document"))[0]["url_document"];
+            $typeBroker             = $this->selectDynamic('', 'broker', "id_broker='$agency'", array("type_broker"))[0]["type_broker"];
+
+            if (!empty($termsPlan)) {
+                return  $_SERVER['SERVER_NAME'] . "/app/admin/server/php/files/" . $termsPlan;
+            } elseif (!empty($termsAgency) && $typeBroker == "1") {
+                return  $_SERVER['SERVER_NAME'] . "/app/upload_files/broker_parameters/" . $agency . "/condicionados/" . $termsAgency;
+            } elseif (!empty($termsInsurance)) {
+                return  $_SERVER['SERVER_NAME'] . "/app/admin/server/php/files/" . $termsInsurance;
+            }
+        }
+
+        private function dataUpgradesPlan($plan, $language)
+        {
+            $query = "SELECT
+                raiders.id_raider,
+                raiders_detail.name_raider,
+                raiders.type_raider,
+                raiders.value_raider,
+                raiders.cost_raider,
+                raiders.rd_calc_type
+            FROM
+                raiders
+                INNER JOIN raiders_detail ON raiders_detail.id_raider = raiders.id_raider
+                INNER JOIN plan_raider ON raiders.id_raider = plan_raider.id_raider
+            WHERE
+                plan_raider.id_plan = '$plan' 
+            AND raiders_detail.language_id='$language'";
+
+            return $this->selectDynamic('', '', '', '', $query);
         }
     }
 ?>
