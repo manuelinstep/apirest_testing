@@ -16,15 +16,15 @@
      *-Función OBTENER CATEGORÍA DE PLANES //LISTO
      *-Función OBTENER CONDICIONES //LISTO
      *-Función OBTENER UPGRADE/RAIDER // LISTO
-     *-Función PAÍSES DE ORIGEN RESTRINGIDOS 
-     *-Función TASA DE CAMBIO POR PAÍS
+     *-Función PAÍSES DE ORIGEN RESTRINGIDOS // LISTO
+     *-Función TASA DE CAMBIO POR PAÍS // LISTO
      *-Función OBTENER REPORTE DE VENTAS
-     *-Función OBTENER PAISES - CIUDADES
-     *-Función OBTENER PAISES - ESTADOS
-     *-Función OBTENER ASISTENCIA
-     *-Función OBTENER DETALLE DE ASISTENCIA
-     *-Función OBTENER LINEA DE TIEMPO
-     *-Función OBTENGA BENEFICIOS DEL CASO
+     *-Función OBTENER PAISES - CIUDADES // LISTO
+     *-Función OBTENER PAISES - ESTADOS // LISTO
+     *-Función OBTENER ASISTENCIA // -----------------
+     *-Función OBTENER DETALLE DE ASISTENCIA // -----------------
+     *-Función OBTENER LINEA DE TIEMPO  // -----------------
+     *-Función OBTENGA BENEFICIOS DEL CASO // -----------------
      *-Función OBTENER PAISES - ESTADOS - CIUDADES 
      *-Función OBTENER PRECIO DE LA ORDEN POR FECHA DE NACIMIENTO POR PLAN
      *-Función OBTENER PRECIO DE LA ORDEN POR EDAD POR PLAN
@@ -318,6 +318,78 @@
 
                     break;
 
+                case 'country_restricted':
+                    //Mismos de arriba, plan y lenguaje
+                    $checkToken = parent::checkToken($datos['token']);
+                    if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
+                        $verify = $this->get_plans('',$datos['id_plan'],'', false); //Verificamos que existe el plan master
+                        $dataCountryRestricted = ($verify['status']!='error') ? $this->dataCountryRestricted($datos['id_plan'],$datos['language']) : $_respuesta->getError('1050');
+                        if (!empty($dataCountryRestricted)) {
+                            return $dataCountryRestricted;
+                        } else {
+                            return $_respuesta->getError('9015');
+                        }
+
+                    }else{
+                        return $_respuesta->getError('1005');
+                    }
+
+                    break;
+                
+                case 'exchange_rate':
+                    //obtiene codigo ISO del país y el lenguaje
+                    $checkToken = parent::checkToken($datos['token']);
+                    if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
+                        $response = ($datos['iso_country']) ? $this->dataExchangeRate($datos['iso_country']) : $_respuesta->getError('3150');
+                        return (!empty($response)) ? $response : $_respuesta->getError('5013');
+                    }else{
+                        return $_respuesta->getError('1005');
+                    }
+
+                    break;
+
+                case 'get_country_cities':
+                    /**
+                     * Mismo de la anterior, requiere iso y el lenguaje
+                     * verificamos que existe el pais, luego, buscamos las ciudades
+                     */
+                    $checkToken = parent::checkToken($datos['token']);
+                    if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
+                        $verify = ($datos['iso_country']!='') ? $this->checkCountry($datos['iso_country'],$datos['language']) : null;
+                        if($verify){
+                            $response = $this->dataCitiesCountry($datos['iso_country'],$datos['language']);
+                            return ($response) ? $response : $_respuesta->getError('9015');
+                        }else{
+                            return $_respuesta->getError('9173');
+                        }
+                    }else{
+                        return $_respuesta->getError('1005');
+                    }
+                    
+                    break;
+
+                case 'get_country_states':
+                    /**
+                     * Mismo de la anterior, requiere iso y el lenguaje
+                     * hacemos la misma verificación de arriba, luego, buscamos los estados
+                     * DON'T STOP ME NOW
+                     */
+
+                    $checkToken = parent::checkToken($datos['token']);
+                    if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
+                        $verify = ($datos['iso_country']!='') ? $this->checkCountry($datos['iso_country'],$datos['language']) : null;
+                        if($verify){
+                            $response = $this->dataStatesCountry($datos['iso_country'],$datos['language']);
+                            return ($response) ? $response : $_respuesta->getError('9015');
+                        }else{
+                            return $_respuesta->getError('9173');
+                        }
+                    }else{
+                        return $_respuesta->getError('1005');
+                    }
+                    
+                    break;
+
                 default:
                     /**
                      * Se debe determinar si esta vacio, o si viene con un metodo
@@ -604,6 +676,107 @@
             WHERE
                 plan_raider.id_plan = '$plan' 
             AND raiders_detail.language_id='$language'";
+
+            return $this->selectDynamic('', '', '', '', $query);
+        }
+
+        private function dataCountryRestricted($plan, $language)
+        {
+            $query = "SELECT 
+                countries.iso_country,
+                countries_detail.description 
+            FROM 
+                countries
+            INNER JOIN relaciotn_restriction ON relaciotn_restriction.iso_country = countries.iso_country
+            INNER JOIN restriction ON relaciotn_restriction.id_restric = restriction.id_restric
+            INNER JOIN plans ON restriction.id_plans = plans.id
+            INNER JOIN countries_detail ON countries.iso_country = countries_detail.iso_country
+            WHERE plans.id = '$plan'";
+
+            if (!empty($language)) {
+                $query .= " AND 
+                    countries_detail.language_id = '$language' ";
+            }
+            return $this->selectDynamic('', '', '', '', $query);
+        }
+
+        private function dataExchangeRate($isoCountry){
+            $query = "SELECT
+            countries.description,
+            countries.iso_country,
+            countries.currencyname,
+            currency.usd_exchange
+            FROM
+            countries
+            INNER JOIN currency ON countries.currencycode = currency.value_iso
+            WHERE currency.usd_exchange != '0'
+            AND currency.id_status = 1 ";
+
+            if ($isoCountry) {
+                $query .= "AND countries.iso_country = '$isoCountry'";
+            }
+            return $this->selectDynamic('', '', '', '', $query);
+        }
+
+        private function checkCountry($iso_country,$language){
+            //Funcion que verifica si un país existe
+            $query =  "SELECT
+                countries_detail.iso_country,
+                countries_detail.description
+            FROM
+                countries
+            INNER JOIN countries_detail ON countries.iso_country = countries_detail.iso_country
+            WHERE
+                countries_detail.language_id = '$language'
+            AND countries.c_status = 'Y' ";
+
+
+            if (!empty($iso_country)) {
+                $query .= " AND 
+                    countries.iso_country = '$iso_country' ";
+            }
+
+            $response = $this->selectDynamic('', '', '', '', $query);
+            return $response;
+        }
+
+        private function dataCitiesCountry($country,$language){
+            $query = "SELECT
+                countries_detail.description AS countries_description,
+                cities.description AS cities_description,
+                cities.iso_city,
+                states.description AS states_description,
+                states.iso_state
+            FROM
+                countries
+            INNER JOIN states ON countries.iso_country = states.iso_country
+            INNER JOIN cities ON countries.iso_country = cities.iso_country
+            INNER JOIN countries_detail ON countries.iso_country = countries_detail.iso_country
+            AND cities.iso_state = states.iso_state
+            WHERE
+                countries.iso_country = '$country'
+            AND countries.c_status = 'Y'
+            AND	countries_detail.language_id = '$language'
+            ORDER BY
+                countries_detail.description,
+                states.description,
+                cities.description ASC";
+
+            return $this->selectDynamic('', '', '', '', $query);
+        }
+
+        public function dataStatesCountry($country, $language)
+        {
+            $query = "SELECT
+                countries_detail.description as countries_description,  states.description as states_description,states.iso_state
+            FROM
+                countries
+            INNER JOIN states ON countries.iso_country = states.iso_country
+            INNER JOIN countries_detail ON countries.iso_country = countries_detail.iso_country
+            WHERE countries.iso_country ='$country'
+            AND countries.c_status = 'Y'
+            AND	countries_detail.language_id = '$language'
+            ORDER BY countries_detail.description,  states.description  asc";
 
             return $this->selectDynamic('', '', '', '', $query);
         }
