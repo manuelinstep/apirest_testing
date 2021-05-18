@@ -10,14 +10,10 @@
      *-Función OBTENER PAÍSES // LISTO
      *-Función OBTENER REGIONES //LISTO
      *-Función OBTENER PLANES // LISTO
-     *-Función OBTENER COBERTURAS //
-     *-Función OBTENER PRECIO
-     *-Función OBTENER LENGUAJES
+     *-Función OBTENER COBERTURAS // LISTO
+     *-Función OBTENER PRECIO //
+     *-Función OBTENER LENGUAJES 
      *-Función OBTENER CATEGORÍA DE PLANES
-     *-Función OBTENER PRECIO DE LA ORDEN POR FECHA DE NACIMIENTO POR PLAN
-     *-Función OBTENER PRECIO DE LA ORDEN POR EDAD POR PLAN
-     *-Función OBTENER PRECIO DE LA ORDEN POR FECHA DE NACIMIENTO
-     *-Función OBTENER PRECIO DE LA ORDEN POR EDAD
      *-Función OBTENER CONDICIONES
      *-Función OBTENER UPGRADE
      *-Función PAÍSES DE ORIGEN RESTRINGIDOS
@@ -30,6 +26,10 @@
      *-Función OBTENER LINEA DE TIEMPO
      *-Función OBTENGA BENEFICIOS DEL CASO
      *-Función OBTENER PAISES - ESTADOS - CIUDADES 
+     *-Función OBTENER PRECIO DE LA ORDEN POR FECHA DE NACIMIENTO POR PLAN
+     *-Función OBTENER PRECIO DE LA ORDEN POR EDAD POR PLAN
+     *-Función OBTENER PRECIO DE LA ORDEN POR FECHA DE NACIMIENTO
+     *-Función OBTENER PRECIO DE LA ORDEN POR EDAD
      * 
      * Elementos que faltan por implementar:
      * -Cada vez que se finalice una consulta, enviarla a log_consultas y a trans_all_webservices con sus respectivos datos
@@ -51,13 +51,12 @@
          * "requesting" : "plans"
          * Se deberan migrar todas las limitaciones y verificaciones existentes dentro de la plataforma
          */
-
         /**
          * Esta es la clase GET que redistribuye el llamado a todas las funciones
          */
         public function get($data){
             $_respuesta = new response;
-
+            
             $datos = json_decode($data,true);
             $request = $datos['request'];
             //Siempre se debe recibir el parametro request
@@ -150,12 +149,11 @@
                     break;
                 case 'get_plans':
                     $checkToken = parent::checkToken($datos['token']);
-                    $cominghome = "llego hasta aquis";
                     
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         //Verificamos el lenguaje dentro del método
                         $id_agencia = $this->get_id_agencia($checkToken[0]['id']);
-                        $response = $this->get_plans($id_agencia[0]['id_associate'],$datos['language'], true);
+                        $response = $this->get_plans($id_agencia[0]['id_associate'],'',$datos['language'], true);
                         /**
                          * Crear método get plans que nos traiga los planes en base al usuario y su agencia
                          */
@@ -167,8 +165,35 @@
                     }else{
                         return $_respuesta->error_400("El token proporcionado no es válido","402");
                     }
+                    break;
+                case 'get_coverages':
+                    /**
+                     * Recibe el lenguaje y el plan
+                     */
+                    $checkToken = parent::checkToken($datos['token']);
+                    if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
+                        //Verificamos el lenguaje dentro del método
+                        $verify = $this->get_plans('',$datos['id_plan'],$datos['language'], false);
+                        $response = $this->dataCoverages($datos['language'],$datos['id_plan']);
+                        /**
+                         * Crear método get plans que nos traiga los planes en base al usuario y su agencia
+                         */
+                        if(!empty($response)){
+                            return $response;
+                        }else{
+                            return $_respuesta->error_400("No se han encontrado planes","407");
+                        }
+                    }else{
+                        return $_respuesta->error_400("El token proporcionado no es válido","402");
+                    }
+                    break;
+                case 'get_pvp_price':
                     # code...
                     break;
+                case 'get_languages':
+                    # code...
+                    break;
+
                 default:
                     /**
                      * Se debe determinar si esta vacio, o si viene con un metodo
@@ -315,10 +340,9 @@
             return parent::obtenerDatos($query);
         }
 
-        private function get_plans($id_agencia, $language, $details = false){
+        private function get_plans($id_agencia, $plan, $language, $details = false){
             $_respuesta = new response;
             $choicePlan = $this->selectDynamic('', 'broker', "id_broker='$id_agencia'", array("opcion_plan"))[0]['opcion_plan'];
-            $cominghome = 'ha llegado';
             $query = "SELECT
             plans.id ";
             if ($details) {
@@ -367,14 +391,41 @@
                 )";
             }
             $query .= (count($where) > 0 ? " WHERE " . implode(' AND ', $where) : " ");
-
             $response = $this->selectDynamic('' , '' , '' , '' , $query);
 
             if (!$response) {
                 return $_respuesta->getError('1050');
-            } elseif ($details) {
+            } else {
                 return $response;
             }
+        }
+
+        private function dataCoverages($language,$plan){
+            $_respuesta = new response;
+            /**
+             * Función traida del anterior webservices
+             */
+            $query =  "SELECT 
+            benefit_plan.valor_spa,
+            benefit_plan.valor_eng,
+            
+        
+            benefit_detail.id_benefit,
+            benefit_detail.name,
+            benefit_detail.language_id,
+            benefit_detail.extended_info
+            FROM
+                benefit_plan
+            INNER JOIN benefit_detail ON benefit_plan.id_beneficio = benefit_detail.id_benefit
+            INNER JOIN plans ON plans.id = benefit_plan.id_plan
+            WHERE plans.activo = 1 
+            AND benefit_detail.language_id = '$language' 
+            AND benefit_plan.id_plan = '$plan'";
+            /*if('200.84.222.207' == $_SERVER ['REMOTE_ADDR']){
+                die(var_dump("ojo",$query));
+            }*/
+            $response = $this->selectDynamic('', '', '', '', $query);
+            return (!empty($response)) ? $response : $_respuesta->getError('1050');
         }
     }
 ?>

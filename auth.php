@@ -9,7 +9,16 @@
         //Solo se permiten métodos post
 
         //Recibimos los datos
-        $postbody = file_get_contents("php://input");
+        if(isset($_REQUEST['usuario']) && isset($_REQUEST['password'])){
+            $send = [
+                "usuario" => $_REQUEST["usuario"],
+                "password" => $_REQUEST["password"]
+            ];
+            $postbody = json_encode($send);
+        }else{
+
+            $postbody = file_get_contents("php://input"); 
+        }
 
         //Enviamos los datos al manejador
         $datosArray = $_auth->login($postbody);

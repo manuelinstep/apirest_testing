@@ -4,10 +4,30 @@
 
     $_respuestas = new response;
     $_information = new information;
+
+    if (!function_exists('getallheaders')) {
+        function getallheaders() {
+        $headers = [];
+        foreach ($_SERVER as $name => $value) {
+            if (substr($name, 0, 5) == 'HTTP_') {
+                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+            }
+        }
+        return $headers;
+        }
+    }
     
     switch ($_SERVER['REQUEST_METHOD']) {
         case 'GET':
-            $getBody = file_get_contents("php://input");
+            //Implementado correctamente el obtener todos los datos
+            if(isset($_REQUEST)){
+                $send = $_REQUEST;
+                $getBody = json_encode($send);
+            }else{
+
+                $getBody = file_get_contents("php://input"); 
+            }
+
             $result = $_information->get($getBody);
             header('Content-Type: application/json');
             echo json_encode($result);
