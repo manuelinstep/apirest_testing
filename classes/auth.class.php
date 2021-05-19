@@ -11,7 +11,7 @@
             //Checkea que existan los campos user y password
             if(!isset($datos['usuario']) || !isset($datos['password'])){
                 //Error ya que no existen
-                return $_respuestas->error_400("No se encuentran los campos usuario o contraseña");
+                return (!isset($datos['usuario']) && !isset($datos['password'])) ? $_respuestas->getError('6037') : (!isset($datos['usuario'])) ? $_respuestas->getError('6040') : $_respuestas->getError('6041') ;
             }else{
                 $usuario = $datos['usuario'];
                 $password = $datos['password'];
@@ -50,7 +50,7 @@
                                 return $_respuestas->error_500();
                             }
                         }else{
-                            return $_respuestas->error_400("El usuario esta inactivo/no es usuario webservices");    
+                            return $_respuestas->getError('1023');    
                         }
                     }else{
                         return $_respuestas->error_400("El password es invalido");    

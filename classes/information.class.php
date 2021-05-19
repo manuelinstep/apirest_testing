@@ -95,7 +95,7 @@
                             return $_respuesta->getError('9015');
                         }
                     }else{
-                        return $_respuesta->error_400("El token proporcionado no es válido","402");
+                        return $_respuesta->getError('1005');
                     }
 
                     break;
@@ -108,7 +108,7 @@
                         $response = $this->get_currencies();
                         return (!empty($response)) ? $response : $_respuesta->getError('9015');
                     }else{
-                        return $_respuesta->error_400("El token proporcionado no es válido","402");
+                        return $_respuesta->getError('1005');
                     }
 
                     break;
@@ -119,10 +119,10 @@
                     $checkToken = parent::checkToken($datos['token']);
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         //Verificamos el lenguaje dentro del método
-                        $response = ($datos['language'] == 'spa' or $datos['language'] == 'eng') ? $this->get_countries($datos['language']) : $_respuesta->error_400("Ha introducido un lenguaje invalido","405");
+                        $response = ($datos['language'] == 'spa' or $datos['language'] == 'eng') ? $this->get_countries($datos['language']) : $_respuesta->getError('1030');
                         return $response;
                     }else{
-                        return $_respuesta->error_400("El token proporcionado no es válido","402");
+                        return $_respuesta->getError('1005');
                     }
 
                     break;
@@ -145,7 +145,7 @@
                             return $_respuesta->getError('9015');
                         }
                     }else{
-                        return $_respuesta->error_400("El token proporcionado no es válido","402");
+                        return $_respuesta->getError('1005');
                     }
 
                     
@@ -156,7 +156,7 @@
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         //Verificamos el lenguaje dentro del método
                         $id_agencia = $this->get_id_agencia($checkToken[0]['id']);
-                        $response = $this->get_plans($id_agencia[0]['id_associate'],'',$datos['language'], true);
+                        $response = (!empty($datos['language'])) ? $this->get_plans($id_agencia[0]['id_associate'],'',$datos['language'], true) : $_respuesta->getError('6021');
                         /**
                          * Crear método get plans que nos traiga los planes en base al usuario y su agencia
                          */
@@ -166,7 +166,7 @@
                             return $_respuesta->getError('9015');
                         }
                     }else{
-                        return $_respuesta->error_400("El token proporcionado no es válido","402");
+                        return $_respuesta->getError('1005');
                     }
                     break;
                 case 'get_coverages':
@@ -176,8 +176,12 @@
                     $checkToken = parent::checkToken($datos['token']);
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         //Verificamos el lenguaje dentro del método
+                        if(empty($datos['id_plan']))
+                        {
+                            return $_respuesta->getError('6022');
+                        }
                         $verify = $this->get_plans('',$datos['id_plan'],$datos['language'], false);
-                        $response = $this->dataCoverages($datos['language'],$datos['id_plan']);
+                        $response =  $this->dataCoverages($datos['language'],$datos['id_plan']);
                         /**
                          * Crear método get plans que nos traiga los planes en base al usuario y su agencia
                          */

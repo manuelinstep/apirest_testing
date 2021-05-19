@@ -1,0 +1,9 @@
+site_name: APIREST INSTEP
+nav:
+    - Home: index.md
+    - Installation: instalation.md
+    - Methods : 
+        - Auth : methods/auth.md
+        - Information : methods/information.md
+        - Quote : methods/quote.md 
+theme: readthedocs
