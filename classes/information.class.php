@@ -5,31 +5,32 @@
     /**
      * En este apartado van los métodos para obtener información de la plataforma
      *-Función OBTENER API KEY // YA ESTA EN AUTH
-     *-Función OBTENER VOUCHER // Implementar de primero // LISTO
+     *-Función OBTENER VOUCHER // LISTO
      *-Función OBTENER MONEDAS // LISTO
      *-Función OBTENER PAÍSES // LISTO
      *-Función OBTENER REGIONES //LISTO
      *-Función OBTENER PLANES // LISTO
      *-Función OBTENER COBERTURAS // LISTO
-     *-Función OBTENER PRECIO //
+     *-Función OBTENER PRECIO // LISTO
      *-Función OBTENER LENGUAJES // LISTO 
      *-Función OBTENER CATEGORÍA DE PLANES //LISTO
      *-Función OBTENER CONDICIONES //LISTO
      *-Función OBTENER UPGRADE/RAIDER // LISTO
      *-Función PAÍSES DE ORIGEN RESTRINGIDOS // LISTO
      *-Función TASA DE CAMBIO POR PAÍS // LISTO
-     *-Función OBTENER REPORTE DE VENTAS
      *-Función OBTENER PAISES - CIUDADES // LISTO
      *-Función OBTENER PAISES - ESTADOS // LISTO
      *-Función OBTENER ASISTENCIA // -----------------
      *-Función OBTENER DETALLE DE ASISTENCIA // -----------------
      *-Función OBTENER LINEA DE TIEMPO  // -----------------
      *-Función OBTENGA BENEFICIOS DEL CASO // -----------------
-     *-Función OBTENER PAISES - ESTADOS - CIUDADES 
-     *-Función OBTENER PRECIO DE LA ORDEN POR FECHA DE NACIMIENTO POR PLAN
+     *-Función OBTENER PAISES - ESTADOS - CIUDADES // LISTO
+     *-Función OBTENER PRECIO DE LA ORDEN
+     *-Función OBTENER PRECIO DE LA ORDEN POR EDAD 
      *-Función OBTENER PRECIO DE LA ORDEN POR EDAD POR PLAN
      *-Función OBTENER PRECIO DE LA ORDEN POR FECHA DE NACIMIENTO
-     *-Función OBTENER PRECIO DE LA ORDEN POR EDAD
+     *-Función OBTENER PRECIO DE LA ORDEN POR FECHA DE NACIMIENTO POR PLAN
+     *-Función OBTENER REPORTE DE VENTAS 
      * 
      * Elementos que faltan por implementar:
      * -Cada vez que se finalice una consulta, enviarla a log_consultas y a trans_all_webservices con sus respectivos datos
@@ -190,7 +191,66 @@
                     }
                     break;
                 case 'get_pvp_price':
-                    # code...
+                    /**
+                     * Recibe el plan y el país
+                     */
+
+                    $checkToken = parent::checkToken($datos['token']);
+                    if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
+                        //Ahora verificamos el plan y el país
+                        $verify = $this->get_plans('',$datos['id_plan'],'', false);
+                        if(isset($verify[0]['id'])){
+                            $checkrestriction = $this->verifyRestrictionOrigin($datos['iso_country'],$datos['id_plan']);
+                            $country = $datos['iso_country'];
+                            if(isset($checkrestriction['status'])){
+                                return $checkrestriction;
+                            }else if(empty($datos['iso_country'])){
+                                $country = 'all';
+                            }
+
+                            $data	= [
+                                'valor',
+                                'age_min',
+                                'age_max'
+                            ];
+
+                            $plan = $datos['id_plan'];
+
+                            $dataPvpPriceBandas	= $this->selectDynamic('', 'plan_band_age', "id_plan='$plan'", $data, '', '', 260);
+
+                            if (!empty($dataPvpPriceBandas)) {
+                                return $dataPvpPriceBandas;
+                            } else {
+
+                                $filters = [
+                                    'id_country' => $country
+                                ];
+
+                                $data	= [
+                                    'unidad',
+                                    'tiempo',
+                                    'valor'
+                                ];
+
+                                //$dataPvpPrice	= $this->selectDynamic($filters,'plan_times',"id_plan='$plan'",['unidad','tiempo','valor']);
+                                $dataPvpPrice	= $this->selectDynamic($filters, 'plan_times', "id_plan='$plan'", $data, '', '', 260);
+
+
+                                if (!empty($dataPvpPrice)) {
+                                    return $dataPvpPrice;
+                                } else {
+                                    return $_respuesta->getError('1060');
+                                }
+                            }
+
+                        }else{
+                            //Verificar que error se retorna en este caso
+                        }
+
+                    }else{
+                        return $_respuesta->error_400("El token proporcionado no es válido","402");
+                    }
+
                     break;
                 case 'get_languages':
                     /**
@@ -388,6 +448,43 @@
                         return $_respuesta->getError('1005');
                     }
                     
+                    break;
+                case 'get_country_states_cities':
+                    /**
+                     * Recibe:
+                     * Iso country
+                     * iso state
+                     * lenguaje
+                     */
+                    $checkToken = parent::checkToken($datos['token']);
+                    if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
+                        //Primero va datacountries, checkeamos lenguaje
+                        if(!empty($datos['language'])){
+                            $language = $datos['language'];
+                        }else{
+                            $_respuesta->getError('6021');
+                        }
+                        $country_iso = (!empty($datos['iso_country'])) ? $this->checkCountry($datos['iso_country'],$datos['language']) : $_respuesta->getError('9174');
+                        if(!$country_iso[0]['iso_country']){
+                            return $country_iso;
+                        }else{
+                            $iso_state = $datos['iso_state'];
+                            $state_iso = $this->selectDynamic('', 'states', "iso_state='$iso_state'", array("iso_state"))[0]['iso_state'];
+                            if(!$state_iso){
+                                return $_respuesta->getError('9177');
+                            }else{
+                                $dataCountryStatesCities = $this->dataCitiesStatesCountry($country_iso[0]['iso_country'], $state_iso, $language);
+
+                                if (!empty($dataCountryStatesCities)) {
+                                    return $dataCountryStatesCities;
+                                } else {
+                                    return $_respuesta->getError('9015');
+                                }
+                            }
+                        }
+                    }else{
+                        return $_respuesta->getError('1005');
+                    }
                     break;
 
                 default:
@@ -765,7 +862,7 @@
             return $this->selectDynamic('', '', '', '', $query);
         }
 
-        public function dataStatesCountry($country, $language)
+        private function dataStatesCountry($country, $language)
         {
             $query = "SELECT
                 countries_detail.description as countries_description,  states.description as states_description,states.iso_state
@@ -778,6 +875,50 @@
             AND	countries_detail.language_id = '$language'
             ORDER BY countries_detail.description,  states.description  asc";
 
+            return $this->selectDynamic('', '', '', '', $query);
+        }
+
+        private function verifyRestrictionOrigin($origin, $plan)
+        {
+            $_respuesta = new response;
+            $query = "SELECT
+            relaciotn_restriction.iso_country,
+            countries.description
+            FROM
+                relaciotn_restriction
+            INNER JOIN restriction ON relaciotn_restriction.id_restric = restriction.id_restric
+            INNER JOIN countries ON relaciotn_restriction.iso_country = countries.iso_country
+            WHERE
+            restriction.id_plans = '$plan'
+            AND countries.iso_country = '$origin'";
+            $response = $this->selectDynamic('', '', '', '', $query);
+            if ($response) {
+                return $_respuesta->getError('1091');
+            }
+        }
+
+        private function dataCitiesStatesCountry($country, $iso_state, $language)
+        {
+            $query = "SELECT
+                countries_detail.description as countries_description, 
+                cities.description as cities_description,cities.iso_city, states.description as states_description, 
+                states.iso_state
+    
+            FROM
+                countries
+            INNER JOIN states ON countries.iso_country = states.iso_country
+            INNER JOIN cities ON countries.iso_country = cities.iso_country
+            INNER JOIN countries_detail ON countries.iso_country = countries_detail.iso_country
+            AND cities.iso_state = states.iso_state
+            WHERE
+                countries.iso_country = '$country'
+            AND countries.c_status = 'Y'
+            AND states.iso_state = '$iso_state'
+            AND	countries_detail.language_id = '$language'
+            ORDER BY
+                countries_detail.description,
+                states.description,
+                cities.description ASC";
             return $this->selectDynamic('', '', '', '', $query);
         }
     }
