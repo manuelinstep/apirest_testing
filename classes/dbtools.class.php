@@ -280,16 +280,12 @@ class cls_dbtools extends cls_logs
             $objemail->send($from=array('name'=>EMAIL_FROM_NAME,'email'=>EMAIL_FROM), $to=/* $notify_email */$arr_email, "BUG_TRACK", 'spa');
         }
         $this->error_ocurred=true;
-        if (!headers_sent()) { ?>
-<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="https://ils.d2pw.com/labs/">
-        <SOAP-ENV:Body>
-                <ns1:get_plan_categoryResponse>
-                        <ns1:apiResponse>[{"Error_Code":"9070","status":"INTERNAL_ERROR","Notes":"Ha ocurrido un error
-                                Interno, Estamos trabajando para Solucionarlo"}]</ns1:apiResponse>
-                </ns1:get_plan_categoryResponse>
-        </SOAP-ENV:Body>
-</SOAP-ENV:Envelope>
-<?php exit;
+        if (!headers_sent()) { 
+            echo array(
+                "status" => "Error",
+                "description" => "Ha ocurrido un error interno, hemos comunicado al equipo correspondiente y estamos trabajando en una solucion (Error 500)"
+            );
+            exit;
         } else {
             include(COREROOT."common/app_mysql_error.php");
         }
