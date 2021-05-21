@@ -34,8 +34,15 @@
 
                 $getBody = file_get_contents("php://input"); 
             }
-            
-            $result = $_quote->selectDynamic(['status' => '1'], 'orders', 'destino = "1"');
+
+            /**
+             * Podríamos verificar directamente aquí el token
+             */
+            $received = json_decode($getBody);
+            $token = $received['token'];
+
+            $verify = $_quote->checkToken($token);
+            $result = ($verify['status']=='error') ? $verify : $_quote->handle($getBody);
             header('Content-Type: application/json');
             echo json_encode($result);
             /**
