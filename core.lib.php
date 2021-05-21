@@ -1,20 +1,32 @@
 <?php 
     /**
-     * Primera versión del corelib para la api rest
+     * Segunda versión del corelib para la apirest
+     * que mALDICION
+     * no saben las ganas que tengo de terminar con esto
+     * y volver a tener fin de semana
      */
 
+     //PREVENT ATTACK FROM OTHER SITES
+     
     session_start();
     set_time_limit(0);
     //$_SESSION['lastAct'] = time();
+
         
-    if (preg_match("/core.lib.php/", $_SERVER ["PHP_SELF"]))
-      die("Access denied!");
-    require_once("config_var.php");
-    require_once(COREROOT . "classes/logs.class.php");
-    require_once(COREROOT . "classes/dbtools.class.php");
-    require_once(COREROOT . "classes/debug.class.php");
-    //require_once(COREROOT . "rewrite_globals.php"); //REWRITE GLOBALS seria necesario si estuviesemos manejando un front
-    require_once(COREROOT . "classes/general.class.php");
+    //if (preg_match("/core.lib.php/", $_SERVER ["PHP_SELF"]))
+      //die("Access denied!");
+    $ini_request = microtime(true);
+    require_once("config.var.php");
+    require_once("classes/logs.class.php");
+    require_once("classes/dbtools.class.php");
+    require_once("classes/session_manager.class.php");
+    require_once("classes/quote.class.php");
 
     cls_dbtools::assignDBParameters($arrDB);
+
+    $CORE_session = new SessionManager('WS');
+
+    cls_dbtools::assignSession($CORE_session);
+
+
 ?>
