@@ -281,10 +281,11 @@ class cls_dbtools extends cls_logs
         }
         $this->error_ocurred=true;
         if (!headers_sent()) { 
-            echo array(
+            $info = array(
                 "status" => "Error",
                 "description" => "Ha ocurrido un error interno, hemos comunicado al equipo correspondiente y estamos trabajando en una solucion (Error 500)"
             );
+            return $info;
             exit;
         } else {
             include(COREROOT."common/app_mysql_error.php");
