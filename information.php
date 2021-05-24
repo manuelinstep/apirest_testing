@@ -17,6 +17,12 @@
         }
     }
     
+    /**
+     * sobre LOG CONSULTAS:
+     * los Select no se guardan
+     * por tanto, en este endpoint
+     * nada se guardara en log consultas
+     */
     switch ($_SERVER['REQUEST_METHOD']) {
         case 'GET':
             //Implementado correctamente el obtener todos los datos
@@ -49,6 +55,8 @@
             /**
              * El ultimo campo se deja vacio, en el momento que se implemente 
              * la modificación que ya existe en quote, se cambia
+             * Evidentemente hay que modificar el como funciona dicho log
+             * 
              */
             http_response_code(200);
             break;
