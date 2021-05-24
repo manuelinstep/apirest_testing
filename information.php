@@ -35,8 +35,22 @@
              * La estructura funciona de manera que, llegado a este punto, no existe un error
              * por tanto, el http response code siempre se deja en 200 al final
              * porque solo otros métodos lo cambian
+             * 
+             * Procedemos a guardar 
+             * Debemos decodificar la info recibida parcialmente
+             * para obtener la operación 
              */
-            http_response_code(200);  
+            
+            $saver = json_decode($getBody,true);
+            $operation = (!isset($saver['request'])) ? '' : $saver['request'] ;
+            $token = (!isset($saver['token'])) ? '' : $saver['token'] ;
+            $err = (!isset($result['result'])) ? '' : $result['result']['error_id'] ;
+            $saveresult = $_information->logsave($operation,$getBody,json_encode($result),'','',$token,$err,'','','');     
+            /**
+             * El ultimo campo se deja vacio, en el momento que se implemente 
+             * la modificación que ya existe en quote, se cambia
+             */
+            http_response_code(200);
             break;
         
         default:

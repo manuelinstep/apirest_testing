@@ -925,5 +925,63 @@
                 cities.description ASC";
             return $this->selectDynamic('', '', '', '', $query);
         }
+
+        private function insertDynamic($data = array(), $table = null)
+        {
+            if (empty($table) || count($data) == 0) {
+                return false;
+            }
+            $arrFiels       = [];
+            $arrValues      = [];
+            $SQL_functions  = [
+                'NOW()'
+            ];
+            foreach ($data as $key => $value) {
+                $arrFiels[] = '`' . $key . '`';
+                if (in_array(strtoupper($value), $SQL_functions)) {
+                    $arrValues[] = strtoupper($value);
+                } else {
+                    $arrValues[] = '\'' . $value . '\'';
+                }
+            }
+            $query = "INSERT INTO $table (" . implode(',', $arrFiels) . ") VALUES (" . implode(',', $arrValues) . ")";
+            return parent::nonQuery($query);
+        }
+        
+        public function logsave($operacion,$request,$_response,$prefijo,$procedencia = '1',$token,$id_error,$num_voucher,$num_referencia,$idUser){
+            /**
+             * Datos que debemos recibir:
+             * -fecha
+             * -hora
+             * -IP
+             * -Operación realizada
+             * -Datos (facil)
+             * -Respuesta obtenida
+             * -Prefijo
+             * -procedencia ???
+             * -apikey
+             * -id_error
+             * -num_voucher
+             * -num_referencia
+             * -id_user
+             */
+
+            $data   = [
+                'fecha'             => 'NOW()',
+                'hora'              => 'NOW()',
+                'ip'                => $_SERVER['REMOTE_ADDR'],
+                'operacion'         => $operacion,
+                'datos'             => $request,
+                'respuesta'         => $_response,
+                'prefijo'           => $prefijo,
+                'procedencia'       => $procedencia,
+                'apikey'            => $token,
+                'id_error'          => $id_error,
+                'num_voucher'       => $num_voucher,
+                'num_referencia'    => $num_referencia,
+                'id_user'           => ($idUser) ? $idUser : 0
+            ];
+            return $this->insertDynamic($data, 'trans_all_webservice');
+        }
     }
 ?>
