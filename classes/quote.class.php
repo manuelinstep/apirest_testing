@@ -39,6 +39,8 @@
             $request = $datos['request'];
             switch ($request) {
                 case 'add_order':
+
+                    //Estos son todos los campos obligatorios
                     /**
                      * Primero debemos verificar que campos se reciben
                      * luego verificar que no estén vacios
@@ -72,8 +74,43 @@
                      * 
                      * primero verificamos que los campos obligatorios no estan vacios
                      */
+                    $dataValida = [
+                        '6029' => $datos['fecha_salida'], 
+                        '6030' => $datos['fecha_llegada'],
+                        '6032' => $datos['referencia'],
+                        '6022' => $datos['id_plan'],
+                        '6028' => $datos['pais_destino'],
+                        '6027' => $datos['pais_origen'],
+                        '6034' => $datos['moneda'],
+                        '1022' => $datos['tasa_cambio'],
+                        '6026' => $datos['pasajeros'],
+                        '5005' => $datos['nacimientos'],//Estos deben verificarse de otra
+                        '4006' => $datos['documentos'],
+                        '4005' => $datos['nombres'],
+                        '4007' => $datos['apellidos'],
+                        '6025' => $datos['telefonos'],
+                        '4011' => $datos['correos'],
+                        '6035' => $datos['emision'],
+                        '6021' => $datos['lenguaje']
+                    ];
+                    /**
+                     * También hay que contar la cantidad con respecto
+                     * al numero de pasajeros (campo pasajeros)
+                     * verificar que el campo pasajeros sea un numero
+                     */
 
+                    $validatEmpty			= $this->validatEmpty($dataValida);
+                    if ($validatEmpty) {
+                        return $validatEmpty;
+                    }
 
+                    $response = 'pasó';
+                    return $response;
+                    /**
+                     * Lo mas probable es que esta sea la función mas larga
+                     * pero una vez terminada, es un copiar y pegar
+                     * solo hay que fixear un par de cosas luego de eso
+                     */
                     break;
                 
                 case 'report_order':
@@ -193,19 +230,31 @@
             }
         }
 
-        private function checkEmpty($datos){
+        private function validatEmpty($parametros)
+        {   
+            $_response = new response;
+            $array_keys =
+                array_keys(
+                    array_filter($parametros, function ($key) {
+                        if (is_array($key)) {
+                            foreach ($key as $value) {
+                                return empty($value);
+                            }
+                        } else {
+                            return empty($key);
+                        }
+                    })
+                );
+
+            return (!empty($array_keys[0])) ? $_response->getError($array_keys[0]) : false;
             /**
-             * Este es el momento de brillar del foreach
+             * Iba a añadir una verificación por si el valor pasado era un array
+             * pero ya esta cubierto
+             * que excelente servicio
+             * 
+             * Comprobado, funciona
              */
-            foreach ($datos as $field => $value) {
-                /**Pasos:
-                 * -Revisar que campo está vacio
-                 * -Revisar cual sería el error de dicho campo
-                 * -Retornar dicho campo
-                 * Creo que este proceso ya estaba hecho en el anterior webservices tho
-                 */
-            }
         }
     }
-    
+
 ?>

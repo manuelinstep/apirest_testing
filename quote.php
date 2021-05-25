@@ -34,14 +34,17 @@
 
                 $getBody = file_get_contents("php://input"); 
             }
-
+           
             /**
              * Podríamos verificar directamente aquí el token
              */
-            $received = json_decode($getBody);
+            
+            
+            $received = json_decode($getBody,true);
+            
             $token = $received['token'];
-
             $verify = $_quote->checkToken($token);
+            
             $result = ($verify['status']=='error') ? $verify : $_quote->handle($getBody);
             header('Content-Type: application/json');
             echo json_encode($result);
