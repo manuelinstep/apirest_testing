@@ -74,6 +74,9 @@
                      * 
                      * primero verificamos que los campos obligatorios no estan vacios
                      */
+
+                    $moneda = $datos['moneda'];
+
                     $dataValida = [
                         '6029' => $datos['fecha_salida'], 
                         '6030' => $datos['fecha_llegada'],
@@ -83,16 +86,35 @@
                         '6027' => $datos['pais_origen'],
                         '6034' => $datos['moneda'],
                         '1022' => $datos['tasa_cambio'],
-                        '6026' => $datos['pasajeros'],
-                        '5005' => $datos['nacimientos'],//Estos deben verificarse de otra
+                        '6026' => $datos['pasajeros'],//Hay que verificar que sea numérico
+                        '5005' => $datos['nacimientos'],
                         '4006' => $datos['documentos'],
                         '4005' => $datos['nombres'],
                         '4007' => $datos['apellidos'],
                         '6025' => $datos['telefonos'],
                         '4011' => $datos['correos'],
+                        '6021' => $datos['condiciones_med'],
                         '6035' => $datos['emision'],
-                        '6021' => $datos['lenguaje']
-                    ];
+                        '6021' => $datos['lenguaje'],
+                        //Campos de verificaciones varias
+                        '4029'	=> (empty($datos['pasajeros']) or $datos['pasajeros'] == 0 or !is_numeric($datos['pasajeros'])) ? 0 : 1,
+                        '9012'	=> ($datos['emision'] < 1 || !is_numeric($datos['emision']) || $datos['emision'] > 2) ? 0 : 1,
+                        '1022'	=> (!$this->selectDynamic('', 'currency', "value_iso='$moneda'", array("desc_small"))) ? 0 : 1,
+                        '2001'	=> $this->checkDates($datos['fecha_salida']),
+			            '2002'	=> $this->checkDates($datos['fecha_llegada']),
+                        '9059'	=> $this->verifyOrigin($datos['pais_origen']),
+                        '1080'	=> ($datos['pais_destino'] == "1" or $datos['pais_destino'] == "2" or $datos['pais_destino'] == "9") ? 1 : 0,
+                        '1030'	=> $this->validLanguage($datos['lenguaje']),
+                        '4029'	=> (empty($datos['pasajeros']) or $datos['pasajeros'] == 0 or !is_numeric($datos['pasajeros'])) ? 0 : 1,
+                        //Verificamos que exista la cantidad requerida
+                        '9049'	=> ($this->countData($datos['nombres'], $datos['pasajeros'])) ? 0 : 1,
+                        '9053'	=> ($this->countData($datos['apellidos'], $datos['pasajeros'])) ? 0 : 1,
+                        '9051'	=> ($this->countData($datos['nacimientos'], $datos['pasajeros'])) ? 0 : 1,
+                        '9050'	=> ($this->countData($datos['documentos'], $datos['pasajeros'])) ? 0 : 1,
+                        '9052'	=> ($this->countData($datos['correos'], $datos['pasajeros'])) ? 0 : 1,
+                        '9054'	=> ($this->countData($datos['telefonos'], $datos['pasajeros'])) ? 0 : 1,
+                        '9055'	=> ($this->countData($datos['condiciones_med'], $datos['pasajeros'])) ? 0 : 1
+                    ]; //Verificación lista
                     /**
                      * También hay que contar la cantidad con respecto
                      * al numero de pasajeros (campo pasajeros)
@@ -102,6 +124,13 @@
                     $validatEmpty			= $this->validatEmpty($dataValida);
                     if ($validatEmpty) {
                         return $validatEmpty;
+                    }  
+                    
+                    //Verificamos que los datos del pasajero sean validos (VERIFICACIÓN CORRECTA)
+
+                    $validateDataPassenger	= $this->validateDataPassenger($datos['pasajeros'], $datos['nombres'], $datos['apellidos'], $datos['nacimientos'], $datos['documentos'], $datos['correos'], $datos['telefonos'], $datos['condiciones_med']);
+                    if ($validateDataPassenger) {
+                        return $validateDataPassenger;
                     }
 
                     $response = 'pasó';
@@ -254,6 +283,258 @@
              * 
              * Comprobado, funciona
              */
+        }
+
+        private function countData($quantity, $vsquantity)
+        {
+            return (count($quantity) != $vsquantity) ? true : false;
+        }
+
+        private function checkDates($date)
+        {
+            if (is_array($date)) {
+                foreach ($date as $value) {
+                    $date   = explode('/', $value);
+                    return (checkdate($date[1], $date[0], $date[2]));
+                }
+            } else {
+                $date   = explode('/', $date);
+                return (checkdate($date[1], $date[0], $date[2]));
+            }
+        }
+
+        private function verifyOrigin($origin)
+        {
+            $response = $this->selectDynamic('', 'countries', "iso_country='$origin'");
+            return ($response) ? true : false;
+        }
+
+        private function validLanguage($lng)
+        {
+
+            $lng   = strtolower($lng);
+            $query = "SELECT
+                languages.id
+            FROM
+                `languages`
+            WHERE
+                languages.active = '1'
+            AND languages.lg_id = '$lng'";
+            $response   = $this->selectDynamic('', '', '', '', $query);
+            return count($response);
+        }
+
+        private function validateDataPassenger($quantity, $namePassenger, $lastNamePassenger, $birthDayPassenger, $documentPassenger, $emailPassenger, $phonePassenger, $medicalConditionsPassenger, $skipBirthDay = true, $report_sales)
+        {     
+            $_respuesta = new response;
+            $dataBithDay    = [];
+            $dataValidate   = [
+                '4005'  => count($namePassenger),
+                '4007'  => count($lastNamePassenger),
+                '4006'  => count($documentPassenger),
+                //'5012'  => count($emailPassenger),
+                //'4008'  => count($phonePassenger),
+                '5012'  => (empty(count($emailPassenger)) && ($report_sales != 'report_sales')) ? 0 : 1,
+                '4008'  => (empty(count($phonePassenger)) && ($report_sales != 'report_sales')) ? 0 : 1,
+                //'5006'  => count($medicalConditionsPassenger) //,
+                // '4011'    => (!$this->verifyMail($emailPassenger)) ? 0 : 1
+            ];
+
+            if ($skipBirthDay) {
+                $dataBithDay    = [
+                    '5005'  => $birthDayPassenger
+                ];
+            }
+            $dataValidate   = $dataValidate + $dataBithDay;
+            $validatEmpty   = $this->validatEmpty($dataValidate);
+            if ($validatEmpty) {
+                return $validatEmpty;
+            }
+            
+
+            for ($i = 0; $i < $quantity; $i++) {
+
+                if (empty($namePassenger[$i])) {
+                    return $_respuesta->getError('4005');
+                }
+                if (empty($lastNamePassenger[$i])) {
+                    if ($report_sales == 'report_sales') {
+                        $arraySplitName = $this->splitNamePassenger($namePassenger[$i]);
+                        $lastNamePassenger[$i] = $arraySplitName['apellidos'];
+                        $ArraylastNamePassenger[] = $lastNamePassenger[$i];
+                        $namePassenger[$i]  =  $arraySplitName['nombres'];
+                        $ArraynamePassenger[] = $namePassenger[$i];
+                    } else {
+                        return $_respuesta->getError('4007');
+                    }
+                }
+                if (empty($documentPassenger[$i])) {
+                    return $_respuesta->getError('4006');
+                }
+                if (empty($phonePassenger[$i])) {
+
+                    if ($report_sales == 'report_sales') {
+                        $phonePassenger[$i] = 'NA';
+                        $ArrayphonePassenger[] = $phonePassenger[$i];
+                    } else {
+                        return $_respuesta->getError('6025');
+                    }
+                }
+                /*if (empty($medicalConditionsPassenger[$i])) {
+                    return $_respuesta->getError('5006');
+                }*/
+
+                if (!preg_match('(^([a-zA-Z ÑñÁ-ú.]{2,60})$)', html_entity_decode($namePassenger[$i], ENT_QUOTES, "UTF-8"))) {
+
+                    return $_respuesta->getError('9032');
+                }
+                if (!preg_match('(^([a-zA-Z ÑñÁ-ú.]{2,60})$)', html_entity_decode($lastNamePassenger[$i], ENT_QUOTES, "UTF-8"))) {
+                    return $_respuesta->getError('9035');
+                }
+
+                if (!is_numeric($phonePassenger[$i])) {
+
+                    if ($report_sales != 'report_sales') {
+                        return $_respuesta->getError('9034');
+                    } else {
+                        if ((!preg_match('(^([NA0-9() +/-]{2,40})$)', strtoupper($phonePassenger[$i])))) {
+                            return $_respuesta->getError('9198');
+                        }
+                    }
+                }
+
+
+                if ($report_sales == 'report_sales') {
+
+                    if (empty($emailPassenger[$i])) {
+                        $emailPassenger[$i] = 'NA';
+                        $ArrayemailPassenger[] = $emailPassenger[$i];
+                    } else {
+
+                        if ((strtoupper($emailPassenger[$i]) != 'NA') && (strtoupper($emailPassenger[$i]) != 'N/A')) {
+                            if (!$this->verifyMail($emailPassenger[$i])) {
+                                return $_respuesta->getError('4011');
+                            }
+                        }
+                    }
+                } else {
+                    if (!$this->verifyMail($emailPassenger[$i])) {
+                        return $_respuesta->getError('4011');
+                    }
+                }
+
+
+                $today = date('Y-m-d');
+                $birthDayPassengerTrans[$i] = $this->transformerDate($birthDayPassenger[$i]);
+                if ($skipBirthDay) {
+                    if (!($this->checkDates($birthDayPassenger[$i])) || (strtotime($birthDayPassengerTrans[$i]) > strtotime($today))) {
+                        return $_respuesta->getError('1062');
+                    }
+                }
+            }
+            if ($report_sales == 'report_sales') {
+                $data = [
+                    'lastNamePassenger' => $ArraylastNamePassenger,
+                    'namePassenger'     => $ArraynamePassenger,
+                    'phonePassenger'    => $ArrayphonePassenger,
+                    'emailPassenger'    => $ArrayemailPassenger
+
+                ];
+
+                return $data;
+            }
+        }
+
+        public function splitNamePassenger($namePassenger)
+        {
+            $tokens = explode(' ', trim($namePassenger));
+            $names = array();
+            $special_tokens = array('da', 'de', 'del', 'la', 'las', 'los', 'mac', 'mc', 'van', 'von', 'y', 'i', 'san', 'santa', 'jr.');
+            $prev = "";
+            foreach ($tokens as $token) {
+                $_token = strtolower($token);
+                if (in_array($_token, $special_tokens)) {
+                    $prev .= "$token ";
+                } else {
+                    $names[] = $prev . $token;
+                    $prev = "";
+                }
+            }
+
+            $num_nombres = count($names);
+            $nombres = $apellidos = "";
+
+            switch ($num_nombres) {
+
+                case 1:
+                    $nombres   = $names[0];
+                    $apellidos = "No indica apellido";
+
+                    break;
+                case 2:
+                    $nombres    = $names[0];
+                    $apellidos  = $names[1];
+
+                    break;
+                case 3:
+                    $nombres     = $names[0] . ' ' . $names[1];
+                    $apellidos   = $names[2];
+
+                    break;
+                case 4:
+                    $nombres     = $names[0] . ' ' . $names[1];
+                    $apellidos   = $names[2] . ' ' . $names[3];
+
+                    break;
+                case 5:
+                    $nombres     = $names[0] . ' ' . $names[1] . ' ' . $names[2];
+                    $apellidos   = $names[3] . ' ' . $names[4];
+
+                    break;
+                default:
+                    $nombres = $names[0] . ' ' . $names[1] . ' ' . $names[2];
+                    unset($names[0]);
+                    unset($names[1]);
+                    unset($names[2]);
+                    $apellidos = implode(' ', $names);
+
+
+                    break;
+            }
+
+            $nombres    = mb_convert_case($nombres, MB_CASE_TITLE, 'UTF-8');
+            $apellidos  = mb_convert_case($apellidos, MB_CASE_TITLE, 'UTF-8');
+
+
+            $data       = [
+                'nombres'      => $nombres,
+                'apellidos'     => $apellidos
+            ];
+
+            return $data;
+        }
+
+        public function verifyMail($parametros = array())
+        {
+            if (is_array($parametros)) {
+                return array_reduce($parametros, function ($resp, $value) {
+                    return $resp = filter_var($value, FILTER_VALIDATE_EMAIL) ? $resp : false;
+                }, true);
+            } else {
+                return filter_var($parametros, FILTER_VALIDATE_EMAIL);
+            }
+        }
+
+        public function transformerDate($date, $type = 1)
+        {
+            if ($type == '1') {
+                $date   = str_replace('/', '-', $date);
+                $fecha  = DateTime::createFromFormat('d-m-Y', $date);
+                return $fecha ? $fecha->format('Y-m-d') : $date;
+            } elseif ($type == '2') {
+                $fecha  = DateTime::createFromFormat('Y-m-d', $date);
+                return $fecha ? $fecha->format('d/m/Y') : $date;
+            }
         }
     }
 

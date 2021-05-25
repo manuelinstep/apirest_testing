@@ -41,7 +41,6 @@
             
             
             $received = json_decode($getBody,true);
-            
             $token = $received['token'];
             $verify = $_quote->checkToken($token);
             
