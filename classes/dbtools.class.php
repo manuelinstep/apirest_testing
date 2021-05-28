@@ -1,6 +1,7 @@
 <?php
 error_reporting(0);
 ini_set(display_errors, 0);
+require_once("apiclientils.class.php");
 class cls_dbtools extends cls_logs
 {
     public $return_id='';
@@ -205,6 +206,7 @@ class cls_dbtools extends cls_logs
                                     $this->setCodigosLog(array(), true);
                                     if ($this->auto_soap==true) {
                                         $tabla_soap = $this->get_tabla_name();
+                                        
                                         if ($id=apiclientils::getTablesAndId($tabla_soap)) {
                                             $where_soap = $this->get_where_query();
                                             self::$ApiIls = self::$ApiIls?:new apiclientils();

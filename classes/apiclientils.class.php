@@ -1,5 +1,5 @@
 <?php
-class apiclientils extends Model
+class apiclientils extends cls_dbtools
 {
     private $url = 'https://ilsadmin.com/app/api-ils';
     private $status = '';
@@ -33,7 +33,6 @@ class apiclientils extends Model
     }
     public static function getTablesAndId($table='')
     {
-
         
         $tablasIds=[
             'beneficiaries' =>'id',
