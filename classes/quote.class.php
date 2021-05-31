@@ -2,6 +2,7 @@
     require_once("response.class.php");
     require_once("quote_general_new.class.php");
     require_once("currencylayer.class.php");
+    require_once("api_client_wta.class.php");
     //Ayyy lmao yo no había borrado esto
     /** 
      *
@@ -119,12 +120,13 @@
                         '9054'	=> ($this->countData($datos['telefonos'], $datos['pasajeros'])) ? 0 : 1,
                         '9055'	=> ($this->countData($datos['condiciones_med'], $datos['pasajeros'])) ? 0 : 1
                     ]; //Verificación lista
+                    $coin = $datos['moneda'];
                     /**
                      * También hay que contar la cantidad con respecto
                      * al numero de pasajeros (campo pasajeros)
                      * verificar que el campo pasajeros sea un numero
                      */
-
+                    
                     $validatEmpty			= $this->validatEmpty($dataValida);
                     if ($validatEmpty) {
                         return $validatEmpty;
@@ -146,12 +148,13 @@
                     $datAgency			= $this->datAgency($datos['token']); //Debemos pasar el token de autenticacion
                     $idCategoryPlan 	= $dataPlan[0]['id_plan_categoria'];
                     $namePlan			= $dataPlan[0]['name'];
+                    $individualOrder	= $dataPlan[0]['voucher_individual'];
                     $idAgency			= $datAgency[0]['id_broker'];
                     $isoCountry			= $datAgency[0]['id_country'];
                     $nameAgency			= $datAgency[0]['broker'];
                     $userAgency			= $datAgency[0]['user_id'];
                     $cantPassengerPlan	= $dataPlan[0]['num_pas'];
-                    $prefix				= $datAgency[0]['prefijo'];
+                    $prefix				= (!empty($datAgency[0]['prefijo'])) ? $datAgency[0]['prefijo'] : ''; //Debe buscarse una forma de traerlo por defecto
                     $arrivalTrans       = $this->transformerDate($datos['fecha_llegada']);
                     $departureTrans     = $this->transformerDate($datos['fecha_salida']);
                     $daysByPeople 		= $this->betweenDates($departureTrans, $arrivalTrans);
@@ -239,7 +242,7 @@
                         $exchangeRate = $currencyLayer->exchangeRate($datos['moneda'], date('Y-m-d'));
                         $adjustedExchangeRate = 1;
                         if ($datos['moneda'] != 'USD') {
-                            $tasa_cambio_recibida = $exchangeRates;
+                            $tasa_cambio_recibida = $exchangeRate;
                         }
                     }   elseif (empty($exchangeRate[0]['usd_exchange']) && !empty($exchangeRate) && is_numeric($exchangeRate)) {
 
@@ -276,7 +279,7 @@
                             }
                         }
                     } elseif (!empty($exchangeRate[0]['usd_exchange'])) {
-                        $tasa_cambio_recibida = $exchangeRates;
+                        $tasa_cambio_recibida = $exchangeRate;
                         $exchangeRate = $exchangeRate[0]['usd_exchange'];
                         $adjustedExchangeRate = 1;
                     } else {
@@ -314,9 +317,396 @@
                         }
                     }
 
+                    $status = 1;
+
+                    $data	= [
+                        'salida'				=> $departureTrans,
+                        'retorno'				=> $arrivalTrans,
+                        'referencia'			=> $datos['referencia'],
+                        'producto'				=> $plan,
+                        'destino'				=> $datos['pais_destino'],
+                        'origen'				=> strtoupper($datos['pais_origen']),
+                        'nombre_contacto'		=> $datos['nombre_contacto'],
+                        'telefono_contacto'		=> $datos['telefono_contacto'],
+                        'agencia'				=> $idAgency,
+                        'nombre_agencia'		=> $nameAgency,
+                        'vendedor'				=> $userAgency,
+                        'programaplan'			=> $idCategoryPlan,
+                        'family_plan'			=> $familyPlan,
+                        'fecha'					=> 'now()',
+                        'cantidad'				=> $datos['pasajeros'],
+                        'status'				=> $status,
+                        'origin_ip'				=> $_SERVER['REMOTE_ADDR'],
+                        'email_contacto'		=> $datos['email_contacto'],
+                        'comentarios'			=> $datos['consideraciones_generales'],
+                        'tiempo_x_producto'		=> $daysByPeople,
+                        'comentario_medicas'	=> $datos['consideraciones_generales'],
+                        'id_emision_type'		=> '2',
+                        'validez'				=> '1',
+                        'hora'					=> 'now()',
+                        'tasa_cambio'			=> $exchangeRate,
+                        'alter_cur'				=> $coin,
+                        'territory'				=> $datos['pais_destino'],
+                        'total_tax'				=> $dataQuoteGeneral[0]['total_tax1'] + $dataQuoteGeneral[0]['total_tax2'],
+                        'total_tax_mlc'			=> ($dataQuoteGeneral[0]['total_tax1'] + $dataQuoteGeneral[0]['total_tax2']) * $exchangeRate,
+                        'lang'					=> $language,
+                        'procedencia_funcion'	=> '0',
+                        'prefijo'               => $prefix,
+                        'tasa_cambio_recibida'      => $tasa_cambio_recibida
+                    ];
                     //En este punto, revisamos los guarnin
 
-                    return $dataUpgrade;
+                    //Luego, procedemos a los pasos finales de la función
+
+                    $DataWta = $this->GetId('FT');
+                    $OrderId =  $this->getLastIdOrder();
+                    $WtaopsId = $DataWta['order'];
+                    //$WtaopsBen= $DataWta['beneficiary'];
+                    $Id = (($WtaopsId > $OrderId) ? $WtaopsId : $OrderId) + 1;
+                    //$beneficiary = (($WtaopsBen > $BeneficiarieId)?$WtaopsBen:$BeneficiarieId)+1;
+
+                    if ($individualOrder == 'Y' && $datos['pasajeros'] > 1) {
+                        for ($i = 0; $i < $datos['pasajeros']; $i++) {
+                            $data['id'] =  $Id;
+                            $data['codigo'] = $code . '-' . $i;
+                            $data['total'] 	=  $pricePassenger[$i];
+                            $data['neto_prov'] 	=  $costPassenger[$i];
+                            $data['total_mlc'] 	=  $pricePassenger[$i] * $exchangeRate;
+                            $data['neto_prov_mlc'] 	=  $costPassenger[$i] * $exchangeRate;
+                            if ($issue == 4) {
+                                $data['status'] = 9;
+                            }
+                            $idOrden[]	= $this->insertDynamic($data, 'orders');
+                            $BeneficiarieId = $this->getLastIdBeneficiarie();
+                            $idben[$i] = $BeneficiarieId + $i + 1;
+
+                            $addBeneficiaries[$i]	= $this->addBeneficiares($datos['documentos'][$i], $birthDayPassengerTrans[$i], $datos['nombres'][$i], $datos['apellidos'][$i], $datos['telefonos'][$i], $datos['correos'][$i], $idOrden[$i], '1', $pricePassenger[$i], $costPassenger[$i], $datos['condiciones_med'], $pricePassenger[$i] * $exchangeRate, $costPassenger[$i] * $exchangeRate, 0, 0, $prefix, $idben[$i]);
+                            $link[] = LINK_REPORTE_VENTAS . $data['codigo'] . "&selectLanguage=$language&broker_sesion=$idAgency";
+                        }
+                    } else {
+                        $data['id'] =  $Id;
+                        $data['codigo'] =  $code;
+                        $data['total'] 	=  $price;
+                        $data['neto_prov'] 	=  $cost;
+                        $data['total_mlc'] 	=  $price * $exchangeRate;
+                        $data['neto_prov_mlc'] 	=  $cost * $exchangeRate;
+                        if ($issue == 4) {
+                            $data['status'] = 9;
+                        }
+                        $link = LINK_REPORTE_VENTAS . $code . "&selectLanguage=$language&broker_sesion=$idAgency";
+                        $idOrden	= $this->insertDynamic($data, 'orders');
+                        //$idben = $beneficiary;
+                        $BeneficiarieId = $this->getLastIdBeneficiarie();
+                        for ($i = 0; $i < $datos['pasajeros']; $i++) {
+
+                            $idben[$i] = $BeneficiarieId + $i + 1;
+                            $addBeneficiaries[$i]	= $this->addBeneficiares($datos['documentos'][$i], $birthDayPassengerTrans[$i], $datos['nombres'][$i], $datos['apellidos'][$i], $datos['telefonos'][$i], $datos['correos'][$i], $idOrden, '1', $pricePassenger[$i], $costPassenger[$i], $datos['condiciones_med'], $pricePassenger[$i] * $exchangeRate, $costPassenger[$i] * $exchangeRate, 0, 0, $prefix, $idben[$i]);
+                        }
+                    }
+
+                    //Pasos finales
+
+                    $issue = '1';
+
+                    if (!empty($addBeneficiaries) && !empty($idOrden)) {
+                        if (is_array($idOrden)) {
+                            for ($i = 0; $i < count($idOrden); $i++) {
+                                $this->addCommission($idAgency, $idCategoryPlan, $price, $idOrden[$i]);
+                            }
+                        } else {
+                            $this->addCommission($idAgency, $idCategoryPlan, $price, $idOrden);
+                        }
+            
+                        if (count($idUpgrade) > 0) {
+                            foreach ($idUpgrade as $value) {
+                                $this->updateDynamic('orders_raider', 'id', $value, ['id_orden' => $idOrden]);
+                            }
+                        }
+            
+                        switch ($issue) {
+                            case '1':
+            
+                                if ($adjustedExchangeRate and $coin != 'USD') {
+            
+                                    if (!empty($emptyContact)) {
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "valor"			=> $price,
+                                            "ruta"			=> $link,
+                                            "documento"		=> implode(",", $datos['documentos']),
+                                            "referencia"	=> $datos['referencia'],
+                                            "El valor de cambio fue ajustado a:" => number_format($exchangeRate, 2),
+                                            $contact       => $emptyContact
+                                        ];
+                                    } else {
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "valor"			=> $price,
+                                            "ruta"			=> $link,
+                                            "documento"		=> implode(",", $datos['documentos']),
+                                            "referencia"	=> $datos['referencia'],
+                                            "El valor de cambio fue ajustado a:" => number_format($exchangeRate, 2)
+                                        ];
+                                    }
+                                } elseif ($adjustedExchangeRateMax) {
+            
+                                    if (!empty($emptyContact)) {
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "valor"			=> $price,
+                                            "ruta"			=> $link,
+                                            "documento"		=> implode(",", $datos['documentos']),
+                                            "referencia"	=> $datos['referencia'],
+                                            "La tasa cambiaria reportada " . number_format($exchangeRate, 2) . " , excede con respecto a la tasa de cambio nuestra " . number_format($exchangeRateOur, 2) . " en" => $difPorcentajeExchange . "%",
+                                            $contact       => $emptyContact
+                                        ];
+                                    } else {
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "valor"			=> $price,
+                                            "ruta"			=> $link,
+                                            "documento"		=> implode(",", $datos['documentos']),
+                                            "referencia"	=> $datos['referencia'],
+                                            "La tasa cambiaria reportada " . number_format($exchangeRate, 2) . " , excede con respecto a la tasa de cambio nuestra " . number_format($exchangeRateOur, 2) . " en" => $difPorcentajeExchange . "%"
+                                        ];
+                                    }
+                                } else {
+                                    if (!empty($emptyContact)) {
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "valor"			=> $price,
+                                            "ruta"			=> $link,
+                                            "documento"		=> implode(",", $datos['documentos']),
+                                            "referencia"	=> $datos['referencia'],
+                                            $contact       => $emptyContact
+                                        ];
+                                    } else {
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "valor"			=> $price,
+                                            "ruta"			=> $link,
+                                            "documento"		=> implode(",", $datos['documentos']),
+                                            "referencia"	=> $datos['referencia']
+                                        ];
+                                    }
+                                }
+            
+                                $this->sendOrder($emailPassenger[0], $idOrden, $language, $language);
+                                break;
+                            case '2':
+                                if ($adjustedExchangeRate and $coin != 'USD') {
+            
+                                    if (!empty($emptyContact)) {
+            
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "valor"			=> $price,
+                                            "referencia"	=> $datos['referencia'],
+                                            "El valor de cambio fue ajustado a:" => number_format($exchangeRate, 2),
+                                            $contact       => $emptyContact
+                                        ];
+                                    } else {
+            
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "valor"			=> $price,
+                                            "referencia"	=> $datos['referencia'],
+                                            "El valor de cambio fue ajustado a:" => number_format($exchangeRate, 2)
+                                        ];
+                                    }
+                                } elseif ($adjustedExchangeRateMax) {
+            
+                                    if (!empty($emptyContact)) {
+            
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "valor"			=> $price,
+                                            "referencia"	=> $datos['referencia'],
+                                            "La tasa cambiaria reportada " . number_format($exchangeRate, 2) . " , excede con respecto a la tasa de cambio nuestra " . number_format($exchangeRateOur, 2) . " en" => $difPorcentajeExchange . "%",
+                                            $contact       => $emptyContact
+                                        ];
+                                    } else {
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "valor"			=> $price,
+                                            "referencia"	=> $datos['referencia'],
+                                            "La tasa cambiaria reportada " . number_format($exchangeRate, 2) . " , excede con respecto a la tasa de cambio nuestra " . number_format($exchangeRateOur, 2) . " en" => $difPorcentajeExchange . "%"
+                                        ];
+                                    }
+                                } else {
+            
+                                    if (!empty($emptyContact)) {
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "valor"			=> $price,
+                                            "referencia"	=> $datos['referencia'],
+                                            $contact       => $emptyContact
+                                        ];
+                                    } else {
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "valor"			=> $price,
+                                            "referencia"	=> $datos['referencia']
+                                        ];
+                                    }
+                                }
+                                break;
+                            case '3':
+                                if ($adjustedExchangeRate and $coin != 'USD') {
+            
+                                    if (!empty($emptyContact)) {
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "documento"		=> implode(",", $datos['documentos']),
+                                            "referencia"	=> $datos['referencia'],
+                                            "El valor de cambio fue ajustado a:" => number_format($exchangeRate, 2),
+                                            $contact       => $emptyContact
+                                        ];
+                                    } else {
+            
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "documento"		=> implode(",", $datos['documentos']),
+                                            "referencia"	=> $datos['referencia'],
+                                            "El valor de cambio fue ajustado a:" => number_format($exchangeRate, 2)
+                                        ];
+                                    }
+                                } elseif ($adjustedExchangeRateMax) {
+                                    if (!empty($emptyContact)) {
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "documento"		=> implode(",", $datos['documentos']),
+                                            "referencia"	=> $datos['referencia'],
+                                            "La tasa cambiaria reportada " . number_format($exchangeRate, 2) . " , excede con respecto a la tasa de cambio nuestra " . number_format($exchangeRateOur, 2) . " en" => $difPorcentajeExchange . "%",
+                                            $contact       => $emptyContact
+                                        ];
+                                    } else {
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "documento"		=> implode(",", $datos['documentos']),
+                                            "referencia"	=> $datos['referencia'],
+                                            "La tasa cambiaria reportada " . number_format($exchangeRate, 2) . " , excede con respecto a la tasa de cambio nuestra " . number_format($exchangeRateOur, 2) . " en" => $difPorcentajeExchange . "%"
+                                        ];
+                                    }
+                                } else {
+                                    if (!empty($emptyContact)) {
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "documento"		=> implode(",", $datos['documentos']),
+                                            "referencia"	=> $datos['referencia'],
+                                            $contact       => $emptyContact
+                                        ];
+                                    } else {
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "documento"		=> implode(",", $datos['documentos']),
+                                            "referencia"	=> $datos['referencia']
+                                        ];
+                                    }
+                                }
+            
+                                $this->sendOrder($emailPassenger[0], $idOrden, $language, $language);
+                                break;
+                            default:
+                                $this->sendOrder($emailPassenger[0], $idOrden, $language, $language);
+                                if ($adjustedExchangeRate and $coin != 'USD') {
+            
+                                    if (!empty($emptyContact)) {
+            
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "valor"			=> $price,
+                                            "ruta"			=> $link,
+                                            "documento"		=> implode(",", $datos['documentos']),
+                                            "referencia"	=> $datos['referencia'],
+                                            "El valor de cambio fue ajustado a:" => number_format($exchangeRate, 2),
+                                            $contact       => $emptyContact
+                                        ];
+                                    } else {
+            
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "valor"			=> $price,
+                                            "ruta"			=> $link,
+                                            "documento"		=> implode(",", $datos['documentos']),
+                                            "referencia"	=> $datos['referencia'],
+                                            "El valor de cambio fue ajustado a:" => number_format($exchangeRate, 2)
+                                        ];
+                                    }
+                                } elseif ($adjustedExchangeRateMax) {
+            
+                                    if (!empty($emptyContact)) {
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "valor"			=> $price,
+                                            "ruta"			=> $link,
+                                            "documento"		=> implode(",", $datos['documentos']),
+                                            "referencia"	=> $datos['referencia'],
+                                            "La tasa cambiaria reportada " . number_format($exchangeRate, 2) . " , excede con respecto a la tasa de cambio nuestra " . number_format($exchangeRateOur, 2) . " en" => $difPorcentajeExchange . "%",
+                                            $contact       => $emptyContact
+            
+                                        ];
+                                    } else {
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "valor"			=> $price,
+                                            "ruta"			=> $link,
+                                            "documento"		=> implode(",", $datos['documentos']),
+                                            "referencia"	=> $datos['referencia'],
+                                            "La tasa cambiaria reportada " . number_format($exchangeRate, 2) . " , excede con respecto a la tasa de cambio nuestra " . number_format($exchangeRateOur, 2) . " en" => $difPorcentajeExchange . "%"
+            
+                                        ];
+                                    }
+                                } else {
+            
+                                    if (!empty($emptyContact)) {
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "valor"			=> $price,
+                                            "ruta"			=> $link,
+                                            "documento"		=> implode(",", $datos['documentos']),
+                                            "referencia"	=> $datos['referencia'],
+                                            $contact       => $emptyContact
+                                        ];
+                                    } else {
+                                        return [
+                                            "status"		=> "OK",
+                                            "codigo"		=> $code,
+                                            "valor"			=> $price,
+                                            "ruta"			=> $link,
+                                            "documento"		=> implode(",", $datos['documentos']),
+                                            "referencia"	=> $datos['referencia']
+                                        ];
+                                    }
+                                }
+            
+                                break;
+                        }
+                    }
+
                     /**
                      * Lo mas probable es que esta sea la función mas larga
                      * pero una vez terminada, es un copiar y pegar
@@ -326,26 +716,190 @@
                 
                 case 'report_order':
                     # code...
+                    /**
+                     * Diferencias
+                     * 1- El código lo establece el usuario
+                     * 2- No se añaden upgrades mediante este método
+                     * 3- no se provee emision
+                     * 4- se provee el costo
+                     */
                     break;
                 
                 case 'report_order_master':
                     # code...
                     break;
 
-                case 'add_upgrade':
-                    # code...
+                case 'add_upgrade': 
+                    /**
+                     * Recibimos:
+                     * Código de la orden
+                     * Upgrade
+                     */
+                    $data = [
+                        'codigo' => $datos['codigo'],
+                        'upgrades' => $datos['upgrade'],
+                        'api' => $datos['token']
+                    ];
+
+                    return $this->addUpgrades($data,true);
+
                     break;
                 
                 case 'request_cancellation':
-                    # code...
+                    /**
+                     * Este código es bastante sencillo
+                     * solo hay que revisar que todas las referencias esten bien
+                     */
+                    
+                    $api		= $datos['token'];
+                    $code		= $datos['codigo'];
+                    $notify		= $datos['notificar'];
+                    $procedenciaBack = $datos['procedenciaBack'];
+                    if (!$procedenciaBack) {
+                        $procedenciaBack = '1';
+                    }
+
+                    $dataValida	= [
+                        '6037'	=> !(empty($code) and empty($notify)),
+                        '6023'	=> $code,
+                        '9089'	=> $notify,
+                        '4050'	=> !($notify > 2 || $notify < 1)
+                    ];
+
+                    $validatEmpty	= $this->validatEmpty($dataValida);
+                    if (!empty($validatEmpty)) {
+                        return $validatEmpty;
+                    }
+                
+                    $datAgency 	= $this->datAgency($api);
+                    //$language	= $this->arrLanguage[$datAgency[0]['language_id']];
+                    $idAgency	= $datAgency[0]['id_broker'];
+                    $idUser		= $datAgency[0]['user_id'];
+                    $isoCountry = $datAgency[0]['id_country'];
+
+                    $verifyVoucher	= $this->verifyVoucher($code, $idUser, $isoCountry, 'ADD');
+
+                    if ($verifyVoucher) {
+                        return $verifyVoucher;
+                    }
+
+                    $dataStatus			= $this->selectDynamic('', 'orders', "codigo='$code'", array("status"));
+                    $statusOrder     	= $dataStatus[0]['status'];
+                    $today 	= date('Y-m-d');
+                    
+                    if ($statusOrder == 1) {
+
+                        if ($procedenciaBack == '2') {
+                            return $_respuesta->getError(9137);
+                        } else {
+
+                            $data	= [
+                                'status'	=>	'5',
+                                'f_anulado'	=>	$today
+                            ];
+                        }
+                    } else {
+                        return $_respuesta->getError(1021);
+                    }
+                    
+                    $cancelOrder	= $this->updateDynamic('orders', 'codigo', $code, $data);
+                    /*
+                    * 
+                    if ($notify == '2') {
+                        $this->sendMailCancel($code, $idAgency, $language);
+                    }
+                     *
+                     * Esta opción no será implementada de momento para agilizar la salida del webservices
+                     * 
+                    */
+                    if ($cancelOrder) {
+                        return [
+                            "status" => "OK"
+                        ];
+                    }
+
                     break;
 
                 case 'request_upgrade_cancellation':
-                    # code...
+                    /**
+                     * WEEEEEEEEEEEE ARE THE CHAMPIONS
+                     * MY FRIEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEND
+                     */
+
+                    $api			= $datos['token'];
+                    $code			= $datos['codigo'];
+                    $upgrade		= $datos['upgrades'];
+                    $procedenciaBack = $datos['procedenciaBack'];
+                    if (!$procedenciaBack) {
+                        $procedenciaBack = '1';
+                    }
+            
+            
+                    //$idOrden		= $this->selectDynamic(['status'=>'1'],'orders',"codigo='$code'",array("id"))[0]['id'];
+                    $idOrden		= $this->selectDynamic('', 'orders', "codigo='$code'", array("id"))[0]['id'];
+                    $status		    = $this->selectDynamic('', 'orders', "id='$idOrden'", array("status"))[0]['status'];
+                    
+                    $data			= [
+                        'value_raider',
+                        'cost_raider'
+                    ];
+                    $dataRaider     = $this->selectDynamic(['id_raider' => $upgrade], 'orders_raider', "id_orden='$idOrden'", $data);
+            
+                    $dataValida		= [
+                        '6037'	=> !(empty($code) and empty($upgrade)),
+                        '6023'	=> $code,
+                        '6039'	=> $upgrade,
+                        '1020'	=> $idOrden,
+                        '9134'  => ($status != 1 && $status != 9) ? 0 : 1,
+                        '6046'	=> count($dataRaider),
+                        '9137'	=> ($procedenciaBack == '2'  && $status != '9') ? 0 : 1,
+                    ];
+            
+                    $validatEmpty	= $this->validatEmpty($dataValida);
+                    if (!empty($validatEmpty)) {
+                        return $validatEmpty;
+                    }
+                    
+                    $dataOrder			= $this->getOrderData($code);
+                    $datAgency			= $this->datAgency($api);
+            
+                    $idOrden			= $dataOrder['id'];
+                    $price 				= $dataOrder['total'];
+                    $cost	 			= $dataOrder['neto_prov'];
+                    $status	 			= $dataOrder['status'];
+                    $idUser 			= $datAgency[0]['user_id'];
+                    $plan				= $dataOrder['producto'];
+                    $priceRaider		= $dataRaider[0]['value_raider'];
+                    $costRaider			= $dataRaider[0]['cost_raider'];
+                    $idCountry 			= $datAgency[0]['id_country'];
+            
+            
+                    $verifyVoucher 		= $this->verifyVoucher($code, $idUser, $idCountry, 'ADD');
+            
+                    if ($verifyVoucher) {
+                        return $verifyVoucher;
+                    }
+            
+                    $data	= [
+                        'total'		=> $price - $priceRaider,
+                        'neto_prov'	=> $cost - $costRaider
+                    ];
+            
+                    $updatePriceOrder 	= $this->updateDynamic('orders', 'codigo', $code, $data);
+                    $deleteUpgradeOrder	= $this->deleteUpgradeOrder($idOrden, $upgrade);
+            
+                    if ($updatePriceOrder && $deleteUpgradeOrder) {
+                        return [
+                            'voucher' 			=> $code,
+                            'valor_descuento' 	=> $priceRaider,
+                            'pricer_order' 		=> $price - $priceRaider
+                        ];
+                    }
                     break;
 
                 default:
                     # code...
+                    
                     break;
             }
         }
@@ -406,8 +960,7 @@
             return $this->_SQL_tool($this->INSERT, __METHOD__,$query);  
         }
 
-        private function updateDynamic($table,$field,$fieldwere,$data,$and){
-        
+        public function updateDynamic($table,$field,$fieldwere,$data,$and){
             (!empty($table))    ?: $table;
             (!empty($field))    ?: $field;
             (!empty($fieldwere))?: $fieldwere;
@@ -1105,7 +1658,7 @@
     
             if ($source) {
                 $dataOrder			= $this->getOrderData($code);
-                $plan 				= $dataOrder['plan'];
+                $plan 				= $dataOrder['producto'];
                 $idOrden			= $dataOrder['id'];
                 $status             = $dataOrder['status'];
     
@@ -1149,9 +1702,9 @@
     
                 $id 		= $data['upgrades'][$i];
                 $document 	= $data['upgrades'][$i]['documento'];
-    
+
                 $typeUpgrade	= $this->valUpgrades($plan, $id);
-    
+                
                 if (!empty($typeUpgrade)) {
                     if ($typeUpgrade == 2) {
                         if (empty($document)) {
@@ -1175,8 +1728,8 @@
                                     'id'	=> 0
                                 ];
                             } else {
-    
-                                $pricePassengers = $this->dataBeneficiaries($code, '', $document);
+                                
+                                $pricePassengers = $this->dataBeneficiaries($code, '', $data['documentos']);
                                 if (!empty($pricePassengers['Error_Code'])) {
                                     return $pricePassengers;
                                 } else {
@@ -1193,7 +1746,7 @@
             }
     
     
-    
+            
             $priceUpgrades	= 0;
             $costUpgrades 	= 0;
     
@@ -1400,7 +1953,8 @@
         }
 
         public function dataBeneficiaries($idOrden, $status = 1, $document)
-        {
+        {   
+            $_response = new response;
             $query = "SELECT               
                 beneficiaries.id,
                 beneficiaries.id_orden,
@@ -1425,10 +1979,11 @@
                 $query .= " AND ben_status = '$status' ";
             }
             if (!empty($document)) {
-                $query .= " AND documento IN ('$document') ";
+                $newdoc = implode(', ', $document);
+                $query .= " AND documento IN ('$newdoc') ";
             }
             $response = $this->_SQL_tool($this->SELECT, __METHOD__, $query);
-            return ($response) ? $response : $this->getError('9028');
+            return ($response) ? $response : $_response->getError('9028');
         }
 
         public function dataUpgrades($plan, $language, $price, $daysByPeople, $numberPassengers, $upgrade, $pricePassengers, $cost, $costPax)
@@ -1559,6 +2114,150 @@
                 'neto_prov'     => $totaCost,
             ];
             return $this->updateDynamic('orders', 'codigo', $codigo_voucher, $data);
+        }
+
+        public function GetId($prefix)
+        {
+            $response = apiClientWta::initApi()
+                ->method("GET")
+                ->functions('getLastIdOrder')
+                ->parameters(['prefijo' => $prefix])->callApi();
+            return $response['RESPONSE'];
+        }
+
+        public function getLastIdOrder()
+        {
+            $query = "SELECT MAX(id) id FROM orders";
+            return $this->selectDynamic('', '', '', '', $query)[0]['id'];
+        }
+
+        public function getLastIdBeneficiarie()
+        {
+            $query = "SELECT MAX(id) id_beneficiarie FROM beneficiaries";
+            return $this->selectDynamic('', '', '', '', $query)[0]['id_beneficiarie'];
+        }
+        public function addBeneficiares($documentPassenger, $birthDayPassenger, $namePassenger, $lastNamePassenger, $phonePassenger, $emailPassenger, $idOrden, $status_ben, $price, $cost, $observacion, $precio_local, $costo_local, $tax_beneficiario, $tax_local_beneficiario, $prefix, $idben)
+        {
+
+            $data   =
+                [
+                    'documento'         => $documentPassenger,
+                    'nacimiento'        => $birthDayPassenger,
+                    'nombre'            => $namePassenger,
+                    'apellido'          => $lastNamePassenger,
+                    'telefono'          => $phonePassenger,
+                    'email'             => $emailPassenger,
+                    'id_orden'          => $idOrden,
+                    'ben_status'        => '1',
+                    'precio_vta'        => $price,
+                    'precio_cost'       => $cost,
+                    'condicion_medica'  => $observacion,
+                    'precio_vta_mlc'    => $precio_local,
+                    'precio_cost_mlc'   => $costo_local,
+                    'tax_total'         => $tax_beneficiario,
+                    'tax_total_mlc'     => $tax_local_beneficiario,
+                    'prefijo'           => $prefix,
+                    'id'                => $idben,
+                    'total_neto_benefit'       => $price,
+                    'neto_cost'       => $cost
+
+                ];
+
+            return $this->insertDynamic($data, 'beneficiaries');
+        }
+
+        public function addCommission($idAgency, $idPlanCategory, $price, $idOrden)
+        {
+            $agencyLevel           = $this->Get_Broker_Nivel($idAgency);
+            $porcentageCommission  = 0;
+            for ($i = $agencyLevel['nivel']; $i > 0; $i--) {
+                $byCommission           = $this->AgenciaNivelCategoriaComision($idAgency, $idPlanCategory);
+                $porcentage             = $byCommission - $porcentageCommission;
+                $valueCommission        = ($porcentage > 0) ? (($porcentage / 100) * $price) : 0;
+
+                $this->Add_order_Comision($idOrden, $idAgency, $porcentage, $valueCommission);
+                $porcentageCommission   = $byCommission;
+                $agencyLevel            = $this->Get_Broker_Nivel($idAgency);
+                $idAgency               = $agencyLevel['parent'];
+            }
+        }
+
+        public function Get_Broker_Nivel($idbroker)
+        {
+            $query = "SELECT broker_nivel.id, broker_nivel.id_broker,  broker_nivel.nivel, broker_nivel.parent FROM broker_nivel WHERE id_broker ='$idbroker'";
+            $response = $this->_SQL_tool($this->SELECT_SINGLE, __METHOD__, $query);
+            if ($response) {
+                $arrResult['id'] = $response['id'];
+                $arrResult['nivel'] = $response['nivel'];
+                $arrResult['parent'] = $response['parent'];
+                $arrResult['id_broker'] = $response['id_broker'];
+            }
+            return ($arrResult);
+        }
+
+        public function AgenciaNivelCategoriaComision($id_broker, $categoria)
+        {
+            $query = "SELECT
+                    porcentaje
+                FROM
+                    commissions
+                WHERE
+                    commissions.id_categoria = '$categoria'
+                AND id_agencia = '$id_broker'";
+            $response = $this->_SQL_tool($this->SELECT_SINGLE, __METHOD__, $query);
+            return isset($response['porcentaje']) ? $response['porcentaje'] : 0;
+        }
+
+        public function Add_order_Comision($idorden, $idbroker, $porcentaje, $montocomision)
+        {
+            $data   = [
+                'id_order'          => $idorden,
+                'id_broker'         => $idbroker,
+                'porcentage'        => $porcentaje,
+                'monto_comision'    => $montocomision,
+                'tr_date'           => 'NOW()'
+            ];
+            return $this->insertDynamic($data, 'order_comision');
+        }
+
+        /*
+
+        public function sendMailCancel($code, $agency, $language, $templateMail = 'VOUCHER_CANCEL')
+        {
+            global $CORE_email;
+            $logo               = $this->getLogoMaster($agency);
+            $dataPassenger      = $this->getBeneficiariesByVoucher($code);
+            $emailPassenger     = array_map(function ($value) {
+                return $value['email'];
+            }, $dataPassenger);
+            $today              = date("d-m-Y");
+            $variables_email    = [
+                "##voucher##"   => stripslashes(strip_tags($code)),
+                "##hoy##"       => stripslashes(strip_tags($today)),
+                "##system##"    => stripslashes(strip_tags(SYSTEM_NAME)),
+                "##logo##"      => $logo
+            ];
+
+            foreach ($variables_email as $varstr => $varvalue) {
+                $CORE_email->setVariable($varstr, $varvalue);
+            }
+            $from = [
+                'name'  => EMAIL_FROM_NAME,
+                'email' => EMAIL_FROM
+            ];
+            $CORE_email->send($from, $to = $emailPassenger, $templateMail, $language);
+        }
+        Esta opción se habilitará en pruebas futuras
+        */
+        public function deleteUpgradeOrder($idorden, $idraider)
+        {
+            $query = "DELETE 
+                FROM
+                    orders_raider
+                WHERE
+                    id_orden    = '$idorden'
+                AND id_raider   = '$idraider'";
+            return $this->_SQL_tool($this->DELETE, __METHOD__, $query);
         }
     }
 ?>
