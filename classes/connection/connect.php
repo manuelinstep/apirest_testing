@@ -63,27 +63,6 @@ class connect {
         return $this->convertirUTF8($resultArray);
     }
 
-    public function setLogConsultas(){
-        /**
-         * Se ejecuta cada vez que haya un movimiento EXITOSO en la DB
-         */
-    }
-
-    public function registerAppError(){
-        /**
-         * AppError registrará todos los errores que hagan que falle la DB
-         * Algo difícil de implementar
-         */
-    }
-
-    public function save_twebservices(){
-        /**
-         * Aqui se guardará todo lo referente a las transacciones de webservices
-         * Se ejecutará en todo momento EXCEPTUANDO cuando hayan errores 500
-         * Por tanto, no será dificil implementarlo
-         */
-    }
-
     //Esta función es para querys generales y nos indica cuantos rows han sido afectados
     public function nonQuery($sqlstr){
         $results = $this->conexion->query($sqlstr);
