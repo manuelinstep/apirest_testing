@@ -42,7 +42,7 @@
      * 9015 error cuando no hay resultados
      */
 
-    class information extends connect{
+    class information extends cls_dbtools{
         /**
          * La función get se encargara de recibir todas las solicitudes GET
          * y de redistribuirlas en las funciones
@@ -76,7 +76,7 @@
                      * sea igual a la IP guardada en la DB
                      * Se creara un método con el fin de revisar dichos parametros
                      */
-                    $checkToken = parent::checkToken($datos['token']);
+                    $checkToken = $this->checkToken($datos['token']);
                     /**
                      * Revisamos que el estatus sea 1, que la IP sea la actual y que el token exista
                      * En todo caso, el token no devolvería nada si no fuese igual al de la DB  
@@ -103,7 +103,8 @@
                 case "get_currencies":
 
                     //Solo verifica que el API KEY sea correcta
-                    $checkToken = parent::checkToken($datos['token']);
+                    
+                    $checkToken = $this->checkToken($datos['token']);
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         $response = $this->get_currencies();
                         return (!empty($response)) ? $response : $_respuesta->getError('9015');
@@ -116,7 +117,7 @@
                 case "get_countries":
 
                     //Verifica el API KEY y que haya un lenguaje, el cual será spa o eng
-                    $checkToken = parent::checkToken($datos['token']);
+                    $checkToken = $this->checkToken($datos['token']);
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         //Verificamos el lenguaje dentro del método
                         $response = ($datos['language'] == 'spa' or $datos['language'] == 'eng') ? $this->get_countries($datos['language']) : $_respuesta->getError('1030');
@@ -135,7 +136,7 @@
                      * De esta forma, para las consultas sencillas, solo pasamos el nombre de la tabla
                      * y los filtros necesarios para poder utilizarla
                      */
-                    $checkToken = parent::checkToken($datos['token']);
+                    $checkToken = $this->checkToken($datos['token']);
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         //Verificamos el lenguaje dentro del método
                         $response = $this->selectDynamic('', 'territory', "id_status='1'", ['id_territory', 'desc_small']);
@@ -151,7 +152,7 @@
                     
                     break;
                 case 'get_plans':
-                    $checkToken = parent::checkToken($datos['token']);
+                    $checkToken = $this->checkToken($datos['token']);
                     
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         //Verificamos el lenguaje dentro del método
@@ -173,7 +174,7 @@
                     /**
                      * Recibe el lenguaje y el plan
                      */
-                    $checkToken = parent::checkToken($datos['token']);
+                    $checkToken = $this->checkToken($datos['token']);
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         //Verificamos el lenguaje dentro del método
                         if(empty($datos['id_plan']))
@@ -199,7 +200,7 @@
                      * Recibe el plan y el país
                      */
 
-                    $checkToken = parent::checkToken($datos['token']);
+                    $checkToken = $this->checkToken($datos['token']);
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         //Ahora verificamos el plan y el país
                         $verify = $this->get_plans('',$datos['id_plan'],'', false);
@@ -260,7 +261,7 @@
                     /**
                      * Obtenemos los lenguajes de la plataforma, solo requerimos el token
                      */
-                    $checkToken = parent::checkToken($datos['token']);
+                    $checkToken = $this->checkToken($datos['token']);
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         $response = $this->selectDynamic('', 'languages', "languages.active = '1'", ['id', 'lg_id', 'name', 'short_name']);
                         if($response){
@@ -280,7 +281,7 @@
                      * -Token
                      * -Lenguaje
                      */
-                    $checkToken = parent::checkToken($datos['token']);
+                    $checkToken = $this->checkToken($datos['token']);
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         $response = (isset($datos['language'])) ? $this->dataPlanCategory($datos['language']) : $_respuesta->getError('6021') ;
                         if($response){
@@ -299,7 +300,7 @@
                     /**
                      * Recibimos, aparte del token, el id del plan y el lenguaje
                      */
-                    $checkToken = parent::checkToken($datos['token']);
+                    $checkToken = $this->checkToken($datos['token']);
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         $verify = $this->get_plans('',$datos['id_plan'],$datos['language'], true); //Verificamos que existe el plan master
                         if(isset($verify[0]['id'])){
@@ -325,7 +326,7 @@
                     break;
                 case 'get_upgrade':
                     //Requiere lenguaje y id del plan
-                    $checkToken = parent::checkToken($datos['token']);
+                    $checkToken = $this->checkToken($datos['token']);
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         $verify = $this->get_plans('',$datos['id_plan'],$datos['language'], true);
                         if(isset($verify[0]['id'])){
@@ -384,7 +385,7 @@
 
                 case 'country_restricted':
                     //Mismos de arriba, plan y lenguaje
-                    $checkToken = parent::checkToken($datos['token']);
+                    $checkToken = $this->checkToken($datos['token']);
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         $verify = $this->get_plans('',$datos['id_plan'],'', false); //Verificamos que existe el plan master
                         $dataCountryRestricted = ($verify['status']!='error') ? $this->dataCountryRestricted($datos['id_plan'],$datos['language']) : $_respuesta->getError('1050');
@@ -402,7 +403,7 @@
                 
                 case 'exchange_rate':
                     //obtiene codigo ISO del país y el lenguaje
-                    $checkToken = parent::checkToken($datos['token']);
+                    $checkToken = $this->checkToken($datos['token']);
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         $response = ($datos['iso_country']) ? $this->dataExchangeRate($datos['iso_country']) : $_respuesta->getError('3150');
                         return (!empty($response)) ? $response : $_respuesta->getError('5013');
@@ -417,7 +418,7 @@
                      * Mismo de la anterior, requiere iso y el lenguaje
                      * verificamos que existe el pais, luego, buscamos las ciudades
                      */
-                    $checkToken = parent::checkToken($datos['token']);
+                    $checkToken = $this->checkToken($datos['token']);
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         $verify = ($datos['iso_country']!='') ? $this->checkCountry($datos['iso_country'],$datos['language']) : null;
                         if($verify){
@@ -439,7 +440,7 @@
                      * DON'T STOP ME NOW
                      */
 
-                    $checkToken = parent::checkToken($datos['token']);
+                    $checkToken = $this->checkToken($datos['token']);
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         $verify = ($datos['iso_country']!='') ? $this->checkCountry($datos['iso_country'],$datos['language']) : null;
                         if($verify){
@@ -460,7 +461,7 @@
                      * iso state
                      * lenguaje
                      */
-                    $checkToken = parent::checkToken($datos['token']);
+                    $checkToken = $this->checkToken($datos['token']);
                     if($checkToken[0]['id_status'] == 1 && $checkToken[0]['ip_remote']==$_SERVER['REMOTE_ADDR']){
                         //Primero va datacountries, checkeamos lenguaje
                         if(!empty($datos['language'])){
@@ -552,7 +553,7 @@
             WHERE
                 orders.codigo ='$codigo'
             AND orders.agencia ='$id_agencia'";
-            $response = parent::obtenerDatos($query);
+            $response = $this->_SQL_tool($this->SELECT, __METHOD__, $query);
             if($response){
                 return $response;
             }else{
@@ -575,7 +576,7 @@
                         users.id = user_associate.id_user 
                       where 
                         users.id = '$id_user'";
-            $response = parent::obtenerDatos($query);
+            $response = $this->_SQL_tool($this->SELECT, __METHOD__, $query);
             if($response){
                 return $response;
             }else{
@@ -585,7 +586,7 @@
 
         private function get_currencies(){
             $query = "SELECT id_country, value_iso, desc_small FROM currency WHERE id_status = '1'";
-            $response = parent::obtenerDatos($query);
+            $response = $this->_SQL_tool($this->SELECT, __METHOD__, $query);
             if($response){
                 return $response;
             }else{
@@ -604,7 +605,7 @@
                         WHERE
                             countries_detail.language_id = '$language'
                         AND countries.c_status = 'Y'";
-            $response = parent::obtenerDatos($query);
+            $response = $this->_SQL_tool($this->SELECT, __METHOD__, $query);
             return $response;
         }
 
@@ -634,7 +635,7 @@
             if ($die) {
                 die($query);
             }
-            return parent::obtenerDatos($query);
+            return $this->_SQL_tool($this->SELECT, __METHOD__, $query);
         }
 
         private function get_plans($id_agencia, $plan, $language, $details = false){
@@ -945,7 +946,7 @@
                 }
             }
             $query = "INSERT INTO $table (" . implode(',', $arrFiels) . ") VALUES (" . implode(',', $arrValues) . ")";
-            return parent::nonQuery($query);
+            return $this->_SQL_tool($this->INSERT, __METHOD__,$query);
         }
         
         public function logsave($operacion,$request,$_response,$prefijo,$procedencia = '1',$token,$id_error,$num_voucher,$num_referencia,$idUser){
@@ -982,6 +983,16 @@
                 'id_user'           => ($idUser) ? $idUser : 0
             ];
             return $this->insertDynamic($data, 'trans_all_webservice');
+        }
+
+        public function checkToken($token){
+            $query = "SELECT api_key, ip_remote, id_status, id FROM users WHERE api_key = '$token'";
+            $resp = $this->selectDynamic('', '', '', '', $query);
+            if($resp){
+                return $resp;
+            }else{
+                return 0;
+            }
         }
     }
 ?>

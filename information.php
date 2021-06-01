@@ -1,10 +1,11 @@
 <?php 
+    require_once("core.lib.php");
     require_once("classes/response.class.php");
     require_once("classes/information.class.php");
 
     $_respuestas = new response;
     $_information = new information;
-
+    $here = "we go";
     if (!function_exists('getallheaders')) {
         function getallheaders() {
         $headers = [];
@@ -33,7 +34,7 @@
 
                 $getBody = file_get_contents("php://input"); 
             }
-
+            
             $result = $_information->get($getBody);
             header('Content-Type: application/json');
             echo json_encode($result);

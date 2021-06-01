@@ -2,7 +2,7 @@
     require_once("connection/connect.php");
     require_once("response.class.php");
     
-    class auth extends connect{
+    class auth extends cls_dbtools{
 
         //Creamos el método login
         public function login($json){
@@ -16,7 +16,7 @@
                 $usuario = $datos['usuario'];
                 $password = $datos['password'];
                 //Todo esto se debe documentar correctamente
-                $password = parent::encrypt($password);
+                $password = $this->encrypt($password);
                 /**
                  * La variable datos se sobreescribe con los datos actuales
                  * del usuario traidos de la DB
@@ -66,7 +66,7 @@
         //Esta funcion se esta modificando en base a lo existente en las DB actuales
         private function obtenerDatosUsuario($correo){
             $query = "SELECT users,password,id_status,user_type,ip_remote,api_key,id FROM users WHERE users.users = '$correo'";
-            $datos = parent::obtenerDatos($query);
+            $datos = $this->_SQL_tool($this->SELECT, __METHOD__, $query);
             if(isset($datos[0]['users'])){
                 return $datos;
             }else{
@@ -92,7 +92,7 @@
                  */
                 $iduser = $datos[0]['id'];
                 $query = "UPDATE users SET api_key = '$token', ip_remote = '$ipuser' WHERE id = '$iduser'";
-                $verificar = parent::nonQuery($query);
+                $verificar = $this->_SQL_tool($this->UPDATE, __METHOD__, $query);
                 if($verificar >= 1){
                     return $token;
                 }else{
@@ -119,6 +119,73 @@
                 $str .= substr($chr, mt_rand(0, (strlen($chr))), 1);
             }
             return ($str);
+        }
+
+        public function encrypt($string){
+            $salt = "1NsT3pD3veL0p3R$";
+    
+            $password = hash('sha256', $salt.$string);
+    
+            return $password;
+            //Cambiada la encriptacion a la utlizada actualmente por las plataformas
+        }  
+
+        private function insertDynamic($data = array(), $table = null)
+        {
+            if (empty($table) || count($data) == 0) {
+                return false;
+            }
+            $arrFiels       = [];
+            $arrValues      = [];
+            $SQL_functions  = [
+                'NOW()'
+            ];
+            foreach ($data as $key => $value) {
+                $arrFiels[] = '`' . $key . '`';
+                if (in_array(strtoupper($value), $SQL_functions)) {
+                    $arrValues[] = strtoupper($value);
+                } else {
+                    $arrValues[] = '\'' . $value . '\'';
+                }
+            }
+            $query = "INSERT INTO $table (" . implode(',', $arrFiels) . ") VALUES (" . implode(',', $arrValues) . ")";
+            return $this->_SQL_tool($this->INSERT, __METHOD__,$query);
+        }
+
+        public function logsave($operacion,$request,$_response,$prefijo,$procedencia = '1',$token,$id_error,$num_voucher,$num_referencia,$idUser){
+            /**
+             * Datos que debemos recibir:
+             * -fecha
+             * -hora
+             * -IP
+             * -Operación realizada
+             * -Datos (facil)
+             * -Respuesta obtenida
+             * -Prefijo
+             * -procedencia ???
+             * -apikey
+             * -id_error
+             * -num_voucher
+             * -num_referencia
+             * -id_user
+             */
+
+            $data   = [
+                'fecha'             => 'NOW()',
+                'hora'              => 'NOW()',
+                'ip'                => $_SERVER['REMOTE_ADDR'],
+                'operacion'         => $operacion,
+                'datos'             => $request,
+                'respuesta'         => $_response,
+                'prefijo'           => $prefijo,
+                'procedencia'       => $procedencia,
+                'apikey'            => $token,
+                'id_error'          => $id_error,
+                'num_voucher'       => $num_voucher,
+                'num_referencia'    => $num_referencia,
+                'id_user'           => ($idUser) ? $idUser : 0
+            ];
+            return $this->insertDynamic($data, 'trans_all_webservice');
         }
     }
 ?>
