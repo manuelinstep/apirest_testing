@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Information - APIREST INSTEP</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../../css/theme.css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Information";
+    var mkdocs_page_input_path = "methods\\information.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> APIREST INSTEP</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../instalation/">Installation</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Methods</span></p>
+                <ul class="current">
+                    <li class="toctree-l1"><a class="reference internal" href="../auth/">Auth</a>
+                    </li>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Information</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#mandatory-fields">Mandatory fields</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#get_voucher">get_voucher</a>
+    </li>
+    </ul>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../quote/">Quote</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">APIREST INSTEP</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Methods &raquo;</li>
+        
+      
+    
+    <li>Information</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="information">Information</h1>
+<ul>
+<li>Type : GET</li>
+</ul>
+<p>This endpoint provides a method that gets the required operation as a field, the data received and aditional fields depend on which method is being specified by the user</p>
+<h2 id="mandatory-fields">Mandatory fields</h2>
+<pre><code class="language-JSON">{
+    &quot;token&quot; : &quot;123456789ABC&quot;
+}
+</code></pre>
+<p>The token provided in the aforementioned auth method is required every time this method is consumed</p>
+<ul>
+<li>It must be noted that, the name of the function specified in the following list is the parameter that must be sent
+with every call to the function to consume said method.</li>
+</ul>
+<h2 id="get_voucher">get_voucher</h2>
+<p>Returns all the information of an order</p>
+<h1 id="fields">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_voucher&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;codigo&quot; : &quot;EXMPL-1234&quot;
+}
+</code></pre>
+<h1 id="results">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;id&quot;: &quot;9568&quot;,
+        &quot;origen&quot;: &quot;CO&quot;,
+        &quot;destino&quot;: &quot;XX&quot;,
+        &quot;salida&quot;: &quot;2019-02-01&quot;,
+        &quot;retorno&quot;: &quot;2019-02-10&quot;,
+        &quot;programaplan&quot;: &quot;Viajes por día&quot;,
+        &quot;nombre_contacto&quot;: &quot;pruena&quot;,
+        &quot;email_contacto&quot;: &quot;prue@ilsols.com&quot;,
+        &quot;comentarios&quot;: &quot;&quot;,
+        &quot;telefono_contacto&quot;: &quot;57-845-545-5&quot;,
+        &quot;producto&quot;: &quot;1745&quot;,
+        &quot;agencia&quot;: &quot;2267&quot;,
+        &quot;nombre_agencia&quot;: &quot;Fast Travel Assistance&quot;,
+        &quot;total&quot;: &quot;33.800&quot;,
+        &quot;codigo&quot;: &quot;FA-420BEA&quot;,
+        &quot;fecha&quot;: &quot;2018-12-05&quot;,
+        &quot;vendedor&quot;: &quot;10702&quot;,
+        &quot;cantidad&quot;: &quot;1&quot;,
+        &quot;status&quot;: &quot;3&quot;,
+        &quot;des_status&quot;: &quot;Expirado&quot;,
+        &quot;es_emision_corp&quot;: &quot;0&quot;,
+        &quot;origin_ip&quot;: &quot;190.43.20.124&quot;,
+        &quot;alter_cur&quot;: &quot;0&quot;,
+        &quot;tasa_cambio&quot;: &quot;0.000&quot;,
+        &quot;family_plan&quot;: &quot;no&quot;,
+        &quot;referencia&quot;: &quot;&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes">Common Error Codes</h1>
+<ul>
+<li><code>1005</code> : Invalid Token</li>
+<li><code>9015</code> : No results</li>
+</ul>
+<h2 id="get_currencies">get_currencies</h2>
+<p>Returns all the currencies stored in the database</p>
+<h1 id="fields_1">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_currencies&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;
+}
+</code></pre>
+<h1 id="results_1">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;id_country&quot;: &quot;AD&quot;,
+        &quot;value_iso&quot;: &quot;AFN&quot;,
+        &quot;desc_small&quot;: &quot;Afghani&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;6&quot;,
+        &quot;value_iso&quot;: &quot;ALL&quot;,
+        &quot;desc_small&quot;: &quot;Lek&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;60&quot;,
+        &quot;value_iso&quot;: &quot;DZD&quot;,
+        &quot;desc_small&quot;: &quot;Algerian Dinar&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;12&quot;,
+        &quot;value_iso&quot;: &quot;USD&quot;,
+        &quot;desc_small&quot;: &quot;US Dollar&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;AD&quot;,
+        &quot;value_iso&quot;: &quot;EUR&quot;,
+        &quot;desc_small&quot;: &quot;Euro&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;9&quot;,
+        &quot;value_iso&quot;: &quot;AOA&quot;,
+        &quot;desc_small&quot;: &quot;Kwanza&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;5&quot;,
+        &quot;value_iso&quot;: &quot;XCD&quot;,
+        &quot;desc_small&quot;: &quot;East Caribbean Dollar&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;10&quot;,
+        &quot;value_iso&quot;: &quot;N/A&quot;,
+        &quot;desc_small&quot;: &quot;No universal currency&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;4&quot;,
+        &quot;value_iso&quot;: &quot;XCD&quot;,
+        &quot;desc_small&quot;: &quot;East Caribbean Dollar&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;VE&quot;,
+        &quot;value_iso&quot;: &quot;VEF&quot;,
+        &quot;desc_small&quot;: &quot;Bolivar Fuerte&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;DZ&quot;,
+        &quot;value_iso&quot;: &quot;ADEZ&quot;,
+        &quot;desc_small&quot;: &quot;prueba&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;AL&quot;,
+        &quot;value_iso&quot;: &quot;AL&quot;,
+        &quot;desc_small&quot;: &quot;testing&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_1">Common Error Codes</h1>
+<ul>
+<li><code>1005</code> : Invalid Token</li>
+<li><code>9015</code> : No results</li>
+</ul>
+<h2 id="get_countries">get_countries</h2>
+<p>Returns all the currently stored countries, depending on the language, currently supports spanish (spa), or english (eng)</p>
+<h1 id="fields_2">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_countries&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;language&quot; : &quot;spa&quot;
+}
+</code></pre>
+<h1 id="results_2">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;iso_country&quot;: &quot;AD&quot;,
+        &quot;description&quot;: &quot;Andorra&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;AE&quot;,
+        &quot;description&quot;: &quot;Emiratos Árabes Unidos&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;AF&quot;,
+        &quot;description&quot;: &quot;Afganistán&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;AG&quot;,
+        &quot;description&quot;: &quot;Antigua y Barbuda&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;AI&quot;,
+        &quot;description&quot;: &quot;Anguilla&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;AL&quot;,
+        &quot;description&quot;: &quot;Albania&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_2">Common Error Codes</h1>
+<ul>
+<li><code>1030</code> : Language not implemented</li>
+<li><code>1005</code> : Invalid Token</li>
+</ul>
+<h2 id="get_regions">get_regions</h2>
+<p>Returns all the currently stored regions</p>
+<h1 id="fields_3">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_regions&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;
+}
+</code></pre>
+<h1 id="results_3">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;id_territory&quot;: &quot;1&quot;,
+        &quot;desc_small&quot;: &quot;WorldWide&quot;
+    },
+    {
+        &quot;id_territory&quot;: &quot;2&quot;,
+        &quot;desc_small&quot;: &quot;Europe&quot;
+    },
+    {
+        &quot;id_territory&quot;: &quot;9&quot;,
+        &quot;desc_small&quot;: &quot;Local&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_3">Common Error Codes</h1>
+<ul>
+<li><code>1005</code> : Invalid Token</li>
+</ul>
+<h2 id="get_plans">get_plans</h2>
+<p>Returns all the plans associated with the user's agency</p>
+<h1 id="fields_4">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_plans&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;language&quot; : &quot;spa&quot;
+}
+</code></pre>
+<h1 id="results_4">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;id&quot; : &quot;1840&quot;,
+        &quot;titulo&quot; : &quot;titulo&quot;,
+        &quot;description&quot; : &quot;description&quot;,
+        &quot;language_id&quot; : &quot;spa&quot;,
+        &quot;plan_id&quot; : &quot;1840&quot;,
+        &quot;id_plan_categoria&quot; : &quot;24&quot;,
+        &quot;num_pas&quot; : &quot;9&quot;,
+        &quot;min_tiempo&quot; : &quot;1&quot;,
+        &quot;max_tiempo&quot; : &quot;90&quot;,
+        &quot;id_currence&quot; : &quot;31&quot;,
+        &quot;family_plan&quot; : &quot;N&quot;,
+        &quot;min_age&quot; : &quot;1&quot;,
+        &quot;max_age&quot; : &quot;90&quot;,
+        &quot;normal_age&quot; : &quot;21&quot;,
+        &quot;plan_local&quot; : &quot;N&quot;,
+        &quot;modo_plan&quot; : &quot;W&quot;,
+        &quot;original_id&quot; : null
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_4">Common Error Codes</h1>
+<ul>
+<li><code>1005</code> : Invalid Token</li>
+<li><code>9015</code> : No Results</li>
+<li><code>6021</code> : Empty language </li>
+</ul>
+<h2 id="get_coverages">get_coverages</h2>
+<p>Returns all of a plan coverages</p>
+<h1 id="fields_5">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_coverages&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;language&quot; : &quot;spa&quot;,
+    &quot;id_plan&quot; : &quot;1840&quot; 
+}
+</code></pre>
+<h1 id="results_5">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;valor_spa&quot;: &quot;titulo&quot;,
+        &quot;valor_eng&quot;: &quot;title&quot;,
+        &quot;id_benefit&quot;: &quot;207&quot;,
+        &quot;name&quot;: &quot;Asistencia médica por accidente&quot;,
+        &quot;language_id&quot;: &quot;spa&quot;,
+        &quot;extended_info&quot;: &quot;Asistencia médica por accidente&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_5">Common Error Codes</h1>
+<ul>
+<li>`````` :</li>
+<li>`````` :</li>
+</ul>
+<h2 id="get_template">get_template</h2>
+<p>Example Text</p>
+<h1 id="fields_6">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_currencies&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;
+}
+</code></pre>
+<h1 id="results_6">Results</h1>
+<pre><code class="language-JSON"></code></pre>
+<h1 id="common-error-codes_6">Common Error Codes</h1>
+<ul>
+<li>`````` :</li>
+<li>`````` :</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../quote/" class="btn btn-neutral float-right" title="Quote">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../auth/" class="btn btn-neutral" title="Auth"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../auth/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../quote/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
