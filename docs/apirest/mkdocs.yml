@@ -1,4 +1,4 @@
-site_name: APIREST INSTEP
+site_name: APIREST
 nav:
     - Home: index.md
     - Installation: instalation.md

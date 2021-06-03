@@ -828,7 +828,7 @@
 
                     $api			= $datos['token'];
                     $code			= $datos['codigo'];
-                    $upgrade		= $datos['upgrades'];
+                    $upgrade		= $datos['upgrade'];
                     $procedenciaBack = $datos['procedenciaBack'];
                     if (!$procedenciaBack) {
                         $procedenciaBack = '1';
