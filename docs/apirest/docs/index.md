@@ -4,6 +4,6 @@ API developed under REST architecture
 
 ## endpoints
 
-* `www.example.com/apirest_testing/auth` - used for authentication.
-* `www.example.com/apirest_testing/information` - used for methods that provide data.
-* `www.example.com/apirest_testing/quote` - used for adding, reporting and cancelling orders.
+* `fasttravelassistance.ilstechnik.com/apirest_testing/auth` - used for authentication.
+* `fasttravelassistance.ilstechnik.com/apirest_testing/information` - used for methods that provide data.
+* `fasttravelassistance.ilstechnik.com/apirest_testing/quote` - used for adding, reporting and cancelling orders.
