@@ -2,10 +2,9 @@
 
 * Type: POST
 
-This endpoint provides the mandatory Token that the user must provide everytime a method is called
-(being the only exception this method itself)
+Este endpoint provee el token que debe proveer el usuario con cada llamado a una función
 
-## Fields
+## Campos
 
 ```JSON
 {
@@ -14,11 +13,9 @@ This endpoint provides the mandatory Token that the user must provide everytime 
 }
 ```
 
-If using a client for these requests (i.e. Postman), fields are named the same way
-
 ## Results
 
-When consumed succesfully, the method returns a 12 character Token
+Si el usuario y la contraseña son correctos, el método retorna un token de 12 dígitos
 ```JSON
 {
     "status": "OK",
@@ -30,6 +27,6 @@ When consumed succesfully, the method returns a 12 character Token
 
 ## Common Error Codes
 
-* ```6037``` : Both Fields are empty 
-* ```6040``` : Field 'usuario' is empty
-* ```6041``` : Field 'password' is empty
+* ```6037``` : Ambos campos estan vacíos
+* ```6040``` : Campo 'usuario' esta vacío
+* ```6041``` : Campo 'password' esta vacío

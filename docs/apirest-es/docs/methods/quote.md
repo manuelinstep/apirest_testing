@@ -1,10 +1,10 @@
-# Information
+# Quote
 
 * Type : PUT
 
-This endpoint provides methods use to manage orders, for either reporting, adding or cancelling them
+Este endpoint provee metodos utilizados para manejar ordenes, ya sea reportar, añadir o cancelar ordenes.
 
-## Mandatory fields
+## Campos obligatorios
 
 ```JSON
 {
@@ -12,16 +12,11 @@ This endpoint provides methods use to manage orders, for either reporting, addin
 }
 ```
 
-The token provided in the aforementioned auth method is required every time this method is consumed
-
-* It must be noted that, the name of the function specified in the following list is the parameter that must be sent
-with every call to the function to consume said method.
-
 ## add_order
 
-function used for quotation
+Añade una orden
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -53,7 +48,7 @@ function used for quotation
 }
 ```
 
-* The field "pasajeros" indicates the ammount of passengers, the fields where the input is surrounded by brackets [] depend on this field, i.e. if there are 3 passengers, then: 
+* El campo "pasajeros" indica la cantidad de pasajeros, los campos donde el input esta entre brackets [] dependen de dicho campo. Por ejemplo, si hay 3 pasajeros, entonces:
 
 ```JSON
 {
@@ -63,9 +58,9 @@ function used for quotation
 }
 ```
 
-* The only exception to this rule is the "upgrades" field, which doesn't depends of the ammount of passengers
+* La unica excepción a esta regla es el campo "upgrades"
 
-# Results
+# Resultados
 
 ```JSON
 {
@@ -79,54 +74,53 @@ function used for quotation
 }
 ```
 
-# Common Error Codes
+# Errores comunes retornados por la función
 
-* ```1005``` : Invalid Token 
-* ```9061``` : Empty Token
-* ```1003``` : Language not implemented
-* ```4006``` : Invalid country ID
-* ```6021``` : Empty Language
-* ```6022``` : Empty plan
-* ```1062``` : Invalid Birthday
-* ```1095``` : Invalid upgrade
-* ```6026``` : Empty amount of passengers
-* ```6045``` : Order data already exists
-* ```6027``` : Origin country empty
-* ```6028``` : Destination territory empty
-* ```6029``` : Empty date of departure
-* ```6030``` : Empty date of arrival
-* ```6034``` : Empty currency
-* ```6035``` : Empty emission code
-* ```6036``` : Empty contact name
-* ```6037``` : All fields are empty
-* ```2004``` : the departure date cannot be less than the current date
-* ```1050``` : Invalid plan
-* ```3030``` : Invalid date range
-* ```1022``` : Invalid currency
-* ```3153``` : Element conflict in request (Age of passenger exceeds plan age limit)
-* ```3150``` :  Missing required element (an obligatory field is empty)
-* ```4005``` : Passenger name is empty
-* ```4006``` : Passenger document is empty
-* ```4007``` : Passenger surname is empty
-* ```5006``` : Medic conditions is empty
-* ```4008``` : Passenger phone is emtpy
-* ```1248``` : Amount of days less than allowed in the plan
-* ```1247``` : Amount of days more than allowed in the plan
-* ```1080``` : Invalid territory
-* ```1081``` : Restricted territory
-* ```5003``` : Error in ridership
-* ```5005``` : Birthday required
-* ```5009``` : Invalid passenger phone number
-* ```4010``` : Invalid Beneficiary mail
-* ```5012``` : Required passenger email
-* ```1091``` : Restricted country
-* ```9011``` : Exchange rate invalid
+* ```1005``` : Token invalido 
+* ```9061``` : Token vacío
+* ```1003``` : Lenguaje no implementado
+* ```4006``` : id del país es invalido
+* ```6021``` : Lenguaje vacío
+* ```6022``` : Plan vacío 
+* ```1062``` : Fecha de nacimiento inválida
+* ```1095``` : Upgrade invalido
+* ```6026``` : Cantidad de pasajeros vacía
+* ```6045``` : Ya existe una orden con estos daos
+* ```6027``` : País de origen vacío
+* ```6028``` : Territorio destino vacío
+* ```6029``` : Fecha de salida vacía
+* ```6030``` : Fecha de llegada vacía
+* ```6034``` : Moneda vacía
+* ```6035``` : Codigo de emisión vacío
+* ```6037``` : Todos los campos estan vacíos
+* ```2004``` : La fecha de salida no puede ser menor a la fecha actual
+* ```1050``` : Plan invalido
+* ```3030``` : Rango de fecha invalido
+* ```1022``` : Moneda invalida
+* ```3153``` : Conflicto en elemento de la petición (la edad del pasajero excede la edad límite del plan)
+* ```3150``` : Un campo obligatorio esta vacio
+* ```4005``` : Nombre de un pasajero vacío
+* ```4006``` : Documento de un pasajero vacío
+* ```4007``` : Apellido de un pasajero vacío
+* ```5006``` : Condiciones médicas vacía
+* ```4008``` : Telefono de un pasajero vacío
+* ```1248``` : Cantidad de días menor a lo permitido por el plan
+* ```1247``` : Cantidad de días mayor a lo permitido por el plan
+* ```1080``` : Territorio invalido
+* ```1081``` : Territorio restringido
+* ```5003``` : Error en cantidad de pasajeros
+* ```5005``` : Fecha de nacimiento requerida
+* ```5009``` : Telefono de un pasajero invalido
+* ```4010``` : Correo de un beneficiario invalido
+* ```5012``` : Correo del pasajero requerido
+* ```1091``` : Pais restringido
+* ```9011``` : Tasa de cambio invalida
 
 ## add_upgrade
 
-Adds an upgrade to the specified order
+Añade un upgrade a la orden especificada
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -137,7 +131,7 @@ Adds an upgrade to the specified order
 }
 ```
 
-# Results
+# Resultados
 
 ```JSON
 {
@@ -149,18 +143,18 @@ Adds an upgrade to the specified order
 }
 ```
 
-# Common Error Codes
+# Errores comunes retornados por la función
 
-* ```6023``` : Empty Voucher 
-* ```6039``` : Empty Upgrade 
-* ```1021``` : inactive Voucher
-* ```1020``` : Voucher not found
+* ```6023``` : Voucher vacío
+* ```6039``` : Upgrade vacío
+* ```1021``` : Voucher inactivo
+* ```1020``` : No se encontró el voucher
 
 ## request_cancellation
 
-Cancels the specified order
+Cancela la orden especificada
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -171,7 +165,7 @@ Cancels the specified order
 }
 ```
 
-# Results
+# Resultados
 
 ```JSON
 {
@@ -179,21 +173,21 @@ Cancels the specified order
 }
 ```
 
-# Common Error Codes
+# Errores comunes retornados por la función
 
-* ```6037``` : All fields are empty
+* ```6037``` : Todos los campos estan vacíos
 * ```4001``` : Increased cancellation date for departure
-* ```4050``` : Invalid notificaction
-* ```1020``` : Voucher not found
-* ```1021``` : Inactive voucher
-* ```3220``` : Unauthorized operation
-* ```3051``` : User not associated to an agency
+* ```4050``` : Notificación invalida
+* ```1020``` : Voucher no encontrado
+* ```1021``` : Voucher inactivo
+* ```3220``` : Operación no autorizada
+* ```3051``` : Usuario no asociado a esta agencia
 
 ## request_upgrade_cancellation
 
-Cancels the specified order
+Cancela la orden especificada
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -204,7 +198,7 @@ Cancels the specified order
 }
 ```
 
-# Results
+# Resultados
 
 ```JSON
 {
@@ -214,10 +208,10 @@ Cancels the specified order
 }
 ```
 
-# Common Error Codes
+# Errores comunes retornados por la función
 
-* ```6023``` : Empty voucher 
-* ```6039``` : Empty upgrade 
-* ```6037``` : All the fields are empty 
-* ```1021``` : Inactive Voucher
-* ```1020``` : Voucher not found
+* ```6023``` : Voucher vacío
+* ```6039``` : Upgrade vacío
+* ```6037``` : Todos los campos estan vacíos
+* ```1021``` : Voucher inactivo
+* ```1020``` : Voucher no encontrado

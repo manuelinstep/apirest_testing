@@ -2,26 +2,24 @@
 
 * Type : GET
 
-This endpoint provides a method that gets the required operation as a field, the data received and aditional fields depend on which method is being specified by the user
+Este endpoint provee un método al cual se le indíca la operación requerida como un campo (request), la data recibída y campos adicionales dependen de que operación es especificada por el usuario
 
-## Mandatory fields
+## Campos obligatorios en todos los llamados:
 
 ```JSON
 {
-    "token" : "123456789ABC"
+    "token" : "123456789ABC",
+    "request" : "example_request"
 }
 ```
 
-The token provided in the aforementioned auth method is required every time this method is consumed
-
-* It must be noted that, the name of the function specified in the following list is the parameter that must be sent
-with every call to the function to consume said method.
+El token obtenido en el endpoint denominado auth es requerido cada vez que se llame a una función
 
 ## get_voucher
 
-Returns all the information of an order
+Muestra toda la información de una orden
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -31,7 +29,7 @@ Returns all the information of an order
 }
 ```
 
-# Results
+# Resultados
 
 ```JSON
 [
@@ -67,16 +65,16 @@ Returns all the information of an order
 ```
 
 
-# Common Error Codes
+# Errores Comunes retornados por la función
 
-* ```1005``` : Invalid Token
-* ```9015``` : No results
+* ```1005``` : Token invalido
+* ```9015``` : No hay resultados
 
 ## get_currencies
 
-Returns all the currencies stored in the database
+Retorna todas las monedas guardadas en el sistema
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -85,7 +83,7 @@ Returns all the currencies stored in the database
 }
 ```
 
-# Results
+# Resultados
 
 ```JSON
 [
@@ -152,16 +150,16 @@ Returns all the currencies stored in the database
 ]
 ```
 
-# Common Error Codes
+# Errores Comunes retornados por la función
 
-* ```1005``` : Invalid Token
-* ```9015``` : No results
+* ```1005``` : Token invalido
+* ```9015``` : No hay resultados
 
 ## get_countries
 
-Returns all the currently stored countries, depending on the language, currently supports spanish (spa), or english (eng)
+Retorna todos los paises guardados en el sistem en el idioma indicado. Los idiomas disponibles actualmente son español (spa) e inglés (eng)
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -171,7 +169,7 @@ Returns all the currently stored countries, depending on the language, currently
 }
 ```
 
-# Results
+# Resultados
 
 ```JSON
 [
@@ -202,16 +200,16 @@ Returns all the currently stored countries, depending on the language, currently
 ]
 ```
 
-# Common Error Codes
+# Errores Comunes retornados por la función
 
-* ```1030``` : Language not implemented
-* ```1005``` : Invalid Token
+* ```1030``` : Lenguaje no implementado
+* ```1005``` : Token invalido
 
 ## get_regions
 
-Returns all the currently stored regions
+Retorna todas las regiones guardadas en el sistema
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -220,7 +218,7 @@ Returns all the currently stored regions
 }
 ```
 
-# Results
+# Resultados
 
 ```JSON
 [
@@ -239,15 +237,15 @@ Returns all the currently stored regions
 ]
 ```
 
-# Common Error Codes
+# Errores Comunes retornados por la función
 
-* ```1005``` : Invalid Token
+* ```1005``` : Token invalido
 
 ## get_plans
 
-Returns all the plans associated with the user's agency
+Retorna todos los planes asociados con la agencia del usuario
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -257,7 +255,7 @@ Returns all the plans associated with the user's agency
 }
 ```
 
-# Results
+# Resultados
 
 ```JSON
 [
@@ -283,17 +281,17 @@ Returns all the plans associated with the user's agency
 ]
 ```
 
-# Common Error Codes
+# Errores Comunes retornados por la función
 
-* ```1005``` : Invalid Token
-* ```9015``` : No Results
-* ```6021``` : Empty language 
+* ```1005``` : Token invalido
+* ```9015``` : No hay resultados
+* ```6021``` : Lenguaje vacío
 
 ## get_coverages
 
-Returns all of a plan coverages
+Retorna todas las coberturas de un plan
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -304,7 +302,7 @@ Returns all of a plan coverages
 }
 ```
 
-# Results
+# Resultados
 
 ```JSON
 [
@@ -319,16 +317,16 @@ Returns all of a plan coverages
 ]
 ```
 
-# Common Error Codes
+# Errores Comunes retornados por la función
 
 * `````` :
 * `````` :
 
 ## get_pvp_price
 
-Gets price from a plan based on the country specified
+Retorna los precios de un plan basado en el país especificado
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -339,9 +337,9 @@ Gets price from a plan based on the country specified
 }
 ```
 
-WARNING: The field "iso_country" can be left empty, this will return all the prices of the plan without regarding a specific country
+* El campo "iso_country" puede dejarse vacío, esto retornara todos los precios del plan sin especificar un país
 
-# Results
+# Resultados
 
 ```JSON
 [
@@ -373,17 +371,17 @@ WARNING: The field "iso_country" can be left empty, this will return all the pri
 ]
 ```
 
-# Common Error Codes
+# Errores Comunes retornados por la función
 
-* ```1091``` : The country provided is restricted for the plan
-* ```1060``` : Price not registered for this country
-* ```6022``` : Empty plan
+* ```1091``` : El plan está restringido para este país
+* ```1060``` : No hay precio registrado para este país
+* ```6022``` : Plan Vacio
 
 ## get_languages
 
-Returns all the languages avaible in the platform
+Retorna todos los lenguajes disponibles en la plataforma
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -392,7 +390,7 @@ Returns all the languages avaible in the platform
 }
 ```
 
-# Results
+# Resultados
 
 ```JSON
 [
@@ -417,16 +415,16 @@ Returns all the languages avaible in the platform
 ]
 ```
 
-# Common Error Codes
+# Errores Comunes retornados por la función
 
-* ```1005``` : Invalid Token
-* ```6020``` : Empty Token
+* ```1005``` : Token invalido
+* ```6020``` : Token vacio
 
 ## get_plan_category
 
-Returns all plan categories
+Retorna todas las categorías de plan
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -436,7 +434,7 @@ Returns all plan categories
 }
 ```
 
-# Results
+# Resultados
 
 ```JSON
 [
@@ -463,17 +461,17 @@ Returns all plan categories
 ]
 ```
 
-# Common Error Codes
+# Errores Comunes retornados por la función
 
-* ```6021``` : Empty language
-* ```1030``` : Language not implemented
-* ```1040``` : There's no plan category
+* ```6021``` : Lenguaje vacío
+* ```1030``` : Lenguaje no implementado
+* ```1040``` : No hay categorías de plan
 
 ## get_terms
 
-Returns the terms and conditions of the plan
+Retorna los términos y condiciones del plan
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -484,7 +482,7 @@ Returns the terms and conditions of the plan
 }
 ```
 
-# Results
+# Resultados
 
 ```JSON
 {
@@ -495,19 +493,19 @@ Returns the terms and conditions of the plan
 }
 ```
 
-# Common Error Codes
+# Errores Comunes retornados por la función
 
-* ```6021``` : Empty language
-* ```6022``` : Empty plan
+* ```6021``` : Lenguaje vacío
+* ```6022``` : Plan Vacio
 * ```1050``` : Invalid plan
 * ```4012``` : Conditions not found
-* ```1030``` : Language not implemented
+* ```1030``` : Lenguaje no implementado
 
 ## get_upgrade
 
-Returns the requested upgrade information
+Retorna la información del upgrade solicitado
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -518,7 +516,7 @@ Returns the requested upgrade information
 }
 ```
 
-# Results
+# Resultados
 
 ```JSON
 [
@@ -565,17 +563,17 @@ Returns the requested upgrade information
 ]
 ```
 
-# Common Error Codes
+# Errores Comunes retornados por la función
 
-* ```6021``` : Empty language
-* ```6022``` : Empty plan
-* ```1050``` : Plan not valid
+* ```6021``` : Lenguaje vacío
+* ```6022``` : Plan Vacio
+* ```1050``` : Plan invalido
 
 ## country_restricted
 
-Returns the plan's restricted countries
+Retorna los países restringidos por el plan
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -586,7 +584,7 @@ Returns the plan's restricted countries
 }
 ```
 
-# Results
+# Resultados
 
 ```JSON
 [
@@ -657,17 +655,17 @@ Returns the plan's restricted countries
 ]
 ```
 
-# Common Error Codes
+# Errores Comunes retornados por la función
 
-* ```6021``` : Empty language
-* ```6022``` : Empty plan
-* ```1050``` : Plan not valid
+* ```6021``` : Lenguaje vacío
+* ```6022``` : Plan Vacio
+* ```1050``` : Plan invalido
 
 ## exchange_rate
 
-Returns the exchange rate of a specified country
+Retorna la tasa de cambio del país especificado
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -677,7 +675,7 @@ Returns the exchange rate of a specified country
 }
 ```
 
-# Results
+# Resultados
 
 ```JSON
 [
@@ -690,15 +688,15 @@ Returns the exchange rate of a specified country
 ]
 ```
 
-# Common Error Codes
+# Errores Comunes retornados por la función
 
-* ```5013``` : Change rate doesn't exist
+* ```5013``` : La tasa de cambio no existe
 
 ## get_country_cities
 
-Returns the cities of the specified country
+Retorna las ciudades del país especificado
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -709,7 +707,7 @@ Returns the cities of the specified country
 }
 ```
 
-# Results
+# Resultados
 
 ```JSON
 [
@@ -793,18 +791,18 @@ Returns the cities of the specified country
 ]
 ```
 
-# Common Error Codes
+# Errores Comunes retornados por la función
 
-* ```9173``` : Invalid Iso country
-* ```9174``` : Empty Iso country
-* ```6021``` : Empty language
-* ```1030``` : Language not implemented
+* ```9173``` : Iso country invalido
+* ```9174``` : Iso country vacio
+* ```6021``` : Lenguaje vacío
+* ```1030``` : Lenguaje no implementado
 
 ## get_country_states
 
-Returns the states of the specified country
+Retorna los estados del país especificado
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -815,7 +813,7 @@ Returns the states of the specified country
 }
 ```
 
-# Results
+# Resultados
 
 ```JSON
 [
@@ -837,19 +835,19 @@ Returns the states of the specified country
 ]
 ```
 
-# Common Error Codes
+# Errores Comunes retornados por la función
 
-* ```1030``` : Language not implemented
-* ```6021``` : Empty language
+* ```1030``` : Lenguaje no implementado
+* ```6021``` : Lenguaje vacío
 * ```9015``` : No results
 * ```9173``` : Invalid Iso Country
 * ```9174``` : Empty Iso Country
 
 ## get_country_states_cities
 
-Returns the city of a specified state in a country
+Retorna las ciudades dentro del estado específico de un país
 
-# Fields
+# Campos
 
 ```JSON
 {
@@ -861,7 +859,7 @@ Returns the city of a specified state in a country
 }
 ```
 
-# Results
+# Resultados
 
 ```JSON
 [
@@ -896,14 +894,13 @@ Returns the city of a specified state in a country
 ]
 ```
 
-# Common Error Codes
+# Errores Comunes retornados por la función
 
-* ```1030``` : Language not implemented
-* ```6021``` : Empty language
-* ```9015``` : No results
-* ```9173``` : Invalid Iso Country
-* ```9174``` : Empty Iso Country
-* ```9175``` : Empty Country states
-* ```9176``` : Empty Iso states
-* ```9177``` : Invalid Iso state
-
+* ```1030``` : Lenguaje no implementado
+* ```6021``` : Lenguaje vacío
+* ```9015``` : No hay resultados
+* ```9173``` : Iso country invalido
+* ```9174``` : Iso country vacio
+* ```9175``` : Country states vacio
+* ```9176``` : Iso states vacio
+* ```9177``` : Iso states invalido

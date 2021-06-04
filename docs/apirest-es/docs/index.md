@@ -1,9 +1,9 @@
 # API REST 
 
-API developed under REST architecture
+API desarrollada bajo arquitectura REST
 
 ## endpoints
 
-* `fasttravelassistance.ilstechnik.com/apirest_testing/auth` - used for authentication.
-* `fasttravelassistance.ilstechnik.com/apirest_testing/information` - used for methods that provide data.
-* `fasttravelassistance.ilstechnik.com/apirest_testing/quote` - used for adding, reporting and cancelling orders.
+* `fasttravelassistance.ilstechnik.com/apirest_testing/auth` - utilizado para autenticación
+* `fasttravelassistance.ilstechnik.com/apirest_testing/information` - métodos para obtener datos de la plataforma
+* `fasttravelassistance.ilstechnik.com/apirest_testing/quote` - Manejo y administración de ordenes
