@@ -52,7 +52,7 @@
                     </li>
                 </ul>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../instalation/">Installation</a>
+                    <li class="toctree-l1"><a class="" href="../../instalation.md">Installation</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Methods</span></p>
@@ -63,7 +63,7 @@
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">Quote</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#mandatory-fields">Mandatory fields</a>
+    <li class="toctree-l2"><a class="reference internal" href="#campos-obligatorios">Campos obligatorios</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#add_order">add_order</a>
     </li>
@@ -106,24 +106,19 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="information">Information</h1>
+                <h1 id="quote">Quote</h1>
 <ul>
 <li>Type : PUT</li>
 </ul>
-<p>This endpoint provides methods use to manage orders, for either reporting, adding or cancelling them</p>
-<h2 id="mandatory-fields">Mandatory fields</h2>
+<p>Este endpoint provee metodos utilizados para manejar ordenes, ya sea reportar, añadir o cancelar ordenes.</p>
+<h2 id="campos-obligatorios">Campos obligatorios</h2>
 <pre><code class="language-JSON">{
     &quot;token&quot; : &quot;123456789ABC&quot;
 }
 </code></pre>
-<p>The token provided in the aforementioned auth method is required every time this method is consumed</p>
-<ul>
-<li>It must be noted that, the name of the function specified in the following list is the parameter that must be sent
-with every call to the function to consume said method.</li>
-</ul>
 <h2 id="add_order">add_order</h2>
-<p>function used for quotation</p>
-<h1 id="fields">Fields</h1>
+<p>Añade una orden</p>
+<h1 id="campos">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;add_order&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;,
@@ -153,7 +148,7 @@ with every call to the function to consume said method.</li>
 }
 </code></pre>
 <ul>
-<li>The field "pasajeros" indicates the ammount of passengers, the fields where the input is surrounded by brackets [] depend on this field, i.e. if there are 3 passengers, then: </li>
+<li>El campo "pasajeros" indica la cantidad de pasajeros, los campos donde el input esta entre brackets [] dependen de dicho campo. Por ejemplo, si hay 3 pasajeros, entonces:</li>
 </ul>
 <pre><code class="language-JSON">{
     &quot;...&quot; : &quot;...&quot;,
@@ -162,9 +157,9 @@ with every call to the function to consume said method.</li>
 }
 </code></pre>
 <ul>
-<li>The only exception to this rule is the "upgrades" field, which doesn't depends of the ammount of passengers</li>
+<li>La unica excepción a esta regla es el campo "upgrades"</li>
 </ul>
-<h1 id="results">Results</h1>
+<h1 id="resultados">Resultados</h1>
 <pre><code class="language-JSON">{
     &quot;status&quot;: &quot;OK&quot;,
     &quot;codigo&quot;: &quot;FT-2J4I74&quot;,
@@ -175,52 +170,51 @@ with every call to the function to consume said method.</li>
     &quot;El valor de cambio fue ajustado a:&quot;: &quot;5,000.00&quot;
 }
 </code></pre>
-<h1 id="common-error-codes">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion">Errores comunes retornados por la función</h1>
 <ul>
-<li><code>1005</code> : Invalid Token </li>
-<li><code>9061</code> : Empty Token</li>
-<li><code>1003</code> : Language not implemented</li>
-<li><code>4006</code> : Invalid country ID</li>
-<li><code>6021</code> : Empty Language</li>
-<li><code>6022</code> : Empty plan</li>
-<li><code>1062</code> : Invalid Birthday</li>
-<li><code>1095</code> : Invalid upgrade</li>
-<li><code>6026</code> : Empty amount of passengers</li>
-<li><code>6045</code> : Order data already exists</li>
-<li><code>6027</code> : Origin country empty</li>
-<li><code>6028</code> : Destination territory empty</li>
-<li><code>6029</code> : Empty date of departure</li>
-<li><code>6030</code> : Empty date of arrival</li>
-<li><code>6034</code> : Empty currency</li>
-<li><code>6035</code> : Empty emission code</li>
-<li><code>6036</code> : Empty contact name</li>
-<li><code>6037</code> : All fields are empty</li>
-<li><code>2004</code> : the departure date cannot be less than the current date</li>
-<li><code>1050</code> : Invalid plan</li>
-<li><code>3030</code> : Invalid date range</li>
-<li><code>1022</code> : Invalid currency</li>
-<li><code>3153</code> : Element conflict in request (Age of passenger exceeds plan age limit)</li>
-<li><code>3150</code> :  Missing required element (an obligatory field is empty)</li>
-<li><code>4005</code> : Passenger name is empty</li>
-<li><code>4006</code> : Passenger document is empty</li>
-<li><code>4007</code> : Passenger surname is empty</li>
-<li><code>5006</code> : Medic conditions is empty</li>
-<li><code>4008</code> : Passenger phone is emtpy</li>
-<li><code>1248</code> : Amount of days less than allowed in the plan</li>
-<li><code>1247</code> : Amount of days more than allowed in the plan</li>
-<li><code>1080</code> : Invalid territory</li>
-<li><code>1081</code> : Restricted territory</li>
-<li><code>5003</code> : Error in ridership</li>
-<li><code>5005</code> : Birthday required</li>
-<li><code>5009</code> : Invalid passenger phone number</li>
-<li><code>4010</code> : Invalid Beneficiary mail</li>
-<li><code>5012</code> : Required passenger email</li>
-<li><code>1091</code> : Restricted country</li>
-<li><code>9011</code> : Exchange rate invalid</li>
+<li><code>1005</code> : Token invalido </li>
+<li><code>9061</code> : Token vacío</li>
+<li><code>1003</code> : Lenguaje no implementado</li>
+<li><code>4006</code> : id del país es invalido</li>
+<li><code>6021</code> : Lenguaje vacío</li>
+<li><code>6022</code> : Plan vacío </li>
+<li><code>1062</code> : Fecha de nacimiento inválida</li>
+<li><code>1095</code> : Upgrade invalido</li>
+<li><code>6026</code> : Cantidad de pasajeros vacía</li>
+<li><code>6045</code> : Ya existe una orden con estos daos</li>
+<li><code>6027</code> : País de origen vacío</li>
+<li><code>6028</code> : Territorio destino vacío</li>
+<li><code>6029</code> : Fecha de salida vacía</li>
+<li><code>6030</code> : Fecha de llegada vacía</li>
+<li><code>6034</code> : Moneda vacía</li>
+<li><code>6035</code> : Codigo de emisión vacío</li>
+<li><code>6037</code> : Todos los campos estan vacíos</li>
+<li><code>2004</code> : La fecha de salida no puede ser menor a la fecha actual</li>
+<li><code>1050</code> : Plan invalido</li>
+<li><code>3030</code> : Rango de fecha invalido</li>
+<li><code>1022</code> : Moneda invalida</li>
+<li><code>3153</code> : Conflicto en elemento de la petición (la edad del pasajero excede la edad límite del plan)</li>
+<li><code>3150</code> : Un campo obligatorio esta vacio</li>
+<li><code>4005</code> : Nombre de un pasajero vacío</li>
+<li><code>4006</code> : Documento de un pasajero vacío</li>
+<li><code>4007</code> : Apellido de un pasajero vacío</li>
+<li><code>5006</code> : Condiciones médicas vacía</li>
+<li><code>4008</code> : Telefono de un pasajero vacío</li>
+<li><code>1248</code> : Cantidad de días menor a lo permitido por el plan</li>
+<li><code>1247</code> : Cantidad de días mayor a lo permitido por el plan</li>
+<li><code>1080</code> : Territorio invalido</li>
+<li><code>1081</code> : Territorio restringido</li>
+<li><code>5003</code> : Error en cantidad de pasajeros</li>
+<li><code>5005</code> : Fecha de nacimiento requerida</li>
+<li><code>5009</code> : Telefono de un pasajero invalido</li>
+<li><code>4010</code> : Correo de un beneficiario invalido</li>
+<li><code>5012</code> : Correo del pasajero requerido</li>
+<li><code>1091</code> : Pais restringido</li>
+<li><code>9011</code> : Tasa de cambio invalida</li>
 </ul>
 <h2 id="add_upgrade">add_upgrade</h2>
-<p>Adds an upgrade to the specified order</p>
-<h1 id="fields_1">Fields</h1>
+<p>Añade un upgrade a la orden especificada</p>
+<h1 id="campos_1">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;add_upgrade&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;,
@@ -228,7 +222,7 @@ with every call to the function to consume said method.</li>
     &quot;upgrade&quot; : &quot;126&quot;
 }
 </code></pre>
-<h1 id="results_1">Results</h1>
+<h1 id="resultados_1">Resultados</h1>
 <pre><code class="language-JSON">{
     &quot;voucher&quot;: &quot;FT-K21JDD&quot;,
     &quot;valor_adicional&quot;: 55.72,
@@ -237,16 +231,16 @@ with every call to the function to consume said method.</li>
     ]
 }
 </code></pre>
-<h1 id="common-error-codes_1">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion_1">Errores comunes retornados por la función</h1>
 <ul>
-<li><code>6023</code> : Empty Voucher </li>
-<li><code>6039</code> : Empty Upgrade </li>
-<li><code>1021</code> : inactive Voucher</li>
-<li><code>1020</code> : Voucher not found</li>
+<li><code>6023</code> : Voucher vacío</li>
+<li><code>6039</code> : Upgrade vacío</li>
+<li><code>1021</code> : Voucher inactivo</li>
+<li><code>1020</code> : No se encontró el voucher</li>
 </ul>
 <h2 id="request_cancellation">request_cancellation</h2>
-<p>Cancels the specified order</p>
-<h1 id="fields_2">Fields</h1>
+<p>Cancela la orden especificada</p>
+<h1 id="campos_2">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;request_cancellation&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;,
@@ -254,24 +248,24 @@ with every call to the function to consume said method.</li>
     &quot;notificar&quot; : &quot;1&quot;
 }
 </code></pre>
-<h1 id="results_2">Results</h1>
+<h1 id="resultados_2">Resultados</h1>
 <pre><code class="language-JSON">{
     &quot;status&quot;: &quot;OK&quot;
 }
 </code></pre>
-<h1 id="common-error-codes_2">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion_2">Errores comunes retornados por la función</h1>
 <ul>
-<li><code>6037</code> : All fields are empty</li>
+<li><code>6037</code> : Todos los campos estan vacíos</li>
 <li><code>4001</code> : Increased cancellation date for departure</li>
-<li><code>4050</code> : Invalid notificaction</li>
-<li><code>1020</code> : Voucher not found</li>
-<li><code>1021</code> : Inactive voucher</li>
-<li><code>3220</code> : Unauthorized operation</li>
-<li><code>3051</code> : User not associated to an agency</li>
+<li><code>4050</code> : Notificación invalida</li>
+<li><code>1020</code> : Voucher no encontrado</li>
+<li><code>1021</code> : Voucher inactivo</li>
+<li><code>3220</code> : Operación no autorizada</li>
+<li><code>3051</code> : Usuario no asociado a esta agencia</li>
 </ul>
 <h2 id="request_upgrade_cancellation">request_upgrade_cancellation</h2>
-<p>Cancels the specified order</p>
-<h1 id="fields_3">Fields</h1>
+<p>Cancela la orden especificada</p>
+<h1 id="campos_3">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;request_cancellation&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;,
@@ -279,20 +273,20 @@ with every call to the function to consume said method.</li>
     &quot;upgrade&quot; : &quot;126&quot;
 }
 </code></pre>
-<h1 id="results_3">Results</h1>
+<h1 id="resultados_3">Resultados</h1>
 <pre><code class="language-JSON">{
     &quot;voucher&quot;: &quot;FT-K21JDD&quot;,
     &quot;valor_descuento&quot;: &quot;55.720&quot;,
     &quot;pricer_order&quot;: 618.48
 }
 </code></pre>
-<h1 id="common-error-codes_3">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion_3">Errores comunes retornados por la función</h1>
 <ul>
-<li><code>6023</code> : Empty voucher </li>
-<li><code>6039</code> : Empty upgrade </li>
-<li><code>6037</code> : All the fields are empty </li>
-<li><code>1021</code> : Inactive Voucher</li>
-<li><code>1020</code> : Voucher not found</li>
+<li><code>6023</code> : Voucher vacío</li>
+<li><code>6039</code> : Upgrade vacío</li>
+<li><code>6037</code> : Todos los campos estan vacíos</li>
+<li><code>1021</code> : Voucher inactivo</li>
+<li><code>1020</code> : Voucher no encontrado</li>
 </ul>
               
             </div>

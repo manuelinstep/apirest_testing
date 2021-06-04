@@ -52,7 +52,7 @@
                     </li>
                 </ul>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../instalation/">Installation</a>
+                    <li class="toctree-l1"><a class="" href="../../instalation.md">Installation</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Methods</span></p>
@@ -61,7 +61,7 @@
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">Information</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#mandatory-fields">Mandatory fields</a>
+    <li class="toctree-l2"><a class="reference internal" href="#campos-obligatorios-en-todos-los-llamados">Campos obligatorios en todos los llamados:</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#get_voucher">get_voucher</a>
     </li>
@@ -110,27 +110,24 @@
 <ul>
 <li>Type : GET</li>
 </ul>
-<p>This endpoint provides a method that gets the required operation as a field, the data received and aditional fields depend on which method is being specified by the user</p>
-<h2 id="mandatory-fields">Mandatory fields</h2>
+<p>Este endpoint provee un método al cual se le indíca la operación requerida como un campo (request), la data recibída y campos adicionales dependen de que operación es especificada por el usuario</p>
+<h2 id="campos-obligatorios-en-todos-los-llamados">Campos obligatorios en todos los llamados:</h2>
 <pre><code class="language-JSON">{
-    &quot;token&quot; : &quot;123456789ABC&quot;
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;request&quot; : &quot;example_request&quot;
 }
 </code></pre>
-<p>The token provided in the aforementioned auth method is required every time this method is consumed</p>
-<ul>
-<li>It must be noted that, the name of the function specified in the following list is the parameter that must be sent
-with every call to the function to consume said method.</li>
-</ul>
+<p>El token obtenido en el endpoint denominado auth es requerido cada vez que se llame a una función</p>
 <h2 id="get_voucher">get_voucher</h2>
-<p>Returns all the information of an order</p>
-<h1 id="fields">Fields</h1>
+<p>Muestra toda la información de una orden</p>
+<h1 id="campos">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;get_voucher&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;,
     &quot;codigo&quot; : &quot;EXMPL-1234&quot;
 }
 </code></pre>
-<h1 id="results">Results</h1>
+<h1 id="resultados">Resultados</h1>
 <pre><code class="language-JSON">[
     {
         &quot;id&quot;: &quot;9568&quot;,
@@ -162,20 +159,20 @@ with every call to the function to consume said method.</li>
     }
 ]
 </code></pre>
-<h1 id="common-error-codes">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion">Errores Comunes retornados por la función</h1>
 <ul>
-<li><code>1005</code> : Invalid Token</li>
-<li><code>9015</code> : No results</li>
+<li><code>1005</code> : Token invalido</li>
+<li><code>9015</code> : No hay resultados</li>
 </ul>
 <h2 id="get_currencies">get_currencies</h2>
-<p>Returns all the currencies stored in the database</p>
-<h1 id="fields_1">Fields</h1>
+<p>Retorna todas las monedas guardadas en el sistema</p>
+<h1 id="campos_1">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;get_currencies&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;
 }
 </code></pre>
-<h1 id="results_1">Results</h1>
+<h1 id="resultados_1">Resultados</h1>
 <pre><code class="language-JSON">[
     {
         &quot;id_country&quot;: &quot;AD&quot;,
@@ -239,21 +236,21 @@ with every call to the function to consume said method.</li>
     }
 ]
 </code></pre>
-<h1 id="common-error-codes_1">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion_1">Errores Comunes retornados por la función</h1>
 <ul>
-<li><code>1005</code> : Invalid Token</li>
-<li><code>9015</code> : No results</li>
+<li><code>1005</code> : Token invalido</li>
+<li><code>9015</code> : No hay resultados</li>
 </ul>
 <h2 id="get_countries">get_countries</h2>
-<p>Returns all the currently stored countries, depending on the language, currently supports spanish (spa), or english (eng)</p>
-<h1 id="fields_2">Fields</h1>
+<p>Retorna todos los paises guardados en el sistem en el idioma indicado. Los idiomas disponibles actualmente son español (spa) e inglés (eng)</p>
+<h1 id="campos_2">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;get_countries&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;,
     &quot;language&quot; : &quot;spa&quot;
 }
 </code></pre>
-<h1 id="results_2">Results</h1>
+<h1 id="resultados_2">Resultados</h1>
 <pre><code class="language-JSON">[
     {
         &quot;iso_country&quot;: &quot;AD&quot;,
@@ -281,20 +278,20 @@ with every call to the function to consume said method.</li>
     }
 ]
 </code></pre>
-<h1 id="common-error-codes_2">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion_2">Errores Comunes retornados por la función</h1>
 <ul>
-<li><code>1030</code> : Language not implemented</li>
-<li><code>1005</code> : Invalid Token</li>
+<li><code>1030</code> : Lenguaje no implementado</li>
+<li><code>1005</code> : Token invalido</li>
 </ul>
 <h2 id="get_regions">get_regions</h2>
-<p>Returns all the currently stored regions</p>
-<h1 id="fields_3">Fields</h1>
+<p>Retorna todas las regiones guardadas en el sistema</p>
+<h1 id="campos_3">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;get_regions&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;
 }
 </code></pre>
-<h1 id="results_3">Results</h1>
+<h1 id="resultados_3">Resultados</h1>
 <pre><code class="language-JSON">[
     {
         &quot;id_territory&quot;: &quot;1&quot;,
@@ -310,20 +307,20 @@ with every call to the function to consume said method.</li>
     }
 ]
 </code></pre>
-<h1 id="common-error-codes_3">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion_3">Errores Comunes retornados por la función</h1>
 <ul>
-<li><code>1005</code> : Invalid Token</li>
+<li><code>1005</code> : Token invalido</li>
 </ul>
 <h2 id="get_plans">get_plans</h2>
-<p>Returns all the plans associated with the user's agency</p>
-<h1 id="fields_4">Fields</h1>
+<p>Retorna todos los planes asociados con la agencia del usuario</p>
+<h1 id="campos_4">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;get_plans&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;,
     &quot;language&quot; : &quot;spa&quot;
 }
 </code></pre>
-<h1 id="results_4">Results</h1>
+<h1 id="resultados_4">Resultados</h1>
 <pre><code class="language-JSON">[
     {
         &quot;id&quot; : &quot;1840&quot;,
@@ -346,15 +343,15 @@ with every call to the function to consume said method.</li>
     }
 ]
 </code></pre>
-<h1 id="common-error-codes_4">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion_4">Errores Comunes retornados por la función</h1>
 <ul>
-<li><code>1005</code> : Invalid Token</li>
-<li><code>9015</code> : No Results</li>
-<li><code>6021</code> : Empty language </li>
+<li><code>1005</code> : Token invalido</li>
+<li><code>9015</code> : No hay resultados</li>
+<li><code>6021</code> : Lenguaje vacío</li>
 </ul>
 <h2 id="get_coverages">get_coverages</h2>
-<p>Returns all of a plan coverages</p>
-<h1 id="fields_5">Fields</h1>
+<p>Retorna todas las coberturas de un plan</p>
+<h1 id="campos_5">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;get_coverages&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;,
@@ -362,7 +359,7 @@ with every call to the function to consume said method.</li>
     &quot;id_plan&quot; : &quot;1840&quot; 
 }
 </code></pre>
-<h1 id="results_5">Results</h1>
+<h1 id="resultados_5">Resultados</h1>
 <pre><code class="language-JSON">[
     {
         &quot;valor_spa&quot;: &quot;titulo&quot;,
@@ -374,14 +371,14 @@ with every call to the function to consume said method.</li>
     }
 ]
 </code></pre>
-<h1 id="common-error-codes_5">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion_5">Errores Comunes retornados por la función</h1>
 <ul>
 <li>`````` :</li>
 <li>`````` :</li>
 </ul>
 <h2 id="get_pvp_price">get_pvp_price</h2>
-<p>Gets price from a plan based on the country specified</p>
-<h1 id="fields_6">Fields</h1>
+<p>Retorna los precios de un plan basado en el país especificado</p>
+<h1 id="campos_6">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;get_currencies&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;,
@@ -389,8 +386,10 @@ with every call to the function to consume said method.</li>
     &quot;iso_country&quot; : &quot;CL&quot;
 }
 </code></pre>
-<p>WARNING: The field "iso_country" can be left empty, this will return all the prices of the plan without regarding a specific country</p>
-<h1 id="results_6">Results</h1>
+<ul>
+<li>El campo "iso_country" puede dejarse vacío, esto retornara todos los precios del plan sin especificar un país</li>
+</ul>
+<h1 id="resultados_6">Resultados</h1>
 <pre><code class="language-JSON">[
     {
         &quot;unidad&quot;: &quot;dias&quot;,
@@ -419,21 +418,21 @@ with every call to the function to consume said method.</li>
     }
 ]
 </code></pre>
-<h1 id="common-error-codes_6">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion_6">Errores Comunes retornados por la función</h1>
 <ul>
-<li><code>1091</code> : The country provided is restricted for the plan</li>
-<li><code>1060</code> : Price not registered for this country</li>
-<li><code>6022</code> : Empty plan</li>
+<li><code>1091</code> : El plan está restringido para este país</li>
+<li><code>1060</code> : No hay precio registrado para este país</li>
+<li><code>6022</code> : Plan Vacio</li>
 </ul>
 <h2 id="get_languages">get_languages</h2>
-<p>Returns all the languages avaible in the platform</p>
-<h1 id="fields_7">Fields</h1>
+<p>Retorna todos los lenguajes disponibles en la plataforma</p>
+<h1 id="campos_7">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;get_languages&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;
 }
 </code></pre>
-<h1 id="results_7">Results</h1>
+<h1 id="resultados_7">Resultados</h1>
 <pre><code class="language-JSON">[
     {
         &quot;id&quot;: &quot;141&quot;,
@@ -455,21 +454,21 @@ with every call to the function to consume said method.</li>
     }
 ]
 </code></pre>
-<h1 id="common-error-codes_7">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion_7">Errores Comunes retornados por la función</h1>
 <ul>
-<li><code>1005</code> : Invalid Token</li>
-<li><code>6020</code> : Empty Token</li>
+<li><code>1005</code> : Token invalido</li>
+<li><code>6020</code> : Token vacio</li>
 </ul>
 <h2 id="get_plan_category">get_plan_category</h2>
-<p>Returns all plan categories</p>
-<h1 id="fields_8">Fields</h1>
+<p>Retorna todas las categorías de plan</p>
+<h1 id="campos_8">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;get_plan_category&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;,
     &quot;language&quot; : &quot;spa&quot;
 }
 </code></pre>
-<h1 id="results_8">Results</h1>
+<h1 id="resultados_8">Resultados</h1>
 <pre><code class="language-JSON">[
     {
         &quot;name_plan&quot;: &quot;Larga Estadia&quot;,
@@ -493,15 +492,15 @@ with every call to the function to consume said method.</li>
     }
 ]
 </code></pre>
-<h1 id="common-error-codes_8">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion_8">Errores Comunes retornados por la función</h1>
 <ul>
-<li><code>6021</code> : Empty language</li>
-<li><code>1030</code> : Language not implemented</li>
-<li><code>1040</code> : There's no plan category</li>
+<li><code>6021</code> : Lenguaje vacío</li>
+<li><code>1030</code> : Lenguaje no implementado</li>
+<li><code>1040</code> : No hay categorías de plan</li>
 </ul>
 <h2 id="get_terms">get_terms</h2>
-<p>Returns the terms and conditions of the plan</p>
-<h1 id="fields_9">Fields</h1>
+<p>Retorna los términos y condiciones del plan</p>
+<h1 id="campos_9">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;get_currencies&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;,
@@ -509,7 +508,7 @@ with every call to the function to consume said method.</li>
     &quot;language&quot; : &quot;spa&quot;
 }
 </code></pre>
-<h1 id="results_9">Results</h1>
+<h1 id="resultados_9">Resultados</h1>
 <pre><code class="language-JSON">{
     &quot;id&quot;: &quot;1800&quot;,
     &quot;name&quot;: &quot;USD 20.000 L. Econ.&quot;,
@@ -517,17 +516,17 @@ with every call to the function to consume said method.</li>
     &quot;terms&quot;: &quot;fasttravelassistance.ilstechnik.com/app/admin/server/php/files/120181204031219.pdf&quot;
 }
 </code></pre>
-<h1 id="common-error-codes_9">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion_9">Errores Comunes retornados por la función</h1>
 <ul>
-<li><code>6021</code> : Empty language</li>
-<li><code>6022</code> : Empty plan</li>
+<li><code>6021</code> : Lenguaje vacío</li>
+<li><code>6022</code> : Plan Vacio</li>
 <li><code>1050</code> : Invalid plan</li>
 <li><code>4012</code> : Conditions not found</li>
-<li><code>1030</code> : Language not implemented</li>
+<li><code>1030</code> : Lenguaje no implementado</li>
 </ul>
 <h2 id="get_upgrade">get_upgrade</h2>
-<p>Returns the requested upgrade information</p>
-<h1 id="fields_10">Fields</h1>
+<p>Retorna la información del upgrade solicitado</p>
+<h1 id="campos_10">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;get_upgrade&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;,
@@ -535,7 +534,7 @@ with every call to the function to consume said method.</li>
     &quot;language&quot; : &quot;spa&quot;
 }
 </code></pre>
-<h1 id="results_10">Results</h1>
+<h1 id="resultados_10">Resultados</h1>
 <pre><code class="language-JSON">[
     {
         &quot;type_raider&quot;: &quot;Valor&quot;,
@@ -579,15 +578,15 @@ with every call to the function to consume said method.</li>
     }
 ]
 </code></pre>
-<h1 id="common-error-codes_10">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion_10">Errores Comunes retornados por la función</h1>
 <ul>
-<li><code>6021</code> : Empty language</li>
-<li><code>6022</code> : Empty plan</li>
-<li><code>1050</code> : Plan not valid</li>
+<li><code>6021</code> : Lenguaje vacío</li>
+<li><code>6022</code> : Plan Vacio</li>
+<li><code>1050</code> : Plan invalido</li>
 </ul>
 <h2 id="country_restricted">country_restricted</h2>
-<p>Returns the plan's restricted countries</p>
-<h1 id="fields_11">Fields</h1>
+<p>Retorna los países restringidos por el plan</p>
+<h1 id="campos_11">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;get_currencies&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;,
@@ -595,7 +594,7 @@ with every call to the function to consume said method.</li>
     &quot;language&quot; : &quot;spa&quot;
 }
 </code></pre>
-<h1 id="results_11">Results</h1>
+<h1 id="resultados_11">Resultados</h1>
 <pre><code class="language-JSON">[
     {
         &quot;iso_country&quot;: &quot;AW&quot;,
@@ -663,22 +662,22 @@ with every call to the function to consume said method.</li>
     }
 ]
 </code></pre>
-<h1 id="common-error-codes_11">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion_11">Errores Comunes retornados por la función</h1>
 <ul>
-<li><code>6021</code> : Empty language</li>
-<li><code>6022</code> : Empty plan</li>
-<li><code>1050</code> : Plan not valid</li>
+<li><code>6021</code> : Lenguaje vacío</li>
+<li><code>6022</code> : Plan Vacio</li>
+<li><code>1050</code> : Plan invalido</li>
 </ul>
 <h2 id="exchange_rate">exchange_rate</h2>
-<p>Returns the exchange rate of a specified country</p>
-<h1 id="fields_12">Fields</h1>
+<p>Retorna la tasa de cambio del país especificado</p>
+<h1 id="campos_12">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;exchange_rate&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;,
     &quot;iso_country&quot; : &quot;VE&quot;
 }
 </code></pre>
-<h1 id="results_12">Results</h1>
+<h1 id="resultados_12">Resultados</h1>
 <pre><code class="language-JSON">[
     {
         &quot;description&quot;: &quot;Venezuela&quot;,
@@ -688,13 +687,13 @@ with every call to the function to consume said method.</li>
     }
 ]
 </code></pre>
-<h1 id="common-error-codes_12">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion_12">Errores Comunes retornados por la función</h1>
 <ul>
-<li><code>5013</code> : Change rate doesn't exist</li>
+<li><code>5013</code> : La tasa de cambio no existe</li>
 </ul>
 <h2 id="get_country_cities">get_country_cities</h2>
-<p>Returns the cities of the specified country</p>
-<h1 id="fields_13">Fields</h1>
+<p>Retorna las ciudades del país especificado</p>
+<h1 id="campos_13">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;get_country_cities&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;,
@@ -702,7 +701,7 @@ with every call to the function to consume said method.</li>
     &quot;language&quot; : &quot;spa&quot;
 }
 </code></pre>
-<h1 id="results_13">Results</h1>
+<h1 id="resultados_13">Resultados</h1>
 <pre><code class="language-JSON">[
     {
         &quot;countries_description&quot;: &quot;Colombia&quot;,
@@ -783,16 +782,16 @@ with every call to the function to consume said method.</li>
     }
 ]
 </code></pre>
-<h1 id="common-error-codes_13">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion_13">Errores Comunes retornados por la función</h1>
 <ul>
-<li><code>9173</code> : Invalid Iso country</li>
-<li><code>9174</code> : Empty Iso country</li>
-<li><code>6021</code> : Empty language</li>
-<li><code>1030</code> : Language not implemented</li>
+<li><code>9173</code> : Iso country invalido</li>
+<li><code>9174</code> : Iso country vacio</li>
+<li><code>6021</code> : Lenguaje vacío</li>
+<li><code>1030</code> : Lenguaje no implementado</li>
 </ul>
 <h2 id="get_country_states">get_country_states</h2>
-<p>Returns the states of the specified country</p>
-<h1 id="fields_14">Fields</h1>
+<p>Retorna los estados del país especificado</p>
+<h1 id="campos_14">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;get_country_states&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;,
@@ -800,7 +799,7 @@ with every call to the function to consume said method.</li>
     &quot;language&quot; : &quot;spa&quot;
 }
 </code></pre>
-<h1 id="results_14">Results</h1>
+<h1 id="resultados_14">Resultados</h1>
 <pre><code class="language-JSON">[
     {
         &quot;countries_description&quot;: &quot;Colombia&quot;,
@@ -819,17 +818,17 @@ with every call to the function to consume said method.</li>
     }
 ]
 </code></pre>
-<h1 id="common-error-codes_14">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion_14">Errores Comunes retornados por la función</h1>
 <ul>
-<li><code>1030</code> : Language not implemented</li>
-<li><code>6021</code> : Empty language</li>
+<li><code>1030</code> : Lenguaje no implementado</li>
+<li><code>6021</code> : Lenguaje vacío</li>
 <li><code>9015</code> : No results</li>
 <li><code>9173</code> : Invalid Iso Country</li>
 <li><code>9174</code> : Empty Iso Country</li>
 </ul>
 <h2 id="get_country_states_cities">get_country_states_cities</h2>
-<p>Returns the city of a specified state in a country</p>
-<h1 id="fields_15">Fields</h1>
+<p>Retorna las ciudades dentro del estado específico de un país</p>
+<h1 id="campos_15">Campos</h1>
 <pre><code class="language-JSON">{
     &quot;request&quot; : &quot;get_currencies&quot;,
     &quot;token&quot; : &quot;123456789ABC&quot;,
@@ -838,7 +837,7 @@ with every call to the function to consume said method.</li>
     &quot;language&quot; : &quot;spa&quot;
 }
 </code></pre>
-<h1 id="results_15">Results</h1>
+<h1 id="resultados_15">Resultados</h1>
 <pre><code class="language-JSON">[
     {
         &quot;countries_description&quot;: &quot;Colombia&quot;,
@@ -870,16 +869,16 @@ with every call to the function to consume said method.</li>
     }
 ]
 </code></pre>
-<h1 id="common-error-codes_15">Common Error Codes</h1>
+<h1 id="errores-comunes-retornados-por-la-funcion_15">Errores Comunes retornados por la función</h1>
 <ul>
-<li><code>1030</code> : Language not implemented</li>
-<li><code>6021</code> : Empty language</li>
-<li><code>9015</code> : No results</li>
-<li><code>9173</code> : Invalid Iso Country</li>
-<li><code>9174</code> : Empty Iso Country</li>
-<li><code>9175</code> : Empty Country states</li>
-<li><code>9176</code> : Empty Iso states</li>
-<li><code>9177</code> : Invalid Iso state</li>
+<li><code>1030</code> : Lenguaje no implementado</li>
+<li><code>6021</code> : Lenguaje vacío</li>
+<li><code>9015</code> : No hay resultados</li>
+<li><code>9173</code> : Iso country invalido</li>
+<li><code>9174</code> : Iso country vacio</li>
+<li><code>9175</code> : Country states vacio</li>
+<li><code>9176</code> : Iso states vacio</li>
+<li><code>9177</code> : Iso states invalido</li>
 </ul>
               
             </div>

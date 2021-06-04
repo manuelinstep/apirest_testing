@@ -52,14 +52,14 @@
                     </li>
                 </ul>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../instalation/">Installation</a>
+                    <li class="toctree-l1"><a class="" href="../../instalation.md">Installation</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Methods</span></p>
                 <ul class="current">
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">Auth</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#fields">Fields</a>
+    <li class="toctree-l2"><a class="reference internal" href="#campos">Campos</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#results">Results</a>
     </li>
@@ -112,17 +112,15 @@
 <ul>
 <li>Type: POST</li>
 </ul>
-<p>This endpoint provides the mandatory Token that the user must provide everytime a method is called
-(being the only exception this method itself)</p>
-<h2 id="fields">Fields</h2>
+<p>Este endpoint provee el token que debe proveer el usuario con cada llamado a una función</p>
+<h2 id="campos">Campos</h2>
 <pre><code class="language-JSON">{
     &quot;usuario&quot; : &quot;example_user&quot;,
     &quot;password&quot; : &quot;example_password&quot;
 }
 </code></pre>
-<p>If using a client for these requests (i.e. Postman), fields are named the same way</p>
 <h2 id="results">Results</h2>
-<p>When consumed succesfully, the method returns a 12 character Token</p>
+<p>Si el usuario y la contraseña son correctos, el método retorna un token de 12 dígitos</p>
 <pre><code class="language-JSON">{
     &quot;status&quot;: &quot;OK&quot;,
     &quot;result&quot;: {
@@ -132,9 +130,9 @@
 </code></pre>
 <h2 id="common-error-codes">Common Error Codes</h2>
 <ul>
-<li><code>6037</code> : Both Fields are empty </li>
-<li><code>6040</code> : Field 'usuario' is empty</li>
-<li><code>6041</code> : Field 'password' is empty</li>
+<li><code>6037</code> : Ambos campos estan vacíos</li>
+<li><code>6040</code> : Campo 'usuario' esta vacío</li>
+<li><code>6041</code> : Campo 'password' esta vacío</li>
 </ul>
               
             </div>
@@ -146,7 +144,7 @@
         <a href="../information/" class="btn btn-neutral float-right" title="Information">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../../instalation/" class="btn btn-neutral" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../.." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -172,7 +170,7 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../../instalation/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
         <span style="margin-left: 15px"><a href="../information/" style="color: #fcfcfc">Next &raquo;</a></span>
