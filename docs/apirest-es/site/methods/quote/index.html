@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Quote - APIREST</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../../css/theme.css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Quote";
+    var mkdocs_page_input_path = "methods\\quote.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> APIREST</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../instalation/">Installation</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Methods</span></p>
+                <ul class="current">
+                    <li class="toctree-l1"><a class="reference internal" href="../auth/">Auth</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../information/">Information</a>
+                    </li>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Quote</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#mandatory-fields">Mandatory fields</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#add_order">add_order</a>
+    </li>
+    </ul>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">APIREST</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Methods &raquo;</li>
+        
+      
+    
+    <li>Quote</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="information">Information</h1>
+<ul>
+<li>Type : PUT</li>
+</ul>
+<p>This endpoint provides methods use to manage orders, for either reporting, adding or cancelling them</p>
+<h2 id="mandatory-fields">Mandatory fields</h2>
+<pre><code class="language-JSON">{
+    &quot;token&quot; : &quot;123456789ABC&quot;
+}
+</code></pre>
+<p>The token provided in the aforementioned auth method is required every time this method is consumed</p>
+<ul>
+<li>It must be noted that, the name of the function specified in the following list is the parameter that must be sent
+with every call to the function to consume said method.</li>
+</ul>
+<h2 id="add_order">add_order</h2>
+<p>function used for quotation</p>
+<h1 id="fields">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;add_order&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;fecha_salida&quot; : &quot;01/01/2022&quot;,
+    &quot;fecha_llegada&quot; : &quot;02/02/2022&quot;,
+    &quot;referencia&quot; : &quot;REFEXAMPLE1234&quot;,
+    &quot;id_plan&quot; : &quot;1835&quot;,
+    &quot;pais_destino&quot; : &quot;1&quot;,
+    &quot;pais_origen&quot; : &quot;AR&quot;,
+    &quot;moneda&quot; : &quot;usd&quot;,
+    &quot;tasa_cambio&quot; : &quot;1&quot;,
+    &quot;pasajeros&quot; : &quot;1&quot;,
+    &quot;upgrades&quot; : [&quot;123&quot;],
+    &quot;nacimientos&quot; : [&quot;01/01/1991&quot;],
+    &quot;documentos&quot; : [&quot;12344321&quot;],
+    &quot;nombres&quot; : [&quot;Rodrigo&quot;],
+    &quot;apellidos&quot; : [&quot;Aristigueta&quot;],
+    &quot;telefonos&quot; : [&quot;5753544243&quot;],
+    &quot;correos&quot; : [&quot;correo@cliente.com&quot;],
+    &quot;condiciones_med&quot; : [&quot;ninguna&quot;],
+    &quot;nombre_contacto&quot; : &quot;Alfredo Rodriguez&quot;,
+    &quot;telefono_contacto&quot; : &quot;123455432&quot;,
+    &quot;email_contacto&quot; : &quot;correo@contacto.com&quot;,
+    &quot;consideraciones_generales&quot; : &quot;ninguna&quot;,
+    &quot;emision&quot; : &quot;1&quot;,
+    &quot;lenguaje&quot; : &quot;spa&quot;
+}
+</code></pre>
+<ul>
+<li>The field "pasajeros" indicates the ammount of passengers, the fields where the input is surrounded by brackets [] depend on this field, i.e. if there are 3 passengers, then: </li>
+</ul>
+<pre><code class="language-JSON">{
+    &quot;...&quot; : &quot;...&quot;,
+    &quot;nacimientos&quot; : [&quot;01/01/1991&quot;,&quot;02/02/1992&quot;,&quot;03/03/1993&quot;],
+    &quot;...&quot; : &quot;...&quot;
+}
+</code></pre>
+<ul>
+<li>The only exception to this rule is the "upgrades" field, which doesn't depends of the ammount of passengers</li>
+</ul>
+<h1 id="results">Results</h1>
+<pre><code class="language-JSON">{
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;codigo&quot;: &quot;FT-2J4I74&quot;,
+    &quot;valor&quot;: &quot;77.440&quot;,
+    &quot;ruta&quot;: &quot;https://fasttravelassistance.ilstechnik.com/app/reports/reporte_orderventas.php?codigo=-2J4I74&amp;selectLanguage=es&amp;broker_sesion=2267&quot;,
+    &quot;documento&quot;: &quot;0986867671&quot;,
+    &quot;referencia&quot;: &quot;1244232&quot;,
+    &quot;El valor de cambio fue ajustado a:&quot;: &quot;5,000.00&quot;
+}
+</code></pre>
+<h1 id="common-error-codes">Common Error Codes</h1>
+<ul>
+<li><code>1005</code> : Invalid Token </li>
+<li><code>9061</code> : Empty Token</li>
+<li><code>1003</code> : Language not implemented</li>
+<li><code>4006</code> : Invalid country ID</li>
+<li><code>6021</code> : Empty Language</li>
+<li><code>6022</code> : Empty plan</li>
+<li><code>1062</code> : Invalid Birthday</li>
+<li><code>1095</code> : Invalid upgrade</li>
+<li><code>6026</code> : Empty amount of passengers</li>
+<li><code>6045</code> : Order data already exists</li>
+<li><code>6027</code> : Origin country empty</li>
+<li><code>6028</code> : Destination territory empty</li>
+<li><code>6029</code> : Empty date of departure</li>
+<li><code>6030</code> : Empty date of arrival</li>
+<li><code>6034</code> : Empty currency</li>
+<li><code>6035</code> : Empty emission code</li>
+<li><code>6036</code> : Empty contact name</li>
+<li><code>6037</code> : All fields are empty</li>
+<li><code>2004</code> : the departure date cannot be less than the current date</li>
+<li><code>1050</code> : Invalid plan</li>
+<li><code>3030</code> : Invalid date range</li>
+<li><code>1022</code> : Invalid currency</li>
+<li><code>3153</code> : Element conflict in request (Age of passenger exceeds plan age limit)</li>
+<li><code>3150</code> :  Missing required element (an obligatory field is empty)</li>
+<li><code>4005</code> : Passenger name is empty</li>
+<li><code>4006</code> : Passenger document is empty</li>
+<li><code>4007</code> : Passenger surname is empty</li>
+<li><code>5006</code> : Medic conditions is empty</li>
+<li><code>4008</code> : Passenger phone is emtpy</li>
+<li><code>1248</code> : Amount of days less than allowed in the plan</li>
+<li><code>1247</code> : Amount of days more than allowed in the plan</li>
+<li><code>1080</code> : Invalid territory</li>
+<li><code>1081</code> : Restricted territory</li>
+<li><code>5003</code> : Error in ridership</li>
+<li><code>5005</code> : Birthday required</li>
+<li><code>5009</code> : Invalid passenger phone number</li>
+<li><code>4010</code> : Invalid Beneficiary mail</li>
+<li><code>5012</code> : Required passenger email</li>
+<li><code>1091</code> : Restricted country</li>
+<li><code>9011</code> : Exchange rate invalid</li>
+</ul>
+<h2 id="add_upgrade">add_upgrade</h2>
+<p>Adds an upgrade to the specified order</p>
+<h1 id="fields_1">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;add_upgrade&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;codigo&quot; : &quot;FT-K21JDD&quot;,
+    &quot;upgrade&quot; : &quot;126&quot;
+}
+</code></pre>
+<h1 id="results_1">Results</h1>
+<pre><code class="language-JSON">{
+    &quot;voucher&quot;: &quot;FT-K21JDD&quot;,
+    &quot;valor_adicional&quot;: 55.72,
+    &quot;upgrades&quot;: [
+        &quot;126&quot;
+    ]
+}
+</code></pre>
+<h1 id="common-error-codes_1">Common Error Codes</h1>
+<ul>
+<li><code>6023</code> : Empty Voucher </li>
+<li><code>6039</code> : Empty Upgrade </li>
+<li><code>1021</code> : inactive Voucher</li>
+<li><code>1020</code> : Voucher not found</li>
+</ul>
+<h2 id="request_cancellation">request_cancellation</h2>
+<p>Cancels the specified order</p>
+<h1 id="fields_2">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;request_cancellation&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;codigo&quot; : &quot;FT-K21JDD&quot;,
+    &quot;notificar&quot; : &quot;1&quot;
+}
+</code></pre>
+<h1 id="results_2">Results</h1>
+<pre><code class="language-JSON">{
+    &quot;status&quot;: &quot;OK&quot;
+}
+</code></pre>
+<h1 id="common-error-codes_2">Common Error Codes</h1>
+<ul>
+<li><code>6037</code> : All fields are empty</li>
+<li><code>4001</code> : Increased cancellation date for departure</li>
+<li><code>4050</code> : Invalid notificaction</li>
+<li><code>1020</code> : Voucher not found</li>
+<li><code>1021</code> : Inactive voucher</li>
+<li><code>3220</code> : Unauthorized operation</li>
+<li><code>3051</code> : User not associated to an agency</li>
+</ul>
+<h2 id="request_upgrade_cancellation">request_upgrade_cancellation</h2>
+<p>Cancels the specified order</p>
+<h1 id="fields_3">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;request_cancellation&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;codigo&quot; : &quot;FT-K21JDD&quot;,
+    &quot;upgrade&quot; : &quot;126&quot;
+}
+</code></pre>
+<h1 id="results_3">Results</h1>
+<pre><code class="language-JSON">{
+    &quot;voucher&quot;: &quot;FT-K21JDD&quot;,
+    &quot;valor_descuento&quot;: &quot;55.720&quot;,
+    &quot;pricer_order&quot;: 618.48
+}
+</code></pre>
+<h1 id="common-error-codes_3">Common Error Codes</h1>
+<ul>
+<li><code>6023</code> : Empty voucher </li>
+<li><code>6039</code> : Empty upgrade </li>
+<li><code>6037</code> : All the fields are empty </li>
+<li><code>1021</code> : Inactive Voucher</li>
+<li><code>1020</code> : Voucher not found</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../information/" class="btn btn-neutral" title="Information"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../information/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

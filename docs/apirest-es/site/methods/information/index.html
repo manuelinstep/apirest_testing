@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Information - APIREST</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../../css/theme.css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Information";
+    var mkdocs_page_input_path = "methods\\information.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> APIREST</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../instalation/">Installation</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Methods</span></p>
+                <ul class="current">
+                    <li class="toctree-l1"><a class="reference internal" href="../auth/">Auth</a>
+                    </li>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Information</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#mandatory-fields">Mandatory fields</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#get_voucher">get_voucher</a>
+    </li>
+    </ul>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../quote/">Quote</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">APIREST</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Methods &raquo;</li>
+        
+      
+    
+    <li>Information</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="information">Information</h1>
+<ul>
+<li>Type : GET</li>
+</ul>
+<p>This endpoint provides a method that gets the required operation as a field, the data received and aditional fields depend on which method is being specified by the user</p>
+<h2 id="mandatory-fields">Mandatory fields</h2>
+<pre><code class="language-JSON">{
+    &quot;token&quot; : &quot;123456789ABC&quot;
+}
+</code></pre>
+<p>The token provided in the aforementioned auth method is required every time this method is consumed</p>
+<ul>
+<li>It must be noted that, the name of the function specified in the following list is the parameter that must be sent
+with every call to the function to consume said method.</li>
+</ul>
+<h2 id="get_voucher">get_voucher</h2>
+<p>Returns all the information of an order</p>
+<h1 id="fields">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_voucher&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;codigo&quot; : &quot;EXMPL-1234&quot;
+}
+</code></pre>
+<h1 id="results">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;id&quot;: &quot;9568&quot;,
+        &quot;origen&quot;: &quot;CO&quot;,
+        &quot;destino&quot;: &quot;XX&quot;,
+        &quot;salida&quot;: &quot;2019-02-01&quot;,
+        &quot;retorno&quot;: &quot;2019-02-10&quot;,
+        &quot;programaplan&quot;: &quot;Viajes por día&quot;,
+        &quot;nombre_contacto&quot;: &quot;pruena&quot;,
+        &quot;email_contacto&quot;: &quot;prue@ilsols.com&quot;,
+        &quot;comentarios&quot;: &quot;&quot;,
+        &quot;telefono_contacto&quot;: &quot;57-845-545-5&quot;,
+        &quot;producto&quot;: &quot;1745&quot;,
+        &quot;agencia&quot;: &quot;2267&quot;,
+        &quot;nombre_agencia&quot;: &quot;Fast Travel Assistance&quot;,
+        &quot;total&quot;: &quot;33.800&quot;,
+        &quot;codigo&quot;: &quot;FA-420BEA&quot;,
+        &quot;fecha&quot;: &quot;2018-12-05&quot;,
+        &quot;vendedor&quot;: &quot;10702&quot;,
+        &quot;cantidad&quot;: &quot;1&quot;,
+        &quot;status&quot;: &quot;3&quot;,
+        &quot;des_status&quot;: &quot;Expirado&quot;,
+        &quot;es_emision_corp&quot;: &quot;0&quot;,
+        &quot;origin_ip&quot;: &quot;190.43.20.124&quot;,
+        &quot;alter_cur&quot;: &quot;0&quot;,
+        &quot;tasa_cambio&quot;: &quot;0.000&quot;,
+        &quot;family_plan&quot;: &quot;no&quot;,
+        &quot;referencia&quot;: &quot;&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes">Common Error Codes</h1>
+<ul>
+<li><code>1005</code> : Invalid Token</li>
+<li><code>9015</code> : No results</li>
+</ul>
+<h2 id="get_currencies">get_currencies</h2>
+<p>Returns all the currencies stored in the database</p>
+<h1 id="fields_1">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_currencies&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;
+}
+</code></pre>
+<h1 id="results_1">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;id_country&quot;: &quot;AD&quot;,
+        &quot;value_iso&quot;: &quot;AFN&quot;,
+        &quot;desc_small&quot;: &quot;Afghani&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;6&quot;,
+        &quot;value_iso&quot;: &quot;ALL&quot;,
+        &quot;desc_small&quot;: &quot;Lek&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;60&quot;,
+        &quot;value_iso&quot;: &quot;DZD&quot;,
+        &quot;desc_small&quot;: &quot;Algerian Dinar&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;12&quot;,
+        &quot;value_iso&quot;: &quot;USD&quot;,
+        &quot;desc_small&quot;: &quot;US Dollar&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;AD&quot;,
+        &quot;value_iso&quot;: &quot;EUR&quot;,
+        &quot;desc_small&quot;: &quot;Euro&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;9&quot;,
+        &quot;value_iso&quot;: &quot;AOA&quot;,
+        &quot;desc_small&quot;: &quot;Kwanza&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;5&quot;,
+        &quot;value_iso&quot;: &quot;XCD&quot;,
+        &quot;desc_small&quot;: &quot;East Caribbean Dollar&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;10&quot;,
+        &quot;value_iso&quot;: &quot;N/A&quot;,
+        &quot;desc_small&quot;: &quot;No universal currency&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;4&quot;,
+        &quot;value_iso&quot;: &quot;XCD&quot;,
+        &quot;desc_small&quot;: &quot;East Caribbean Dollar&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;VE&quot;,
+        &quot;value_iso&quot;: &quot;VEF&quot;,
+        &quot;desc_small&quot;: &quot;Bolivar Fuerte&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;DZ&quot;,
+        &quot;value_iso&quot;: &quot;ADEZ&quot;,
+        &quot;desc_small&quot;: &quot;prueba&quot;
+    },
+    {
+        &quot;id_country&quot;: &quot;AL&quot;,
+        &quot;value_iso&quot;: &quot;AL&quot;,
+        &quot;desc_small&quot;: &quot;testing&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_1">Common Error Codes</h1>
+<ul>
+<li><code>1005</code> : Invalid Token</li>
+<li><code>9015</code> : No results</li>
+</ul>
+<h2 id="get_countries">get_countries</h2>
+<p>Returns all the currently stored countries, depending on the language, currently supports spanish (spa), or english (eng)</p>
+<h1 id="fields_2">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_countries&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;language&quot; : &quot;spa&quot;
+}
+</code></pre>
+<h1 id="results_2">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;iso_country&quot;: &quot;AD&quot;,
+        &quot;description&quot;: &quot;Andorra&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;AE&quot;,
+        &quot;description&quot;: &quot;Emiratos Árabes Unidos&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;AF&quot;,
+        &quot;description&quot;: &quot;Afganistán&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;AG&quot;,
+        &quot;description&quot;: &quot;Antigua y Barbuda&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;AI&quot;,
+        &quot;description&quot;: &quot;Anguilla&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;AL&quot;,
+        &quot;description&quot;: &quot;Albania&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_2">Common Error Codes</h1>
+<ul>
+<li><code>1030</code> : Language not implemented</li>
+<li><code>1005</code> : Invalid Token</li>
+</ul>
+<h2 id="get_regions">get_regions</h2>
+<p>Returns all the currently stored regions</p>
+<h1 id="fields_3">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_regions&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;
+}
+</code></pre>
+<h1 id="results_3">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;id_territory&quot;: &quot;1&quot;,
+        &quot;desc_small&quot;: &quot;WorldWide&quot;
+    },
+    {
+        &quot;id_territory&quot;: &quot;2&quot;,
+        &quot;desc_small&quot;: &quot;Europe&quot;
+    },
+    {
+        &quot;id_territory&quot;: &quot;9&quot;,
+        &quot;desc_small&quot;: &quot;Local&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_3">Common Error Codes</h1>
+<ul>
+<li><code>1005</code> : Invalid Token</li>
+</ul>
+<h2 id="get_plans">get_plans</h2>
+<p>Returns all the plans associated with the user's agency</p>
+<h1 id="fields_4">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_plans&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;language&quot; : &quot;spa&quot;
+}
+</code></pre>
+<h1 id="results_4">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;id&quot; : &quot;1840&quot;,
+        &quot;titulo&quot; : &quot;titulo&quot;,
+        &quot;description&quot; : &quot;description&quot;,
+        &quot;language_id&quot; : &quot;spa&quot;,
+        &quot;plan_id&quot; : &quot;1840&quot;,
+        &quot;id_plan_categoria&quot; : &quot;24&quot;,
+        &quot;num_pas&quot; : &quot;9&quot;,
+        &quot;min_tiempo&quot; : &quot;1&quot;,
+        &quot;max_tiempo&quot; : &quot;90&quot;,
+        &quot;id_currence&quot; : &quot;31&quot;,
+        &quot;family_plan&quot; : &quot;N&quot;,
+        &quot;min_age&quot; : &quot;1&quot;,
+        &quot;max_age&quot; : &quot;90&quot;,
+        &quot;normal_age&quot; : &quot;21&quot;,
+        &quot;plan_local&quot; : &quot;N&quot;,
+        &quot;modo_plan&quot; : &quot;W&quot;,
+        &quot;original_id&quot; : null
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_4">Common Error Codes</h1>
+<ul>
+<li><code>1005</code> : Invalid Token</li>
+<li><code>9015</code> : No Results</li>
+<li><code>6021</code> : Empty language </li>
+</ul>
+<h2 id="get_coverages">get_coverages</h2>
+<p>Returns all of a plan coverages</p>
+<h1 id="fields_5">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_coverages&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;language&quot; : &quot;spa&quot;,
+    &quot;id_plan&quot; : &quot;1840&quot; 
+}
+</code></pre>
+<h1 id="results_5">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;valor_spa&quot;: &quot;titulo&quot;,
+        &quot;valor_eng&quot;: &quot;title&quot;,
+        &quot;id_benefit&quot;: &quot;207&quot;,
+        &quot;name&quot;: &quot;Asistencia médica por accidente&quot;,
+        &quot;language_id&quot;: &quot;spa&quot;,
+        &quot;extended_info&quot;: &quot;Asistencia médica por accidente&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_5">Common Error Codes</h1>
+<ul>
+<li>`````` :</li>
+<li>`````` :</li>
+</ul>
+<h2 id="get_pvp_price">get_pvp_price</h2>
+<p>Gets price from a plan based on the country specified</p>
+<h1 id="fields_6">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_currencies&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;id_plan&quot; : &quot;1234&quot;,
+    &quot;iso_country&quot; : &quot;CL&quot;
+}
+</code></pre>
+<p>WARNING: The field "iso_country" can be left empty, this will return all the prices of the plan without regarding a specific country</p>
+<h1 id="results_6">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;unidad&quot;: &quot;dias&quot;,
+        &quot;tiempo&quot;: &quot;20&quot;,
+        &quot;valor&quot;: &quot;2.70&quot;
+    },
+    {
+        &quot;unidad&quot;: &quot;dias&quot;,
+        &quot;tiempo&quot;: &quot;40&quot;,
+        &quot;valor&quot;: &quot;2.42&quot;
+    },
+    {
+        &quot;unidad&quot;: &quot;dias&quot;,
+        &quot;tiempo&quot;: &quot;60&quot;,
+        &quot;valor&quot;: &quot;2.10&quot;
+    },
+    {
+        &quot;unidad&quot;: &quot;dias&quot;,
+        &quot;tiempo&quot;: &quot;90&quot;,
+        &quot;valor&quot;: &quot;1.80&quot;
+    },
+    {
+        &quot;unidad&quot;: &quot;dias&quot;,
+        &quot;tiempo&quot;: &quot;1&quot;,
+        &quot;valor&quot;: &quot;2.54&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_6">Common Error Codes</h1>
+<ul>
+<li><code>1091</code> : The country provided is restricted for the plan</li>
+<li><code>1060</code> : Price not registered for this country</li>
+<li><code>6022</code> : Empty plan</li>
+</ul>
+<h2 id="get_languages">get_languages</h2>
+<p>Returns all the languages avaible in the platform</p>
+<h1 id="fields_7">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_languages&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;
+}
+</code></pre>
+<h1 id="results_7">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;id&quot;: &quot;141&quot;,
+        &quot;lg_id&quot;: &quot;eng&quot;,
+        &quot;name&quot;: &quot;English&quot;,
+        &quot;short_name&quot;: &quot;en&quot;
+    },
+    {
+        &quot;id&quot;: &quot;397&quot;,
+        &quot;lg_id&quot;: &quot;por&quot;,
+        &quot;name&quot;: &quot;Portuguese&quot;,
+        &quot;short_name&quot;: &quot;pt&quot;
+    },
+    {
+        &quot;id&quot;: &quot;456&quot;,
+        &quot;lg_id&quot;: &quot;spa&quot;,
+        &quot;name&quot;: &quot;Español&quot;,
+        &quot;short_name&quot;: &quot;es&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_7">Common Error Codes</h1>
+<ul>
+<li><code>1005</code> : Invalid Token</li>
+<li><code>6020</code> : Empty Token</li>
+</ul>
+<h2 id="get_plan_category">get_plan_category</h2>
+<p>Returns all plan categories</p>
+<h1 id="fields_8">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_plan_category&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;language&quot; : &quot;spa&quot;
+}
+</code></pre>
+<h1 id="results_8">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;name_plan&quot;: &quot;Larga Estadia&quot;,
+        &quot;id_plan_categoria&quot;: &quot;22&quot;
+    },
+    {
+        &quot;name_plan&quot;: &quot;Anuales - Multiviajes&quot;,
+        &quot;id_plan_categoria&quot;: &quot;23&quot;
+    },
+    {
+        &quot;name_plan&quot;: &quot;Viajes por día&quot;,
+        &quot;id_plan_categoria&quot;: &quot;24&quot;
+    },
+    {
+        &quot;name_plan&quot;: &quot;Estudiantil&quot;,
+        &quot;id_plan_categoria&quot;: &quot;27&quot;
+    },
+    {
+        &quot;name_plan&quot;: &quot;Catpruebaesp&quot;,
+        &quot;id_plan_categoria&quot;: &quot;28&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_8">Common Error Codes</h1>
+<ul>
+<li><code>6021</code> : Empty language</li>
+<li><code>1030</code> : Language not implemented</li>
+<li><code>1040</code> : There's no plan category</li>
+</ul>
+<h2 id="get_terms">get_terms</h2>
+<p>Returns the terms and conditions of the plan</p>
+<h1 id="fields_9">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_currencies&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;id_plan&quot; : &quot;1800&quot;,
+    &quot;language&quot; : &quot;spa&quot;
+}
+</code></pre>
+<h1 id="results_9">Results</h1>
+<pre><code class="language-JSON">{
+    &quot;id&quot;: &quot;1800&quot;,
+    &quot;name&quot;: &quot;USD 20.000 L. Econ.&quot;,
+    &quot;description&quot;: &quot;USD 20.000 L. Econ.&quot;,
+    &quot;terms&quot;: &quot;fasttravelassistance.ilstechnik.com/app/admin/server/php/files/120181204031219.pdf&quot;
+}
+</code></pre>
+<h1 id="common-error-codes_9">Common Error Codes</h1>
+<ul>
+<li><code>6021</code> : Empty language</li>
+<li><code>6022</code> : Empty plan</li>
+<li><code>1050</code> : Invalid plan</li>
+<li><code>4012</code> : Conditions not found</li>
+<li><code>1030</code> : Language not implemented</li>
+</ul>
+<h2 id="get_upgrade">get_upgrade</h2>
+<p>Returns the requested upgrade information</p>
+<h1 id="fields_10">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_upgrade&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;id_plan&quot; : &quot;1800&quot;,
+    &quot;language&quot; : &quot;spa&quot;
+}
+</code></pre>
+<h1 id="results_10">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;type_raider&quot;: &quot;Valor&quot;,
+        &quot;rd_calc_type&quot;: &quot;Pasajero Especifico&quot;,
+        &quot;id_raider&quot;: &quot;135&quot;,
+        &quot;cost_raider&quot;: &quot;59.940&quot;,
+        &quot;name_raider&quot;: &quot;USD 9,000 - Cancelación Multi-causa&quot;,
+        &quot;value_raider&quot;: &quot;149.850&quot;
+    },
+    {
+        &quot;type_raider&quot;: &quot;Valor&quot;,
+        &quot;rd_calc_type&quot;: &quot;Pasajero Especifico&quot;,
+        &quot;id_raider&quot;: &quot;152&quot;,
+        &quot;cost_raider&quot;: &quot;70.000&quot;,
+        &quot;name_raider&quot;: &quot;USD 7,000 - Cancelación Multi causa Comp&quot;,
+        &quot;value_raider&quot;: &quot;70.000&quot;
+    },
+    {
+        &quot;type_raider&quot;: &quot;Valor&quot;,
+        &quot;rd_calc_type&quot;: &quot;Pasajero Especifico&quot;,
+        &quot;id_raider&quot;: &quot;151&quot;,
+        &quot;cost_raider&quot;: &quot;60.000&quot;,
+        &quot;name_raider&quot;: &quot;USD 6,000 - Cancelación Multi Causa Comp&quot;,
+        &quot;value_raider&quot;: &quot;60.000&quot;
+    },
+    {
+        &quot;type_raider&quot;: &quot;Valor&quot;,
+        &quot;rd_calc_type&quot;: &quot;Pasajero Especifico&quot;,
+        &quot;id_raider&quot;: &quot;132&quot;,
+        &quot;cost_raider&quot;: &quot;39.960&quot;,
+        &quot;name_raider&quot;: &quot;USD 6,000 - Cancelación Multi-causa&quot;,
+        &quot;value_raider&quot;: &quot;99.900&quot;
+    },
+    {
+        &quot;type_raider&quot;: &quot;Porcentage %&quot;,
+        &quot;rd_calc_type&quot;: &quot;Pasajero Especifico&quot;,
+        &quot;id_raider&quot;: &quot;137&quot;,
+        &quot;cost_raider&quot;: &quot;25.000&quot;,
+        &quot;name_raider&quot;: &quot;Upgrade de futura Mamá (25% de la cobertura médica, sin exceder USD 10,000)&quot;,
+        &quot;value_raider&quot;: &quot;25.000&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_10">Common Error Codes</h1>
+<ul>
+<li><code>6021</code> : Empty language</li>
+<li><code>6022</code> : Empty plan</li>
+<li><code>1050</code> : Plan not valid</li>
+</ul>
+<h2 id="country_restricted">country_restricted</h2>
+<p>Returns the plan's restricted countries</p>
+<h1 id="fields_11">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_currencies&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;id_plan&quot; : &quot;1835&quot;,
+    &quot;language&quot; : &quot;spa&quot;
+}
+</code></pre>
+<h1 id="results_11">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;iso_country&quot;: &quot;AW&quot;,
+        &quot;description&quot;: &quot;Aruba&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;BO&quot;,
+        &quot;description&quot;: &quot;Bolivia&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;CL&quot;,
+        &quot;description&quot;: &quot;Chile&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;CR&quot;,
+        &quot;description&quot;: &quot;Costa Rica&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;CU&quot;,
+        &quot;description&quot;: &quot;Cuba&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;EC&quot;,
+        &quot;description&quot;: &quot;Ecuador&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;SV&quot;,
+        &quot;description&quot;: &quot;El Salvador&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;GT&quot;,
+        &quot;description&quot;: &quot;Guatemala&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;HN&quot;,
+        &quot;description&quot;: &quot;Honduras&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;MX&quot;,
+        &quot;description&quot;: &quot;México&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;AN&quot;,
+        &quot;description&quot;: &quot;Antillas Holandesas&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;NI&quot;,
+        &quot;description&quot;: &quot;Nicaragua&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;PA&quot;,
+        &quot;description&quot;: &quot;Panamá&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;PY&quot;,
+        &quot;description&quot;: &quot;Paraguay&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;PE&quot;,
+        &quot;description&quot;: &quot;Perú&quot;
+    },
+    {
+        &quot;iso_country&quot;: &quot;UY&quot;,
+        &quot;description&quot;: &quot;Uruguay&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_11">Common Error Codes</h1>
+<ul>
+<li><code>6021</code> : Empty language</li>
+<li><code>6022</code> : Empty plan</li>
+<li><code>1050</code> : Plan not valid</li>
+</ul>
+<h2 id="exchange_rate">exchange_rate</h2>
+<p>Returns the exchange rate of a specified country</p>
+<h1 id="fields_12">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;exchange_rate&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;iso_country&quot; : &quot;VE&quot;
+}
+</code></pre>
+<h1 id="results_12">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;description&quot;: &quot;Venezuela&quot;,
+        &quot;iso_country&quot;: &quot;VE&quot;,
+        &quot;currencyname&quot;: &quot;Bolivar&quot;,
+        &quot;usd_exchange&quot;: &quot;5000&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_12">Common Error Codes</h1>
+<ul>
+<li><code>5013</code> : Change rate doesn't exist</li>
+</ul>
+<h2 id="get_country_cities">get_country_cities</h2>
+<p>Returns the cities of the specified country</p>
+<h1 id="fields_13">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_country_cities&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;iso_country&quot; : &quot;CO&quot;,
+    &quot;language&quot; : &quot;spa&quot;
+}
+</code></pre>
+<h1 id="results_13">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;countries_description&quot;: &quot;Colombia&quot;,
+        &quot;cities_description&quot;: &quot;Baranoa&quot;,
+        &quot;iso_city&quot;: &quot;3689235&quot;,
+        &quot;states_description&quot;: &quot;Atlantico&quot;,
+        &quot;iso_state&quot;: &quot;CO.04&quot;
+    },
+    {
+        &quot;countries_description&quot;: &quot;Colombia&quot;,
+        &quot;cities_description&quot;: &quot;Barranquilla&quot;,
+        &quot;iso_city&quot;: &quot;3689147&quot;,
+        &quot;states_description&quot;: &quot;Atlantico&quot;,
+        &quot;iso_state&quot;: &quot;CO.04&quot;
+    },
+    {
+        &quot;countries_description&quot;: &quot;Colombia&quot;,
+        &quot;cities_description&quot;: &quot;Campo de la Cruz&quot;,
+        &quot;iso_city&quot;: &quot;3687758&quot;,
+        &quot;states_description&quot;: &quot;Atlantico&quot;,
+        &quot;iso_state&quot;: &quot;CO.04&quot;
+    },
+    {
+        &quot;countries_description&quot;: &quot;Colombia&quot;,
+        &quot;cities_description&quot;: &quot;Candelaria&quot;,
+        &quot;iso_city&quot;: &quot;3687634&quot;,
+        &quot;states_description&quot;: &quot;Atlantico&quot;,
+        &quot;iso_state&quot;: &quot;CO.04&quot;
+    },
+    {
+        &quot;countries_description&quot;: &quot;Colombia&quot;,
+        &quot;cities_description&quot;: &quot;Galapa&quot;,
+        &quot;iso_city&quot;: &quot;3682238&quot;,
+        &quot;states_description&quot;: &quot;Atlantico&quot;,
+        &quot;iso_state&quot;: &quot;CO.04&quot;
+    },
+    {
+        &quot;countries_description&quot;: &quot;Colombia&quot;,
+        &quot;cities_description&quot;: &quot;Juan de Acosta&quot;,
+        &quot;iso_city&quot;: &quot;3680176&quot;,
+        &quot;states_description&quot;: &quot;Atlantico&quot;,
+        &quot;iso_state&quot;: &quot;CO.04&quot;
+    },
+    {
+        &quot;countries_description&quot;: &quot;Colombia&quot;,
+        &quot;cities_description&quot;: &quot;Luruaco&quot;,
+        &quot;iso_city&quot;: &quot;3675826&quot;,
+        &quot;states_description&quot;: &quot;Atlantico&quot;,
+        &quot;iso_state&quot;: &quot;CO.04&quot;
+    },
+    {
+        &quot;countries_description&quot;: &quot;Colombia&quot;,
+        &quot;cities_description&quot;: &quot;Malambo&quot;,
+        &quot;iso_city&quot;: &quot;3675595&quot;,
+        &quot;states_description&quot;: &quot;Atlantico&quot;,
+        &quot;iso_state&quot;: &quot;CO.04&quot;
+    },
+    {
+        &quot;countries_description&quot;: &quot;Colombia&quot;,
+        &quot;cities_description&quot;: &quot;Manati&quot;,
+        &quot;iso_city&quot;: &quot;3675512&quot;,
+        &quot;states_description&quot;: &quot;Atlantico&quot;,
+        &quot;iso_state&quot;: &quot;CO.04&quot;
+    },
+    {
+        &quot;countries_description&quot;: &quot;Colombia&quot;,
+        &quot;cities_description&quot;: &quot;Palmar de Varela&quot;,
+        &quot;iso_city&quot;: &quot;3673220&quot;,
+        &quot;states_description&quot;: &quot;Atlantico&quot;,
+        &quot;iso_state&quot;: &quot;CO.04&quot;
+    },
+    {
+        &quot;countries_description&quot;: &quot;Colombia&quot;,
+        &quot;cities_description&quot;: &quot;Piojo&quot;,
+        &quot;iso_city&quot;: &quot;3672176&quot;,
+        &quot;states_description&quot;: &quot;Atlantico&quot;,
+        &quot;iso_state&quot;: &quot;CO.04&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_13">Common Error Codes</h1>
+<ul>
+<li><code>9173</code> : Invalid Iso country</li>
+<li><code>9174</code> : Empty Iso country</li>
+<li><code>6021</code> : Empty language</li>
+<li><code>1030</code> : Language not implemented</li>
+</ul>
+<h2 id="get_country_states">get_country_states</h2>
+<p>Returns the states of the specified country</p>
+<h1 id="fields_14">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_country_states&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;iso_country&quot; : &quot;CO&quot;,
+    &quot;language&quot; : &quot;spa&quot;
+}
+</code></pre>
+<h1 id="results_14">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;countries_description&quot;: &quot;Colombia&quot;,
+        &quot;states_description&quot;: &quot;Atlantico&quot;,
+        &quot;iso_state&quot;: &quot;CO.04&quot;
+    },
+    {
+        &quot;countries_description&quot;: &quot;Colombia&quot;,
+        &quot;states_description&quot;: &quot;Bogota D.C.&quot;,
+        &quot;iso_state&quot;: &quot;CO.34&quot;
+    },
+    {
+        &quot;countries_description&quot;: &quot;Colombia&quot;,
+        &quot;states_description&quot;: &quot;Cundinamarca&quot;,
+        &quot;iso_state&quot;: &quot;CO.33&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_14">Common Error Codes</h1>
+<ul>
+<li><code>1030</code> : Language not implemented</li>
+<li><code>6021</code> : Empty language</li>
+<li><code>9015</code> : No results</li>
+<li><code>9173</code> : Invalid Iso Country</li>
+<li><code>9174</code> : Empty Iso Country</li>
+</ul>
+<h2 id="get_country_states_cities">get_country_states_cities</h2>
+<p>Returns the city of a specified state in a country</p>
+<h1 id="fields_15">Fields</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;get_currencies&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;iso_country&quot; : &quot;CO&quot;,
+    &quot;iso_state&quot; : &quot;CO.14&quot;,
+    &quot;language&quot; : &quot;spa&quot;
+}
+</code></pre>
+<h1 id="results_15">Results</h1>
+<pre><code class="language-JSON">[
+    {
+        &quot;countries_description&quot;: &quot;Colombia&quot;,
+        &quot;cities_description&quot;: &quot;Calamar&quot;,
+        &quot;iso_city&quot;: &quot;3687975&quot;,
+        &quot;states_description&quot;: &quot;Departamento del Guaviare&quot;,
+        &quot;iso_state&quot;: &quot;CO.14&quot;
+    },
+    {
+        &quot;countries_description&quot;: &quot;Colombia&quot;,
+        &quot;cities_description&quot;: &quot;El Retorno&quot;,
+        &quot;iso_city&quot;: &quot;3792387&quot;,
+        &quot;states_description&quot;: &quot;Departamento del Guaviare&quot;,
+        &quot;iso_state&quot;: &quot;CO.14&quot;
+    },
+    {
+        &quot;countries_description&quot;: &quot;Colombia&quot;,
+        &quot;cities_description&quot;: &quot;Miraflores&quot;,
+        &quot;iso_city&quot;: &quot;3674740&quot;,
+        &quot;states_description&quot;: &quot;Departamento del Guaviare&quot;,
+        &quot;iso_state&quot;: &quot;CO.14&quot;
+    },
+    {
+        &quot;countries_description&quot;: &quot;Colombia&quot;,
+        &quot;cities_description&quot;: &quot;San Jose del Guaviare&quot;,
+        &quot;iso_city&quot;: &quot;3828545&quot;,
+        &quot;states_description&quot;: &quot;Departamento del Guaviare&quot;,
+        &quot;iso_state&quot;: &quot;CO.14&quot;
+    }
+]
+</code></pre>
+<h1 id="common-error-codes_15">Common Error Codes</h1>
+<ul>
+<li><code>1030</code> : Language not implemented</li>
+<li><code>6021</code> : Empty language</li>
+<li><code>9015</code> : No results</li>
+<li><code>9173</code> : Invalid Iso Country</li>
+<li><code>9174</code> : Empty Iso Country</li>
+<li><code>9175</code> : Empty Country states</li>
+<li><code>9176</code> : Empty Iso states</li>
+<li><code>9177</code> : Invalid Iso state</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../quote/" class="btn btn-neutral float-right" title="Quote">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../auth/" class="btn btn-neutral" title="Auth"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../auth/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../quote/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
