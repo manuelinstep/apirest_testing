@@ -1,9 +1,28 @@
-site_name: APIREST
+site_name: API REST
 nav:
     - Home: index.md
-    - Installation: instalation.md
-    - Methods : 
-        - Auth : methods/auth.md
-        - Information : methods/information.md
-        - Quote : methods/quote.md 
+    - Auth :
+        - methods/auth.md
+    - Information :
+        - methods/information/country_restricted.md
+        - methods/information/exchange_rate.md
+        - methods/information/get_countries.md
+        - methods/information/get_country_cities.md
+        - methods/information/get_country_states_cities.md
+        - methods/information/get_country_states.md
+        - methods/information/get_coverages.md
+        - methods/information/get_currencies.md
+        - methods/information/get_languages.md
+        - methods/information/get_plan_category.md
+        - methods/information/get_plans.md
+        - methods/information/get_pvp_price.md
+        - methods/information/get_regions.md
+        - methods/information/get_terms.md
+        - methods/information/get_upgrade.md
+        - methods/information/get_voucher.md 
+    - Quote : 
+        - methods/quote/add_order.md
+        - methods/quote/add_upgrade.md
+        - methods/quote/request_cancellation.md
+        - methods/quote/request_upgrade_cancellation.md
 theme: readthedocs

@@ -1,9 +1,9 @@
-# Auth
-
-* Type: POST
+# auth (POST)
 
 This endpoint provides the mandatory Token that the user must provide everytime a method is called
 (being the only exception this method itself)
+
+* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/auth```
 
 ## Fields
 
