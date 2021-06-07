@@ -47,6 +47,11 @@
             $result = ($verify['status']=='error') ? $verify : $_quote->handle($getBody);
             header('Content-Type: application/json');
             echo json_encode($result);
+            $saver = json_decode($getBody,true);
+            $operation = (!isset($saver['request'])) ? '' : $saver['request'] ;
+            $token = (!isset($saver['token'])) ? '' : $saver['token'] ;
+            $err = (!isset($result['result'])) ? '' : $result['result']['error_id'] ;
+            $saveresult = $_iquote->logsave($operation,$getBody,json_encode($result),'','',$token,$err,'','','');
             /**
              * La estructura funciona de manera que, llegado a este punto, no existe un error
              * por tanto, el http response code siempre se deja en 200 al final
@@ -59,6 +64,11 @@
             $result = $_respuestas->error_400("Método incorrecto","400");
             header('Content-Type: application/json');
             echo json_encode($result);
+            $saver = json_decode($getBody,true);
+            $operation = (!isset($saver['request'])) ? '' : $saver['request'] ;
+            $token = (!isset($saver['token'])) ? '' : $saver['token'] ;
+            $err = (!isset($result['result'])) ? '' : $result['result']['error_id'] ;
+            $saveresult = $_iquote->logsave($operation,$getBody,json_encode($result),'','',$token,$err,'','','');
             http_response_code(200);
             break;
     }

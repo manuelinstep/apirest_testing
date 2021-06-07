@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+  <title>report_order (PUT) - API REST</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../../../css/theme.css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "report_order (PUT)";
+    var mkdocs_page_input_path = "methods\\quote\\report_order.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> API REST</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../..">Inicio</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Auth</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../auth/">Auth</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Information</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../information/country_restricted/">country_restricted (GET)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../information/exchange_rate/">exchange_rate (GET)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../information/get_countries/">get_countries (GET)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../information/get_country_cities/">get_country_cities (GET)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../information/get_country_states_cities/">get_country_states_cities (GET)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../information/get_country_states/">get_country_states (GET)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../information/get_coverages/">get_coverages (GET)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../information/get_currencies/">get_currencies (GET)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../information/get_languages/">get_languages (GET)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../information/get_plan_category/">get_plan_category (GET)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../information/get_plans/">get_plans (GET)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../information/get_pvp_price/">get_pvp_price (GET)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../information/get_regions/">get_regions (GET)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../information/get_terms/">get_terms (GET)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../information/get_upgrade/">get_upgrade (GET)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../information/get_voucher/">get_voucher (GET)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../information/get_sales_report/">get_sales_report (GET)</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Quote</span></p>
+                <ul class="current">
+                    <li class="toctree-l1"><a class="reference internal" href="../add_order/">add_order (PUT)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../add_upgrade/">add_upgrade (PUT)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../request_cancellation/">request_cancellation (PUT)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../request_upgrade_cancellation/">request_upgrade_cancellation (PUT)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../changes_for_orders_reported/">changes_for_orders_reported (PUT)</a>
+                    </li>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">report_order (PUT)</a>
+    <ul class="current">
+    </ul>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../report_order_master/">report_order_master (PUT)</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../request_changes/">request_changes (PUT)</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">API REST</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Quote &raquo;</li>
+        
+      
+    
+    <li>report_order (PUT)</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="report_order-put">report_order (PUT)</h1>
+<p>Utilizado para reportar ordenes</p>
+<ul>
+<li>Endpoint : <code>fasttravelassistance.ilstechnik.com/apirest_testing/quote</code></li>
+</ul>
+<h1 id="campos">Campos</h1>
+<pre><code class="language-JSON">{
+    &quot;request&quot; : &quot;report_order&quot;,
+    &quot;token&quot; : &quot;123456789ABC&quot;,
+    &quot;codigo&quot; : &quot;FT-K21JDD&quot;,
+    &quot;fecha_salida&quot; : &quot;01/01/2022&quot;,
+    &quot;fecha_llegada&quot; : &quot;02/02/2022&quot;,
+    &quot;referencia&quot; : &quot;REFEXAMPLE1234&quot;,
+    &quot;id_plan&quot; : &quot;1835&quot;,
+    &quot;pais_destino&quot; : &quot;1&quot;,
+    &quot;pais_origen&quot; : &quot;AR&quot;,
+    &quot;moneda&quot; : &quot;usd&quot;,
+    &quot;tasa_cambio&quot; : &quot;1&quot;,
+    &quot;pasajeros&quot; : &quot;1&quot;,
+    &quot;nacimientos&quot; : [&quot;01/01/1991&quot;],
+    &quot;documentos&quot; : [&quot;12344321&quot;],
+    &quot;nombres&quot; : [&quot;Rodrigo&quot;],
+    &quot;apellidos&quot; : [&quot;Aristigueta&quot;],
+    &quot;telefonos&quot; : [&quot;5753544243&quot;],
+    &quot;correos&quot; : [&quot;correo@cliente.com&quot;],
+    &quot;condiciones_med&quot; : [&quot;ninguna&quot;],
+    &quot;nombre_contacto&quot; : &quot;Alfredo Rodriguez&quot;,
+    &quot;telefono_contacto&quot; : &quot;123455432&quot;,
+    &quot;email_contacto&quot; : &quot;correo@contacto.com&quot;,
+    &quot;costo&quot; : &quot;4423&quot;,
+    &quot;consideraciones_generales&quot; : &quot;ninguna&quot;,
+    &quot;lenguaje&quot; : &quot;spa&quot;
+}
+</code></pre>
+<h1 id="resultados">Resultados</h1>
+<pre><code class="language-JSON">{
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;El valor de cambio fue ajustado a:&quot;: &quot;5,000.00&quot;
+}
+</code></pre>
+<h1 id="errores-comunes-retornados-por-la-funcion">Errores comunes retornados por la función</h1>
+<ul>
+<li><code>1005</code> : Token invalido</li>
+<li><code>1030</code> : Lenguaje no implementado</li>
+<li><code>1050</code> : Plan invalido</li>
+<li><code>1062</code> : Cumpleaños invalido</li>
+<li><code>1080</code> : Territorio Invalido</li>
+<li><code>1090</code> : Origen restringido</li>
+<li><code>1100</code> : Id del agente es invaliod</li>
+<li><code>1246</code> : Limite de edad excedido</li>
+<li><code>2001</code> : Fecha de salida invalida</li>
+<li><code>2002</code> : Fecha de llegada invalida</li>
+<li><code>2004</code> : Fecha menor a la fecha del sistema</li>
+<li><code>3030</code> : Rango de fechas invalido</li>
+<li><code>4005</code> : Nombre de un pasajero vacío</li>
+<li><code>4006</code> : Documento de un pasajero vacío</li>
+<li><code>4007</code> : Apellido de un pasajero vacío</li>
+<li><code>4008</code> : Telefono de un pasajero vacío</li>
+<li><code>4010</code> : Correo de un pasajero vacío</li>
+<li><code>4011</code> : Correo de un pasajero invalido</li>
+<li><code>5005</code> : Cumpleaños requerido</li>
+<li><code>5006</code> : Condiciones médicas vacias</li>
+<li><code>5012</code> : Correo del pasajero requerido</li>
+<li><code>6021</code> : Lenguaje vacío</li>
+<li><code>6022</code> : Plan vacío</li>
+<li><code>6025</code> : Telefono del pasajero vacío</li>
+<li><code>6026</code> : Cantidad de pasajeros vacía</li>
+<li><code>6027</code> : Origen vacío</li>
+<li><code>6028</code> : Territorio de destino vacío</li>
+<li><code>6029</code> : Fecha de salida vacía</li>
+<li><code>6030</code> : Fecha de llegada vacía</li>
+<li><code>6034</code> : Moneda vacía</li>
+<li><code>6037</code> : Todos los campos estan vacíos</li>
+<li><code>6045</code> : Ya existe una orden con estos datos</li>
+<li><code>6054</code> : Ya existe el código</li>
+<li><code>9011</code> : Tasa de cambio vacía</li>
+<li><code>9032</code> : Formato del nombre del beneficiario invalido</li>
+<li><code>9034</code> : Telefono del beneficiario invalido</li>
+<li><code>9035</code> : Apellido del beneficiario invalido</li>
+<li><code>9061</code> : Token vacío</li>
+<li><code>9120</code> : Voucher maestro vacío</li>
+<li><code>9121</code> : Voucher maestro invalido</li>
+<li><code>9122</code> : Código del voucher maestro difiere del código provisto</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../report_order_master/" class="btn btn-neutral float-right" title="report_order_master (PUT)">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../changes_for_orders_reported/" class="btn btn-neutral" title="changes_for_orders_reported (PUT)"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../changes_for_orders_reported/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../report_order_master/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../../..';</script>
+    <script src="../../../js/theme.js" defer></script>
+      <script src="../../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

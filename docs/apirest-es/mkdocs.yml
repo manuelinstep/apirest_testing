@@ -19,10 +19,15 @@ nav:
         - methods/information/get_regions.md
         - methods/information/get_terms.md
         - methods/information/get_upgrade.md
-        - methods/information/get_voucher.md 
+        - methods/information/get_voucher.md
+        - methods/information/get_sales_report.md
     - Quote : 
         - methods/quote/add_order.md
         - methods/quote/add_upgrade.md
         - methods/quote/request_cancellation.md
         - methods/quote/request_upgrade_cancellation.md
+        - methods/quote/changes_for_orders_reported.md
+        - methods/quote/report_order.md
+        - methods/quote/report_order_master.md
+        - methods/quote/request_changes.md
 theme: readthedocs

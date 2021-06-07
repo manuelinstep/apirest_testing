@@ -67,6 +67,12 @@
             $result = $_respuestas->error_400("Método incorrecto","400");
             header('Content-Type: application/json');
             echo json_encode($result);
+
+            $saver = json_decode($getBody,true);
+            $operation = (!isset($saver['request'])) ? '' : $saver['request'] ;
+            $token = (!isset($saver['token'])) ? '' : $saver['token'] ;
+            $err = (!isset($result['result'])) ? '' : $result['result']['error_id'] ;
+            $saveresult = $_information->logsave($operation,$getBody,json_encode($result),'','',$token,$err,'','','');
             http_response_code(200);
             break;
     }
