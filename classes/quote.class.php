@@ -497,7 +497,7 @@
                                     }
                                 }
             
-                                $this->sendOrder($emailPassenger[0], $idOrden, $language, $language);
+                                //$this->sendOrder($emailPassenger[0], $idOrden, $language, $language);
                                 break;
                             case '2':
                                 if ($adjustedExchangeRate and $coin != 'USD') {
@@ -623,10 +623,10 @@
                                     }
                                 }
             
-                                $this->sendOrder($emailPassenger[0], $idOrden, $language, $language);
+                                //$this->sendOrder($emailPassenger[0], $idOrden, $language, $language);
                                 break;
                             default:
-                                $this->sendOrder($emailPassenger[0], $idOrden, $language, $language);
+                                //$this->sendOrder($emailPassenger[0], $idOrden, $language, $language);
                                 if ($adjustedExchangeRate and $coin != 'USD') {
             
                                     if (!empty($emptyContact)) {
@@ -1808,6 +1808,738 @@
                         }
                     }
                     # code...
+                    break;
+                case 'add_order_rci':
+                    /**
+                     * Damned be the man who trusts in his code
+                     */
+                    //$quoteGeneral 					= new quote_general_new();
+                    $api	      					= $datos['token'];
+                    $departure   					= $datos['fecha_salida'];
+                    $arrival     					= $datos['fecha_llegada'];
+                    $plan        					= trim($datos['id_plan']);
+                    $destination 					= trim($datos['pais_destino']);
+                    $origin      					= trim($datos['pais_origen']);
+                    $coin        					= trim($datos['moneda']);
+                    $numberPassengers   			= trim($datos['pasajeros']);
+                    $language    					= trim($datos['lenguaje']);
+                    $generalConsiderations			= $datos['consideraciones_generales'];
+                    $issue       					= $datos['emision'];
+                    $upgrade						= $datos['upgrade'];	
+                    $propertyId						= $datos['propertyid']?$datos['propertyid']:'XXX';
+                    $subscriberId					= $datos['subscriberid']?$datos['subscriberid']:0;
+                    $relationId						= $datos['relationid']?$datos['relationid']:0;
+                    $sequenceId						= $datos['sequenceid']?$datos['sequenceid']:0;
+                    $reference   					= $subscriberId.$relationId.$sequenceId;
+
+                    // $namePassengerObj				= (is_object($datos['nombres']))?(array)$datos['nombres']:json_decode($datos['nombres'],true);
+                    // $lastNamePassengerObj			= (is_object($datos['apellidos']))?(array)$datos['apellidos']:json_decode($datos['apellidos'],true);
+                    // $birthDayPassengerObj  			= (is_object($datos['nacimientos']))?(array)$datos['nacimientos']:json_decode($datos['nacimientos'],true);
+                    // $documentPassengerObj  			= (is_object($datos['documentos']))?(array)$datos['documentos']:json_decode($datos['documentos'],true);
+                    // $emailPassengerObj				= (is_object($datos['correos']))?(array)$datos['correos']:json_decode($datos['correos'],true);
+                    // $medicalConditionsPassengerObj	= (is_object($datos['observaciones_medicas']))?(array)$datos['observaciones_medicas']:json_decode($datos['observaciones_medicas'],true);
+                    // $phonePassengerObj				= (is_object($datos['telefonos']))?(array)$datos['telefonos']:json_decode($datos['telefonos'],true);
+                    // $typeDocumentsObj				= (is_object($datos['tipo_documentos']))?(array)$datos['tipo_documentos']:json_decode($datos['tipo_documentos'],true);
+                    // $sexObj							= (is_object($datos['sexo']))?(array)$datos['sexo']:json_decode($datos['sexo'],true);
+                    
+                    /**
+                     * Esta sección no funcionó con el metodo request changesm hay que cambiarla
+                     */
+                    
+                    $documentPassenger 				= $datos['documentos']; 
+                    $birthDayPassenger				= $datos['nacimientos'];
+                    $lastNamePassenger				= $datos['apellidos'];
+                    $emailPassenger					= $datos['correos'];
+                    $namePassenger					= $datos['nombres'];
+                    $phonePassenger					= $datos['telefonos'];
+                    $medicalConditionsPassenger		= $datos['condiciones_medicas'];
+                    $typeDocuments					= $datos['tipo_documentos'];
+                    $sexs							= $datos['sexo'];
+
+                    $dataValida			= [
+                        '6037'	=> !(empty($departure) AND empty($arrival) AND empty($plan) AND empty($destination) AND empty($origin) AND  empty($coin) AND empty($exchangeRate) AND empty($numberPassengers) AND empty($birthDayPassenger) AND  empty($documentPassenger) AND  empty($namePassenger) AND empty($lastNamePassenger) AND empty($phonePassenger) AND empty($emailPassenger) AND empty($medicalConditionsPassenger) AND empty($nameContact) AND empty($phoneContact) AND empty($emailContact) AND empty($lenguaje) AND empty($upgrade)),
+                        '6029'	=> $departure,
+                        '6030'	=> $arrival, 
+                        '6022'	=> $plan,
+                        '6028'	=> $destination,
+                        '6027'	=> $origin,
+                        "6026"	=> $numberPassengers,
+                        '6021'	=> $language,
+                        '6035'	=> $issue,
+                        '2001'	=> $this->checkDates($departure),
+                        '2002'	=> $this->checkDates($arrival),
+                        '9059'	=> $this->verifyOrigin($origin),
+                        '4029'	=> (empty($numberPassengers) or $numberPassengers == 0 or !is_numeric($numberPassengers))?0:1,
+                        '5104'	=> (count($namePassenger)<=$numberPassengers) || ($numberPassengers>=count($namePassenger)),
+                        '1080'	=> $this->verifyOrigin($destination),
+                        '9012'	=> ($issue<1 || !is_numeric($issue) || $issue>4 )?0:1,
+                        '1030'	=> $this->validLanguage($language),
+                        '5101'	=> $subscriberId,
+                        //'5100'	=> $relationId,
+                        '5102'	=> $sequenceId,
+                        '4042'  => !empty($propertyId)?($this->selectDynamic('','property_id',"resortId='$propertyId'",array("resortId"))):true,
+                        '5002'  => (!$this->selectDynamic(['Relation_id' => $relationId, 'Sequence_id' => $sequenceId],'orders',"Subscriber_id='$subscriberId'",array("Subscriber_id"),false,false,false,'rci')),
+                        
+                        '4014'  => !empty($sex)?in_array($sex,['M','F']):true,
+                        '5000'	=> !($this->validBeneficiariesRCI($namePassenger,$lastNamePassenger) || $this->validBeneficiariesRCI($birthDayPassenger,$emailPassenger)),
+                    ];
+
+                    $datAgency			= $this->datAgency($api);
+                    $idAgency			= $datAgency[0]['id_broker'];
+                    $idContry			= $datAgency[0]['id_country'];
+
+                    if($idAgency==390){
+                        $arrValidBrasil = [
+                            '5000'	=> !($this->validBeneficiariesRCI($namePassenger,$lastNamePassenger) || $this->validBeneficiariesRCI($birthDayPassenger,$emailPassenger) || $this->validBeneficiariesRCI($documentPassenger,$typeDocuments)),
+                            '5001'	=> in_array('CPF',$typeDocuments),
+                            '4006'  => count($documentPassenger),
+                            //'9099'  => ($this->validaCPF($documentPassenger)),
+                        ];
+
+                        $dataValida = $dataValida + $arrValidBrasil;
+
+                    }
+
+                    if($idAgency==383){
+
+                        $arrValidBrasil = [
+                            '5000'	=> !($this->validBeneficiariesRCI($namePassenger,$lastNamePassenger) || $this->validBeneficiariesRCI($birthDayPassenger,$emailPassenger) || $this->validBeneficiariesRCI($documentPassenger,$typeDocuments)),
+                            '5001'	=> in_array('CPF',$typeDocuments),
+                            '4006'  => count($documentPassenger),
+                        ];
+                        
+
+                        $dataValida = $dataValida + $arrValidBrasil;
+                    }
+
+                    $validatEmpty	= $this->validatEmpty($dataValida);
+                    
+                    if($validatEmpty){
+                        return $validatEmpty;
+                    }
+                    
+                    $dataPlan			= $this->selectDynamic('','plans',"id='$plan'",["id_plan_categoria","name","num_pas","voucher_individual","combo"]);	
+                    $idCategoryPlan 	= $dataPlan[0]['id_plan_categoria'];
+                    $namePlan			= $dataPlan[0]['name'];
+                    $individualOrder	= $dataPlan[0]['voucher_individual'];
+                    $packPlan			= $dataPlan[0]['combo'];
+                    $isoCountry			= $datAgency[0]['id_country'];
+                    $nameAgency			= $datAgency[0]['broker'];
+                    $userAgency			= $datAgency[0]['user_id'];
+                    $numPassengerPlan	= $dataPlan[0]['num_pas'];
+                    //$brokerAgency		= $datAgency[0]['broker'];
+                    //$prefijoAgency		= $datAgency[0]['prefijo'];
+
+                
+                    
+                    
+                    $prefix				= ($datAgency[0]['prefijo'])?$datAgency[0]['prefijo']:PREFIJO;
+
+                    $dataPlanCategory   = $this->selectDynamic('','plan_category',"id_plan_categoria='$idCategoryPlan '",["name_plan","id_status"]);
+
+                    $name_categorys 	= $dataPlanCategory[0]['name_plan'];
+
+                    $numPass = count($namePassenger);
+                    $validateDataPassenger	= $this->validateDataPassenger($numberPassengers ,$namePassenger ,$lastNamePassenger ,$birthDayPassenger ,$documentPassenger ,$emailPassenger ,$phonePassenger ,$medicalConditionsPassenger,false,$type,$numPassengerPlan,true);
+
+                    if($validateDataPassenger){
+                        return $validateDataPassenger;
+                    }
+
+                    $arrivalTrans		= $this->transformerDate($arrival);
+                    $departureTrans		= $this->transformerDate($departure);
+                    $daysByPeople 		= $this->betweenDates($departureTrans ,$arrivalTrans);
+
+                    $validateDateOrder	= $this->validateDateOrder($arrivalTrans ,$departureTrans ,$isoCountry);
+                    if($validateDateOrder){
+                        return $validateDateOrder;
+                    }
+
+                    $dataPlanAgency		= $this->selectDynamic('','restriction',"id_plans='$plan'",["id_broker"]);
+
+                    if($userAgency == 910){
+                    $Agency			= $dataPlanAgency[0]['id_broker'];	
+                    }else{
+                    $Agency          = $idAgency;
+                    }
+
+                    $validatePlans		= $this->validatePlans($plan ,$Agency ,$origin ,$destination ,$daysByPeople);
+                    if($validatePlans){
+                        return $validatePlans;
+                    }
+
+                    $agesPassenger		= $this->setAges($birthDayPassenger ,$isoCountry);
+
+                    $countryAgency		= $this->getCountryAgency($api);
+
+                    $dataQuoteGeneral	= $quoteGeneral->quotePlanbenefis($idCategoryPlan ,$daysByPeople ,$countryAgency ,1 ,$origin ,$agesPassenger ,$departure ,$arrival ,$Agency ,$plan);
+
+                    $validatBenefits	= $this->verifyBenefits($dataQuoteGeneral);
+                    if($validatBenefits){
+                        return $validatBenefits;
+                    }
+
+
+                    if($dataQuoteGeneral[0]['banda']=="si"){
+                        for ($i=0; $i <$dataQuoteGeneral[0]["total_rangos"] ; $i++) {
+                            $pricePassenger[] 		= $price/$numberPassengers; 
+                            $costPassenger[]		= $dataQuoteGeneral[0]["costo_banda$i"];
+                        }
+                    }else{
+                        if($dataQuoteGeneral[0]['numero_menores']>0){
+                            for ($i=0; $i < $dataQuoteGeneral[0]['numero_menores'] ; $i++) { 
+                                $pricePassenger[] 	= $dataQuoteGeneral[0]['valorMenor'];
+                                $costPassenger[] 	= $dataQuoteGeneral[0]['costoMenor'];
+                            }
+                        }if($dataQuoteGeneral[0]['numero_mayores']>0){
+                            for ($i=0; $i < $dataQuoteGeneral[0]['numero_mayores'] ; $i++) { 
+                                $pricePassenger[] 	= $dataQuoteGeneral[0]['valorMayor'];
+                                $costPassenger[] 	= $dataQuoteGeneral[0]['costoMayor'];
+                            }
+                        }
+                    }
+
+                    for ($i=0; $i < $numberPassengers ; $i++) { 
+                        $birthDayPassengerTrans[]	= $this->transformerDate($birthDayPassenger[$i]);
+                    }
+
+
+                    $cost				= $costPassenger[0];
+                    $price				= $pricePassenger[0];
+                    $familyPlan			= $dataQuoteGeneral[0]['family_plan'];
+                    $tiempo_x_producto  = $dataQuoteGeneral[0]['tiepoid'];
+                    
+
+                    $code			 = $prefix.'-'.$this->valueRandom(6);
+                    $language		 = ($language=="spa")?"es":"en";
+                    $upgJson         = json_decode($upgrade,true);
+                    $validPack		 = true;
+
+
+                    if(!empty($upgrade) || $packPlan=='1'){
+
+                        $arrUpgrades = [];
+                        $validPack	 = false;
+                        if($packPlan=='1'){
+                            $dataUpg 		 = $this->dataUpgradesPlan($plan,'spa');
+                            $arrUpgrades 	 = array_map(function($value){return ['id'=>$value['id_raider']];} ,$dataUpg);
+
+                    
+                                if($upgJson){
+                                $arrUpg 	 = $upgJson;
+                                $arrUpg 	 = array_map(function($value){return ['id'=>$value['id']];} ,$arrUpg['item']);
+                                $arrUpgrades = array_merge($arrUpgrades,$arrUpg);
+                
+                            }else{
+                                $arrUpg = (array)$upgrade;
+                                $arrUpg = (array)$arrUpg['item'];
+                                $arrUpg = (!empty($arrUpg['id']))?[['id'=>$arrUpg['id']]]:$arrUpg;
+                                
+                                //$arrUpgrades = array_merge($arrUpgrades,$arrUpg);
+                                
+                            }
+
+                            $upgrades['item'] =$arrUpgrades;
+                            $upgrade 	= json_encode($upgrades);
+                        }
+                        
+                        $data	= [
+                            "api"				=> $api,
+                            "upgrades"			=> $upgrade,
+                            "codigo"			=> $code,
+                            "plan"				=> $plan,
+                            "daybypeople"		=> $daysByPeople,
+                            "price"				=> $price,
+                            "cost"				=> $cost,
+                            "numberPassengers"	=> $numberPassengers,
+                            "source"			=> false,
+                            'beneficiaries'		=> $documentPassenger,
+                            "precio_vta"		=> $pricePassenger,
+                            "precio_cost"		=> $costPassenger,
+                            "retorno"			=> $arrivalTrans,
+                            "combo"				=> $packPlan
+                        ];
+                        
+                        $dataUpgrade			= $this->addUpgrades($data,false,$validPack);
+
+                        if(count($dataUpgrade["id"])==0){
+                            return $dataUpgrade;
+                        }else{
+
+                            $price		= $dataUpgrade["price"];
+                            $cost		= $dataUpgrade["cost"];
+                            $idUpgrade 	= $dataUpgrade["id"];
+                        }
+                    }
+
+                    $datAgency			= $this->datAgency($api);
+                    $idAgency			= $datAgency[0]['id_broker'];
+
+                    if($idAgency==383 || $idAgency==390){
+                        $departureDate   = $this->transformerDate($departure,1);
+                        $data_billeta   = date("Y-m-d",strtotime($departureDate."- 30 days"));
+                        if( $data_billeta < date("Y-m-d") ){
+                                $data_billeta = date("Y-m-d");	
+                        }
+                        $data	= [
+                            'salida'				=> $departureTrans,
+                            'retorno'				=> $arrivalTrans,
+                            'referencia'			=> $reference,
+                            'producto'				=> $plan,
+                            'destino'				=> $destination,
+                            'origen'				=> strtoupper($origin),
+                            'agencia'				=> $idAgency,
+                            'nombre_agencia'		=> $nameAgency,
+                            'vendedor'				=> $userAgency,
+                            'programaplan'			=> $name_categorys,
+                            'family_plan'			=> $familyPlan,
+                            'fecha'					=> 'now()',
+                            'cantidad'				=> $numPassengerPlan,
+                            'status'				=> '1',
+                            'origin_ip'				=> $_SERVER['REMOTE_ADDR'],
+                            'comentarios'			=> $generalConsiderations,
+                            'tiempo_x_producto'		=> $tiempo_x_producto,
+                            'comentario_medicas'	=> $generalConsiderations,
+                            'id_emision_type'		=> '2',
+                            'validez'				=> '1',
+                            'hora'					=> 'now()',
+                            'alter_cur'				=> "USD",
+                            //'territory'				=> $destination,
+                            'total_tax'				=> $dataQuoteGeneral[0]['total_tax1'],
+                            //'total_tax_mlc'			=> $dataQuoteGeneral[0]['total_tax1']*$exchangeRate,
+                            'total_tax_mlc'			=> $dataQuoteGeneral[0]['total_tax1'],
+                            'lang'					=> $language,
+                            'procedencia_funcion'	=> '1',
+                            'property_id'			=> $propertyId,
+                            'Subscriber_id'			=> $subscriberId,
+                            'Relation_id'			=> $relationId,
+                            'Sequence_id'			=> $sequenceId,
+                            'fecha_proceso'         => 'now()',
+                            'hora_proceso'          => 'now()',
+                            'precio_base'			=> $cost,
+                            'data_billeta'          => $data_billeta,
+                        ];
+                    }else{
+                        $data	= [
+                            'salida'				=> $departureTrans,
+                            'retorno'				=> $arrivalTrans,
+                            'referencia'			=> $reference,
+                            'producto'				=> $plan,
+                            'destino'				=> $destination,
+                            'origen'				=> strtoupper($origin),
+                            'agencia'				=> $idAgency,
+                            'nombre_agencia'		=> $nameAgency,
+                            'vendedor'				=> $userAgency,
+                            'programaplan'			=> $name_categorys,
+                            'family_plan'			=> $familyPlan,
+                            'fecha'					=> 'now()',
+                            'cantidad'				=> $numPassengerPlan,
+                            'status'				=> '1',
+                            'origin_ip'				=> $_SERVER['REMOTE_ADDR'],
+                            'comentarios'			=> $generalConsiderations,
+                            'tiempo_x_producto'		=> $tiempo_x_producto,
+                            'comentario_medicas'	=> $generalConsiderations,
+                            'id_emision_type'		=> '2',
+                            'validez'				=> '1',
+                            'hora'					=> 'now()',
+                            'alter_cur'				=> "USD",
+                            //'territory'				=> $destination,
+                            'total_tax'				=> $dataQuoteGeneral[0]['total_tax1'],
+                            //'total_tax_mlc'			=> $dataQuoteGeneral[0]['total_tax1']*$exchangeRate,
+                            'total_tax_mlc'			=> $dataQuoteGeneral[0]['total_tax1'],
+                            'lang'					=> $language,
+                            'procedencia_funcion'	=> '1',
+                            'property_id'			=> $propertyId,
+                            'Subscriber_id'			=> $subscriberId,
+                            'Relation_id'			=> $relationId,
+                            'Sequence_id'			=> $sequenceId,
+                            'fecha_proceso'         => 'now()',
+                            'hora_proceso'          => 'now()',
+                            'precio_base'			=> $cost,
+                        ];
+                    }
+
+                    
+                    
+                    if($individualOrder=='Y' && $numberPassengers>1){
+
+                        $data['codigo']= $code;
+                        $data['total'] 	=  $price;
+                        $data['neto_prov'] 	=  $cost;
+                        //$data['total_mlc'] 	=  $price*$exchangeRate;
+                        //$data['neto_prov_mlc'] 	=  $cost*$exchangeRate;
+                        $data['total_mlc'] 	=  $price;
+                        $data['neto_prov_mlc'] 	=  $cost;
+
+                        if($issue == 4){
+                            $data['status'] = 9;
+                        }
+
+
+                        $idOrden[] = $this->insertDynamic($data,'orders');
+
+                        for ($i=0; $i < $numPassengerPlan ; $i++) { 
+                            
+                            $dataBrasil  = [
+                                'id_orden'     => $idOrden,
+                                'direccion' => ' ',
+                                'direccion1' => ' ',
+                                'ciudad' => ' ',
+                                'estado' => ' ',
+                                'zipcode' => '',
+                                'pais_iso'   => $origin
+                            ];
+
+                            $addBeneficiaries[$i]	= $this->addBeneficiares($documentPassenger[$i] ,$birthDayPassengerTrans[$i] ,$namePassenger[$i] ,$lastNamePassenger[$i] ,$phonePassenger[$i] ,$emailPassenger[$i] ,$idOrden[$i],'1' ,$pricePassenger[$i] ,$costPassenger[$i] ,$medicalConditionsPassenger[$i] ,$pricePassenger[$i]*$exchangeRate ,$costPassenger[$i]*$exchangeRate,0,0,$typeDocuments[$i]);  
+                        
+                            if($idAgency == 383 || $idAgency==390){
+
+                                $idOrdenAddress[]  = $this->insertDynamic($dataBrasil,'order_address');
+                                $codigo = $data['codigo'] ;
+                                $link[] = LINK_REPORTE_VENTAS.$data['codigo']."&type=".base64_encode($codigo)."&selectLanguage=$language&broker_sesion=$idAgency";
+                        
+                            }else{
+                                $link[] = LINK_REPORTE_VENTAS.$data['codigo']."&selectLanguage=$language&broker_sesion=$idAgency";
+                            }
+                        }
+
+                    }else{
+
+                        $data['codigo'] =  $code;
+                        $data['total'] 	=  $price;
+                        $data['neto_prov'] 	=  $cost;
+                        //$data['total_mlc'] 	=  $price*$exchangeRate;
+                        //$data['neto_prov_mlc'] 	=  $cost*$exchangeRate;
+                        $data['total_mlc'] 	=  $price;
+                        $data['neto_prov_mlc'] 	=  $cost;
+                        $data['nombre_beneficiario'] 	=  $namePassenger[0];
+                        $data['apellido_beneficiario'] 	=  $lastNamePassenger[0];
+                        $data['correo_beneficiario'] 	=  $emailPassenger[0];
+
+                        if($issue == 4){
+                            $data['status'] = 9;
+                        }
+
+                        $idOrden	     = $this->insertDynamic($data,'orders');
+
+                        $dataBrasil  = [
+                            'id_orden'     => $idOrden,
+                            'direccion' => ' ',
+                            'direccion1' => ' ',
+                            'ciudad' => ' ',
+                            'estado' => ' ',
+                            'zipcode' => '',
+                            'pais_iso'   => $origin
+                        ];
+                
+                        
+
+                        if($idAgency == 383 || $idAgency==390){
+                            $idOrdenAddress  = $this->insertDynamic($dataBrasil,'order_address');
+                            $codigo = $data['codigo'] ;
+                            $link = LINK_REPORTE_VENTAS.$data['codigo']."&type=".base64_encode($codigo)."&selectLanguage=$language&broker_sesion=$idAgency";
+                            
+                        }else{
+                            $link = LINK_REPORTE_VENTAS.$code."&selectLanguage=$language&broker_sesion=$idAgency";
+                        }
+                        
+                        for($i=0;$i < $numberPassengers ;$i++){
+                            $addBeneficiaries[$i]	= $this->addBeneficiares($documentPassenger[$i] ,$birthDayPassengerTrans[$i] ,$namePassenger[$i] ,$lastNamePassenger[$i] ,$phonePassenger[$i] ,$emailPassenger[$i] ,$idOrden,'1' ,$pricePassenger[$i] ,$costPassenger[$i] ,$medicalConditionsPassenger[$i] ,$pricePassenger[$i]*$exchangeRate ,$costPassenger[$i]*$exchangeRate,0,0,$typeDocuments[$i]);  
+                        }
+                    }
+
+
+
+                    if(!empty($addBeneficiaries) && !empty($idOrden)){
+                        if(is_array($idOrden)){
+                            for ($i=0; $i < count($idOrden) ; $i++) { 
+                                $this->addCommission($idAgency ,$idCategoryPlan ,$price ,$idOrden[$i]);
+                            }
+                        }else{
+                            $this->addCommission($idAgency ,$idCategoryPlan ,$price ,$idOrden);
+                        }
+                        
+                        if(count($idUpgrade)>0){
+                            foreach ($idUpgrade as $value) {
+                                $this->updateDynamic('orders_raider','id' ,$value ,['id_orden'=>$idOrden]);
+                                //$this->addUpgradeRCI($idOrden, $dataUpgrade['benefitSpecial'],$dataUpgrade['benefitSpecialType'],$arrivalTrans,$numberPassengers);
+                                $this->addUpgradeRCI($idOrden, $dataUpgrade['benefitSpecial'],$dataUpgrade['benefitSpecialType'],$arrivalTrans,$numPassengerPlan);
+                            }
+                        }
+
+                        
+
+                        switch ($issue) {
+                            case '1':
+
+                                //$this->sendOrder($emailPassenger[0] ,$idOrden ,$language ,$language);
+                                if($idAgency==383 || $idAgency==390){
+
+                                
+
+                                    return [
+                                        "status"		=> "OK", 
+                                        "codigo"		=> $code,
+                                        "valor"			=> $price,
+                                        "costo"         => $cost,
+                                        "ruta"			=> $link,
+                                        "documento"		=> implode("," ,$documentPassenger),
+                                        "referencia"	=> $reference,
+                                        "data_billeta"  => $data_billeta
+                                    ];
+                                
+
+                                }else{
+                                    return [
+                                        "status"		=> "OK", 
+                                        "codigo"		=> $code,
+                                        "valor"			=> $price,
+                                        "costo"         => $cost,
+                                        "ruta"			=> $link,
+                                        "documento"		=> implode("," ,$documentPassenger),
+                                        "referencia"	=> $reference
+                                    ];
+                                }
+                                break;
+                            case '2':
+                                if($idAgency==383  || $idAgency==390 ){
+                                    return [
+                                        "status"		=> "OK", 
+                                        "codigo"		=> $code, 
+                                        "valor"			=> $price,
+                                        "costo"         => $cost,
+                                        "referencia"	=> $reference,
+                                        "data_billeta"  => $data_billeta
+                                    ];
+                                }else{
+                                    return [
+                                        "status"		=> "OK", 
+                                        "codigo"		=> $code, 
+                                        "valor"			=> $price,
+                                        "costo"         => $cost,
+                                        "referencia"	=> $reference
+                                    ];
+
+                                }
+                                break;
+
+                            case '3':
+                                //$this->sendOrder($emailPassenger[0] ,$idOrden ,$language ,$language);
+                                if($idAgency==383 || $idAgency==390 ){
+                                    return [
+                                        "status"		=> "OK", 
+                                        "codigo"		=> $code,
+                                        "documento"		=> implode("," ,$documentPassenger),
+                                        "referencia"	=> $reference,
+                                        "data_billeta"  => $data_billeta
+                                    ];
+                                }else{
+                                    return [
+                                        "status"		=> "OK", 
+                                        "codigo"		=> $code,
+                                        "documento"		=> implode("," ,$documentPassenger),
+                                        "referencia"	=> $reference
+                                    ];
+
+                                }
+                                
+                                break;
+                                
+                            default:
+                            //$this->sendOrder($emailPassenger[0] ,$idOrden ,$language ,$language);
+                                if($idAgency==383 || $idAgency==390){
+
+                                
+
+                                    return [
+                                        "status"		=> "OK", 
+                                        "codigo"		=> $code,
+                                        "valor"			=> $price,
+                                        "costo"         => $cost,
+                                        "ruta"			=> $link,
+                                        "documento"		=> implode("," ,$documentPassenger),
+                                        "referencia"	=> $reference,
+                                        "data_billeta"  => $data_billeta
+                                    ];
+                                
+
+                                }else{
+                                    return [
+                                        "status"		=> "OK", 
+                                        "codigo"		=> $code,
+                                        "valor"			=> $price,
+                                        "costo"         => $cost,
+                                        "ruta"			=> $link,
+                                        "documento"		=> implode("," ,$documentPassenger),
+                                        "referencia"	=> $reference
+                                    ];
+                                }
+                                break;
+                        }
+                    }
+
+                    break;
+                case 'get_voucher_rci':
+                    # code...
+                    $code		= trim($datos['sucriber_id']);
+                    $language	= $datos['lenguaje'];
+                    $api		= $datos['api'];
+                    $type		= $datos['type'];
+                    $statusRegister = false;
+                    
+                    $arrStatus	= [
+                        'Canceled',
+                        'Active',
+                        'To activate',
+                        'Expired',
+                        'Canceled',
+                        'Canceled',
+                        'Canceled',
+                        'Canceled',
+                        'Canceled',
+                        'Prueba',
+                        
+                    ];
+
+                    $dataValida	= [
+                        '6037'	=> !(empty($code) AND empty($language) AND empty($type)),
+                        '5101'	=> $code,
+                        '6021'	=> $language,
+                        '4444'	=> (in_array($type,[1,2,3,4,5])),
+                        '1030'	=> $this->validLanguage($language)
+                    ];
+
+                    $validatEmpty	= $this->validatEmpty($dataValida);
+                    if(!empty($validatEmpty)){
+                        return $validatEmpty;
+                    }
+                    $expired =  false;
+                    $error = 6063;
+                    switch ($type) {
+                        case 3:
+                            $statusRegister = true;
+                            $status 		= false;
+                            $error 			= 6062;
+                        break;
+                        
+                        case 1:
+                            $status 	= false;
+                            $error 		= 6063;
+                        break;
+
+                        case 2:
+                            $status 	= 1;	
+                            $expired 	= true;	
+                            $error 		= 6061;
+                        break;
+
+                        case 4:
+                            $status 	= 4;
+                            $error 		= 6060;	
+                        break;
+                        case 5:
+                            $status 	= 9;
+                            $error 		= 9107;	
+                        break;
+                    }
+
+                    
+                    $getDataOdersIlsbsys	= $this->getDataOders('','',$code,$status,$statusRegister,'ilsbsys',$expired,50);
+                    
+                    
+                    if($getDataOdersIlsbsys){
+                        $getDataOders = $getDataOdersIlsbsys;
+                    }else{
+                        
+                
+                        $getDataOdersRCI	= $this->getDataOders('','',$code,$status,$statusRegister,'rci',$expired,50);
+                        
+                        $getDataOders = $getDataOdersRCI;
+                    }
+
+                    $lang			= ($language=='spa')?'es':'en';
+                
+                    if (count($getDataOders)){
+                        foreach ($getDataOders as $key => $value) {
+                            $getUpgradesOrden 				= $this->getUpgradesOrden($value['id'],'rci');
+                            $upgOrder = ($getUpgradesOrden)?$getUpgradesOrden:false;
+                            $dato[]	= [
+                                'code' 		=> $value['codigo'],
+                                'departure' => $value['salida'],
+                                'return'	=> $value['retorno'],
+                                'status'	=> $arrStatus[$value['status_order']],
+                                'completion_status' => $value['completion_status'],
+                                'product' 	=> $value['producto'],
+                                'property_id'=> $value['property_id'],
+                                'upgrades' 	=> $upgOrder
+                            ];
+                        }
+
+                        return $dato;
+
+                    }else{
+                        return $_response->getError($error);
+                    }
+                            break;
+                case 'get_upgrades_rci':
+                    $code = trim($datos['code']);
+                    $api  = $datos['token'];
+                    $type = $datos['type'];
+                    $lang = $datos['lenguaje'];
+                    $today= date('Y-m-d');
+                    $dataValida	= [
+                        '6037'	=> !(empty($code) AND empty($lang)  AND empty($type)),
+                        '6023'	=> $code,
+                        '6021'	=> $lang,
+                        '1030'	=> $this->validLanguage($lang),
+                        '4444'	=> (in_array($type,[1,2])),
+                    ];
+
+                    $validatEmpty	= $this->validatEmpty($dataValida);
+
+                    if(!empty($validatEmpty)){
+                        return $validatEmpty;
+                    }
+                    $dataOrderIlsbsys	= $this->selectDynamic('','orders',"codigo='$code'",['id','producto','status','salida'],false,false,false,'ilsbsys')[0];
+                    $plataform = "ilsbsys";
+                    if($dataOrderIlsbsys){
+                        $dataOrder = $dataOrderIlsbsys;
+                    }else{
+                        $dataOrderRCI	= $this->selectDynamic('','orders',"codigo='$code'",['id','producto','status','salida'],false,false,false,'rci')[0];
+                        $dataOrder = $dataOrderRCI;
+                        $plataform = "rci";
+                    }
+                    if($dataOrder){
+
+
+                        if($dataOrder['status']==1 || $dataOrder['status']==9){
+                            $idOrden = $dataOrder['id'];
+                            $idPlan  = $dataOrder['producto'];
+                            $upgradesOrder 		= $this->getUpgradesOrden($idOrden,$plataform);
+                            $idUpgradesExist 	= implode(',',array_column($upgradesOrder,'id_upgrade'));
+                
+                            switch ($type) {
+                                case '1':
+                            
+                                    return ($upgradesOrder)?$upgradesOrder:$this->getError(4445);
+                
+                                break;
+                
+                                case '2':
+                                
+                                    $dataUpgrades = $this->getDataUpgradesRCI($idPlan,$lang,$idUpgradesExist,$plataform);
+                                    return ($dataUpgrades)?$dataUpgrades:$this->getError(4446);
+                
+                                break;
+                            }
+
+                        }else{
+                            return $this->getError(1021);
+                        }
+                        
+                    }else{
+                        return $this->getError(1020);
+                    }
                     break;
                 default:
                     # code...
@@ -3544,6 +4276,231 @@
                 'id_user'           => ($idUser) ? $idUser : 0
             ];
             return $this->insertDynamic($data, 'trans_all_webservice');
+        }
+
+        public function dataUpgradesPlan($plan,$language){
+
+            $query="SELECT
+                raiders.id_raider,
+                raiders_detail.name_raider,
+                raiders.type_raider,
+                raiders.value_raider,
+                raiders.cost_raider,
+                raiders.stack,
+                raiders.days_add,
+                raiders.type_upg,
+                raiders.rd_calc_type,
+                IF (
+                    benefit_special,
+                    CONCAT(
+                        benefit_special,
+                        ' ',
+    
+                    IF (
+                        benefit_special_type = 'P',
+                        'Pasajeros Adicionales',
+                        'Dias Adicionales'
+                    )
+                    ),
+                    'N/A'
+                ) AS additional_value,
+                IFNULL(restriction_days, 'N/A') AS restriction_days,
+                IFNULL(restriction_pass, 'N/A') AS restriction_pass
+            FROM
+                raiders
+                INNER JOIN raiders_detail ON raiders_detail.id_raider = raiders.id_raider
+                INNER JOIN plan_raider ON raiders.id_raider = plan_raider.id_raider
+            WHERE
+                plan_raider.id_plan = '$plan' 
+            AND raiders_detail.language_id='$language'";
+            
+            return $this->selectDynamic('','','','',$query);
+        }
+
+        public function validBeneficiariesRCI($arrStart,$arrEnd)
+        {
+            return count(
+                array_merge(
+                    array_diff_key($arrStart,$arrEnd),
+                    array_diff_key($arrEnd,$arrStart)
+                )
+            );
+        }
+
+        public function addUpgradeRCI($idOrden,$benefitSpecial,$benefitSpecialType,$arrival,$numPass,$typeBen=true)
+        {
+            $cantidad   = $this->selectDynamic('','orders',"id='$idOrden'",array("cantidad"))[0]['cantidad'];
+            
+        
+
+            $dataUpdate = [];
+            if($typeBen){
+                $typeOpDaysBenefit = "+ $benefitSpecial";
+                $typeOpPassBenefit = $benefitSpecial+$numPass;
+            }else{
+                $typeOpDaysBenefit = "- $benefitSpecial";
+                $typeOpPassBenefit = $numPass-$benefitSpecial;
+            }
+        
+
+            /* if($typeOpPassBenefit > 8){
+                return $this->getError('9098');
+            }*/
+
+
+            switch ($benefitSpecialType) {
+
+                
+                case 'D':
+
+                    $dataUpdate = [
+                        'tiempo_x_producto'=> $benefitSpecial,
+                        'retorno'   => date("Y-m-d",strtotime($arrival." $typeOpDaysBenefit days")) 
+                    ];
+
+                
+                    break;
+                case 'P':
+
+                    $dataUpdate = [
+                        'cantidad'=> $typeOpPassBenefit
+                    ];
+
+                    break;
+
+
+                case 'A':
+
+                    $benefitSpecialD = 8;
+                    $benefitSpecialP = 4;
+        
+                    /* if('200.84.222.177' == $_SERVER['REMOTE_ADDR']){
+        
+                            die(var_dump( $dataUpdate , $typeBen ,  $typeOpDaysBenefit , $typeOpPassBenefit , $numPass , $arrival));
+        
+                        }*/
+        
+                    if($typeBen){
+        
+                        $typeOpDaysBenefit = "+ $benefitSpecialD";
+                        $typeOpPassBenefit = $benefitSpecialP+$numPass;
+        
+                    }else{
+        
+                        $typeOpDaysBenefit = "- $benefitSpecialD";
+                        $typeOpPassBenefit = $numPass-$benefitSpecialP;
+        
+                    }
+
+                    $dataUpdate = [
+                        'tiempo_x_producto'=>date("Y-m-d",strtotime($arrival." $typeOpDaysBenefit days")) ,
+                        'retorno'   => date("Y-m-d",strtotime($arrival." $typeOpDaysBenefit days")) ,
+                        'cantidad'=> $typeOpPassBenefit
+                    ];
+        
+                    break;
+
+            }
+        
+            if(count($dataUpdate))
+            return $this->updateDynamic('orders','id',$idOrden,$dataUpdate);
+        }
+
+        public function getDataOders($code,$idUser,$reference,$status,$statusRegister,$database='ilsbsys',$expired,$limit){
+
+            $query = "SELECT
+            orders.id,
+            orders.origen,
+            orders.destino,
+            orders.salida,
+            orders.retorno,
+            orders.programaplan,
+            orders.nombre_contacto,
+            orders.email_contacto,
+            orders.comentarios,
+            orders.telefono_contacto,
+            orders.producto,
+            orders.agencia,
+            orders.nombre_agencia,
+            orders.total,
+            orders.codigo,
+            orders.fecha,
+            orders.vendedor,
+            orders.cantidad,
+            orders.status,
+            IF (
+                DATEDIFF(orders.retorno, CURDATE()) > 0,
+                orders.status,
+                3
+            ) AS status_order,
+            orders.es_emision_corp,
+            orders.origin_ip,
+            orders.alter_cur,
+            orders.tasa_cambio,
+            orders.family_plan,
+            orders.referencia,
+            orders.Subscriber_id,
+            orders.Sequence_id,
+            orders.Relation_id,
+            orders.property_id,
+            IF (
+                orders.status_register NOT IN (1,2,3),
+                'completed',
+                'pending'
+            ) AS completion_status
+            FROM
+                orders
+            WHERE
+                1 ";
+    
+            /*if($idUser){
+                $query .= " AND orders.vendedor ='$idUser' ";
+            }*/
+    
+            if($code){
+                $query .= " AND orders.codigo ='$code' ";
+            }
+    
+            if($reference){
+                $query .= " AND orders.referencia LIKE '%$reference%' ";
+            }
+    
+            if($status){
+                $query .= " AND orders.status = '$status' ";
+            }
+    
+            if($statusRegister){
+                $query .= " AND (orders.status_register NOT IN (1, 2, 3)
+                OR orders.status_register IS NULL ) ";
+            }
+    
+            if($expired){
+                $query .= " AND DATEDIFF(orders.retorno,CURDATE())>0 ";
+            }
+    
+            
+            return $this->selectDynamic('','','','',$query,false,$limit,$database);  
+        }
+
+        public function getUpgradesOrden($idOrder,$database='ilsbsys'){
+            if($idOrder){
+                $query = "SELECT
+                orders_raider.id_raider AS id_upgrade,
+                orders_raider.value_raider AS value_upgrade,
+                orders_raider.cost_raider AS cost_upgrade,
+                name_raider AS name_upgrade
+                FROM
+                    orders_raider
+                INNER JOIN raiders ON raiders.id_raider = orders_raider.id_raider
+                WHERE
+                    orders_raider.id_orden = $idOrder ";
+    
+                $response   = $this->selectDynamic('','','','',$query,false,false,$database);
+               
+                return $response;
+            }else{
+                return false;
+            }
         }
     }
 ?>
