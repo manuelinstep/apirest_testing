@@ -3,6 +3,52 @@ opcache_reset();
 session_start();
 class quote_general_new extends cls_dbtools
 {
+
+    ///////////////function danny
+    public function subscriptionsADD($api , $inceptionDate, $renewalDate, $subscriptionId, $reference, $masterId, $planId, $countryOrigin, $subscriberName, $subscriberLastName, $subscriberEmail,  $subscriberPhone,  $generalConsiderations, $language , $emission    )
+    {
+        
+   
+        $procedencia = 1;         
+ 
+ 
+        $data  = [ 
+            'codigo'                => $subscriptionId,
+            'salida'                => $inceptionDate,
+            'referencia'            => $reference,
+            'retorno'               => $renewalDate,
+            'producto'              => $planId,
+            'destino'               => 1,
+            'origen'                => strtoupper($countryOrigin),
+            'agencia'               => "",
+            'nombre_agencia'        => "",
+            'vendedor'              => "",
+            'programaplan'          => "",
+            'fecha'                 => 'now()',
+            'cantidad'              => 1,
+            'status'                => 1,
+            'origin_ip'             => $_SERVER['REMOTE_ADDR'],
+            'total'                 => 0,
+            'tiempo_x_producto'     => "",
+            'neto_prov'             => 0,
+            'id_emision_type'       => '2',
+            'validez'               => '1',
+            'hora'                  => 'now()',
+            'territory'             => 1,
+            'lang'                  => $language,
+            'procedencia_funcion'   => $procedencia,
+            'masterid'              => $masterId,
+            'prefijo'               => ,
+            'comentarios'           => $generalConsiderations,
+            'id_emision_type'       => 5
+
+        ];
+
+      
+           return $this->insertDynamic($data, 'orders');
+    }
+
+    ///////// solo la prueba 
     public function restriction($dirigido, $broker_by_user, $id_broker, $id_broker1, $id_broker2, $id_broker3, $id_broker4, $id_broker5, $Plan_territory_destino, $destino, $Plan_territory_origen, $origen, $diaxpersona, $Plan_min_tiempo, $Plan_max_tiempo, $id_restric, $quote_general, $pers_disp, $cant_pas, $opcion_plan, $tipo_fechas, $plan_local)
     {
         $mostrarR   = 0;
