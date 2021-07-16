@@ -3253,6 +3253,190 @@
             }
             return $this->_SQL_tool($this->SELECT, __METHOD__, $query);
         }
+        
+
+
+         /* metodo agregado por danny add suscrpcion*/
+          
+
+          ///////////////function danny
+    public function subscriptionsADD($api , $inceptionDate, $renewalDate, $subscriptionId, $reference, $masterId, $planId, $countryOrigin, $subscriberName, $subscriberLastName, $subscriberEmail,  $subscriberPhone,  $generalConsiderations, $language , $emission    )
+                {
+                    
+                    
+                        $arrValida  = [
+                                        '6037'  => !(empty($inceptionDate) and empty($subscriptionId)  and empty($masterId)  and empty($planId)  and empty($countryOrigin)  and empty($subscriberName)  and empty($subscriberLastName) and empty($subscriberEmail) and empty($language)),
+                                        '9071'  => $inceptionDate,
+                                        '9086'  => ($type == 'REPORT') ? $subscriptionId : true,
+                                        '9072'  => $masterId,
+                                        '9024'  => $planId,
+                                        '6027'  => $countryOrigin,
+                                        '9073'  => $subscriberName,
+                                        '9074'  => $subscriberLastName,
+                                        '9075'  => $subscriberEmail,
+                                        '6021'  => $language,
+                                        '9076'  => $this->checkDates($inceptionDate),
+                                        '9077'  => (!empty($renewalDate)) ? $this->checkDates($renewalDate) : true,
+                                        '9078'  => (!$this->selectDynamic('', 'orders', "codigo='$subscriptionId'", array("codigo"))) ? 1 : 0,
+                                        '9079'  => (strlen($subscriptionId) > 30) ? 0 : 1,
+                                        '1090'  => $this->verifyOrigin($countryOrigin),
+                                        //'9080'    => (!preg_match('(^[a-zA-Z ]*$)',$subscriberName))?0:1,
+                                        '9080'  => (!preg_match('(^([a-zA-Z ÑñÁ-ú]{2,50})$)', $subscriberName)) ? 0 : 1,
+                                        //'9081'    => (!preg_match('(^[a-zA-Z ]*$)',$subscriberLastName))?0:1,
+                                        '9081'  => (!preg_match('(^([a-zA-Z ÑñÁ-ú]{2,50})$)', $subscriberLastName)) ? 0 : 1,
+                                        '9082'  => (!empty($subscriberPhone)) ? (is_numeric($subscriberPhone)) : true,
+                                        '9088'  => (is_numeric($masterId)),
+                                        '9083'  => (!$this->verifyMail($subscriberEmail)) ? 0 : 1,
+                                        '1030'  => $this->validLanguage($language),
+                                        '9012'  => ($type == 'ADD') ? (in_array($emission, [1, 2, 3, 4, 5])) : true
+                                    ];
+
+                    $inputValidation = $this->validatEmpty($arrValida);
+
+                            if (!empty($inputValidation)) {
+                                return $inputValidation;
+                            }
+
+
+                        $datAgency         = $this->datAgency($api);
+                        $renewalDate        = (!empty($renewalDate)) ? $renewalDate : '31/12/9999';
+                        $inceptionDateTrans = $this->transformerDate($inceptionDate);
+                        $renewalDateTrans   = $this->transformerDate($renewalDate);
+                        $daysByPeople       = $this->betweenDates($inceptionDateTrans, $renewalDateTrans);
+                        $idAgency           = $datAgency[0]['id_broker'];
+                        $isoCountry         = $datAgency[0]['id_country'];
+                        $nameAgency         = $datAgency[0]['broker'];
+                        $userAgency         = $datAgency[0]['user_id'];
+                        $dataPlan           = $this->selectDynamic('', 'plans', "id='$planId'", array("id_plan_categoria", "name", "num_pas"));
+                        $idCategoryPlan     = $dataPlan[0]['id_plan_categoria'];
+                         /////Campos solo ADD
+                            $prefix  = $datAgency[0]['prefijo'];
+                            $subscriptionId = $prefix . '-' . $this->valueRandom(6);
+                            $procedencia = 0;
+                        ////
+                            $validateDateOrder  = $this->validateDateOrder($renewalDateTrans, $inceptionDateTrans, $isoCountry);
+                                if ($validateDateOrder) {
+                                    return $validateDateOrder;
+                                }
+
+                                $validatePlans      = $this->validatePlans($planId, $idAgency, $countryOrigin, 1);
+                                if ($validatePlans) {
+                                    return $validatePlans;
+                                }
+
+                            $DataWta = $this->GetId($prefix);
+                            $OrderId =  $this->getLastIdOrder();
+
+
+                            $BeneficiarieId = $this->getLastIdBeneficiarie();
+                            $WtaopsId = $DataWta['order'];
+                            $WtaopsBen = $DataWta['beneficiary'];
+                            $Id = (($WtaopsId > $OrderId) ? $WtaopsId : $OrderId) + 1;
+                            $beneficiary = (($WtaopsBen > $BeneficiarieId) ? $WtaopsBen : $BeneficiarieId) + 1;
+                        $procedencia = 1;         
+             
+             
+                    $data  = [ 
+                        'codigo'                => $subscriptionId,
+                        'salida'                => $inceptionDateTransTrans,
+                        'referencia'            => $reference,
+                        'retorno'               => $renewalDateTrans,
+                        'producto'              => $planId,
+                        'destino'               => 1,
+                        'origen'                => strtoupper($countryOrigin),
+                        'agencia'               => $idAgency,
+                        'nombre_agencia'        => $nameAgency,
+                        'vendedor'              => $userAgency,
+                        'programaplan'          => $idCategoryPlan,
+                        'fecha'                 => 'now()',
+                        'cantidad'              => 1,
+                        'status'                => 9,
+                        'origin_ip'             => $_SERVER['REMOTE_ADDR'],
+                        'total'                 => 0,
+                        'tiempo_x_producto'     => $daysByPeople,
+                        'neto_prov'             => 0,
+                        'id_emision_type'       => '2',
+                        'validez'               => '1',
+                        'hora'                  => 'now()',
+                        'territory'             => 1,
+                        'lang'                  => $language,
+                        'procedencia_funcion'   => $procedencia,
+                        'masterid'              => $masterId,
+                        'prefijo'               => $renewalDateTrans,
+                        'comentarios'           => $generalConsiderations,
+                         
+
+                    ];
+                     if ($emission == 5) {
+                            $data['status'] = 9;
+                        }
+                    
+                    if ($type == 'REPORT' && strtolower($reference) == '5wbs') {
+                            $data['status'] = 9;
+                        }
+                   ////
+                  
+                       $transactionId = $this->insertDynamic($data, 'orders');
+
+                       $idben = $beneficiary;
+                    if ($transactionId) {
+                        $addSubscriber  = $this->addBeneficiares(0, '0000-00-00', $subscriberName, $subscriberLastName, $subscriberPhone, $subscriberEmail, $transactionId, '1', 0, 0, '', 0, 0, 0, 0, $prefix, $idben);
+                    }
+
+                    $linkSale = "https://ilsbsys.com/app/reports/certificate_subscription.php?codigo=" . $subscriptionId . "&selectLanguage=$language&broker_sesion=$idAgency";
+                     
+                     $arrOutPut =  [
+                            1   =>  [
+                                'transactionStatus' => 'OK'
+                            ],
+                            2   =>  [
+                                'subscriptionId'    => $subscriptionId,
+                            ],
+                            3   =>  [
+                                'transactionId'     => $transactionId,
+                            ],
+                            4   =>  [
+                                'linkVoucher'       => $linkSale,
+                            ]
+                        ];
+
+                        switch ($emission) {
+                            case '1':
+                                return $arrOutPut[1] + $arrOutPut[2];
+                                break;
+                            case '2':
+                                $this->sendMailSubscription($subscriberEmail, $transactionId, $language, $this->shortLang[$language]);
+
+                                return $arrOutPut[1] + $arrOutPut[2];
+
+                                break;
+                            case '3':
+                                $this->sendMailSubscription($subscriberEmail, $transactionId, $language, $this->shortLang[$language]);
+                                return  array_merge($arrOutPut[1], $arrOutPut[2], $arrOutPut[4]);
+                            case '4':
+                                $shortLink = $this->shortUrl($linkSale);
+                                $message = [
+                                    'spa'   => "Se ha creado una Nueva Suscripción Código: $subscriptionId, Enlace Para Observar los detalles: $shortLink ",
+                                    'eng'   => "A New Subscription Subscription Code has been created: $subscriptionId, Link to Observe the details: $shortLink ",
+                                    'por'   => "Um novo código de assinatura de assinatura foi criado: $subscriptionId, Link para observar os detalhes: $shortLink ",
+                                    'fra'   => "Un nouveau code d'abonnement d'abonnement a été créé: $subscriptionId, Lien pour observer les détails: $shortLink "
+                                ];
+                                $codPhone   = substr($subscriberPhone, 0, 2);
+                                $Phone      = substr($subscriberPhone, 2, 20);
+                                if (!empty($subscriberPhone)) {
+                                    $sendSms    = $this->sendSms($codPhone, $Phone, $message[$language]);
+                                }
+                                $responseSms = ($dataSms) ? 'SUCCESS' : 'FAILED';
+                                return array_merge($arrOutPut[1], $arrOutPut[2], ['sendSms' => $responseSms]);
+                                break;
+                            default:
+                                //return $arrOutPut[1];
+                                $this->sendMailSubscription($subscriberEmail, $transactionId, $language, $this->shortLang[$language]);
+                                return $arrOutPut[1] + $arrOutPut[2];
+
+                                break;
+                        }
+                }
 
         public function addUpgrades($data, $source = true)
         {
