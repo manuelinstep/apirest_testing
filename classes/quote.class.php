@@ -42,8 +42,144 @@
             
             $datos = json_decode($data,true);
             $request = $datos['request'];
+             
+            
             switch ($request) {
-                case 'add_order':
+
+                case 'subscriptions_extend': 
+
+                    $api            = $datos["api"];
+                    $subscriptionId = $datos["SubscriptionId"];
+                    $inceptionDate  = $datos["InceptionDate"];
+                    $effectiveDate  = $datos["EffectiveDate"];
+                    $renewalDate    = $datos["RenewalDate"];
+                    $reference      = $datos["Reference"];
+                    $masterId       = $datos["MasterId"];
+                    $planId         = $datos["PlanId"];
+                    $countryOrigin  = $datos["CountryOrigin"];
+                    $subscriberName = $datos["SubscriberName"];
+                    $subscriberLastName = $datos["SubscriberLastName"];
+                    $subscriberEmail    = $datos["SubscriberEmail"];
+                    $subscriberPhone    = $datos["SubscriberPhone"];
+                    $language           = !empty($datos["Language"]) ? ($datos["Language"]) : 'spa';
+                    $emission           = $datos["Emission"];
+                    $generalConsiderations  = $datos['consideraciones_generales'];
+ 
+                    $procedenciaBack = $datos['procedenciaBack'];
+
+                     $this->subscriptionsextend($api , $inceptionDate, $renewalDate, $subscriptionId, $reference, $masterId, $planId, $countryOrigin, $subscriberName, $subscriberLastName, $subscriberEmail,  $subscriberPhone,  $generalConsiderations, $language , $emission, $effectiveDate, $procedenciaBack);                 
+                     
+
+
+                    return true;
+
+
+
+                    break;
+
+               case 'subscriptions_cancel': 
+
+                    $api            = $datos["api"];
+                    $subscriptionId = $datos["SubscriptionId"];
+                    $inceptionDate  = $datos["InceptionDate"];
+                    $effectiveDate  = $datos["EffectiveDate"];
+                    $renewalDate    = $datos["RenewalDate"];
+                    $reference      = $datos["Reference"];
+                    $masterId       = $datos["MasterId"];
+                    $planId         = $datos["PlanId"];
+                    $countryOrigin  = $datos["CountryOrigin"];
+                    $subscriberName = $datos["SubscriberName"];
+                    $subscriberLastName = $datos["SubscriberLastName"];
+                    $subscriberEmail    = $datos["SubscriberEmail"];
+                    $subscriberPhone    = $datos["SubscriberPhone"];
+                    $language           = !empty($datos["Language"]) ? ($datos["Language"]) : 'spa';
+                    $emission           = $datos["Emission"];
+                    $generalConsiderations  = $datos['consideraciones_generales'];
+ 
+                    $procedenciaBack = $datos['procedenciaBack'];
+
+                     $this->subscriptionCANCEL($api , $inceptionDate, $renewalDate, $subscriptionId, $reference, $masterId, $planId, $countryOrigin, $subscriberName, $subscriberLastName, $subscriberEmail,  $subscriberPhone,  $generalConsiderations, $language , $emission, $effectiveDate, $procedenciaBack);
+
+                   return true;
+
+                    break;    
+
+                case 'subscriptions_cancel': 
+
+                    $api            = $datos["api"];
+                    $subscriptionId = $datos["SubscriptionId"];
+                    $inceptionDate  = $datos["InceptionDate"];
+                    $effectiveDate  = $datos["EffectiveDate"];
+                    $renewalDate    = $datos["RenewalDate"];
+                    $reference      = $datos["Reference"];
+                    $masterId       = $datos["MasterId"];
+                    $planId         = $datos["PlanId"];
+                    $countryOrigin  = $datos["CountryOrigin"];
+                    $subscriberName = $datos["SubscriberName"];
+                    $subscriberLastName = $datos["SubscriberLastName"];
+                    $subscriberEmail    = $datos["SubscriberEmail"];
+                    $subscriberPhone    = $datos["SubscriberPhone"];
+                    $language           = !empty($datos["Language"]) ? ($datos["Language"]) : 'spa';
+                    $emission           = $datos["Emission"];
+                    $generalConsiderations  = $datos['consideraciones_generales'];
+ 
+                    $procedenciaBack = $datos['procedenciaBack'];
+
+                     $this->subscriptionChanges($api , $inceptionDate, $renewalDate, $subscriptionId, $reference, $masterId, $planId, $countryOrigin, $subscriberName, $subscriberLastName, $subscriberEmail,  $subscriberPhone,  $generalConsiderations, $language , $emission, $effectiveDate, $procedenciaBack);
+
+                   return true;
+
+                    break;    
+
+                case 'subscriptions_add': 
+
+                    $api            = $datos["api"];
+                    $inceptionDate  = $datos["InceptionDate"];
+                    $renewalDate    = $datos["RenewalDate"];
+                    $subscriptionId = $datos["SubscriptionId"];
+                    $reference      = $datos["Reference"];
+                    $masterId       = $datos["MasterId"];
+                    $planId         = $datos["PlanId"];
+                    $countryOrigin  = $datos["CountryOrigin"];
+                    $subscriberName = $datos["SubscriberName"];
+                    $subscriberLastName = $datos["SubscriberLastName"];
+                    $subscriberEmail    = $datos["SubscriberEmail"];
+                    $subscriberPhone    = $datos["SubscriberPhone"];
+                    $generalConsiderations  = $datos['consideraciones_generales'];
+                    $language           = $datos["Language"];
+                    $emission           = $datos["Emission"];
+
+                     $this->subscriptionsADD($api , $inceptionDate, $renewalDate, $subscriptionId, $reference, $masterId, $planId, $countryOrigin, $subscriberName, $subscriberLastName, $subscriberEmail,  $subscriberPhone,  $generalConsiderations, $language , $emission    );
+
+                   return true;
+
+                    break;  
+
+                case 'subscriptions_report': 
+
+                    $api            = $datos["api"];
+                    $inceptionDate  = $datos["InceptionDate"];
+                    $renewalDate    = $datos["RenewalDate"];
+                    $subscriptionId = $datos["SubscriptionId"];
+                    $reference      = $datos["Reference"];
+                    $masterId       = $datos["MasterId"];
+                    $planId         = $datos["PlanId"];
+                    $countryOrigin  = $datos["CountryOrigin"];
+                    $subscriberName = $datos["SubscriberName"];
+                    $subscriberLastName = $datos["SubscriberLastName"];
+                    $subscriberEmail    = $datos["SubscriberEmail"];
+                    $subscriberPhone    = $datos["SubscriberPhone"];
+                    $generalConsiderations  = $datos['consideraciones_generales'];
+                    $language           = $datos["Language"];
+                    $emission           = $datos["Emission"];
+
+                     $this->subscriptionsREPORT($api , $inceptionDate, $renewalDate, $subscriptionId, $reference, $masterId, $planId, $countryOrigin, $subscriberName, $subscriberLastName, $subscriberEmail,  $subscriberPhone,  $generalConsiderations, $language , $emission    );
+
+                   return true;
+
+                    break; 
+
+                 case 'add_order':
 
                     //Estos son todos los campos obligatorios
                     /**
