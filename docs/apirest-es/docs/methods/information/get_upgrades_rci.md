@@ -37,12 +37,12 @@ Retorna diferentes resultados dependiendo del type especificado
 
 # Errores Comunes retornados por la función
 
-* ```1020``` : Invalid Token
-* ```1021``` : Voucher not active
-* ```1030``` : Language not implemented
-* ```4444``` : Invalid Filter
-* ```4445``` : No upgrades associated
-* ```4446``` : No upgrades avaible
-* ```6021``` : Empty language
-* ```6023``` : Empty voucher
-* ```6037``` : All the fields are empty
+* ```1020``` : Token invalido
+* ```1021``` : Voucher no activo
+* ```1030``` : Lenguaje no implementado
+* ```4444``` : Filtro invalido
+* ```4445``` : No hay upgrades asociados
+* ```4446``` : No hay upgrades disponibles
+* ```6021``` : Lenguaje vacio
+* ```6023``` : Voucher vacio
+* ```6037``` : Todos los campos estan vacios
