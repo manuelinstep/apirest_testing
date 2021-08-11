@@ -2,13 +2,13 @@
 
 Reports an order
 
-* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/quote```
+* Endpoint : ```rcibywta.com/apirest_v1/quote```
 
 # Fields
 
 ```JSON
 {
-    "request" : "report_order",
+    "request" : "report_order_master",
     "token" : "123456789ABC",
     "codigo" : "FT-K21JDD",
     "fecha_salida" : "01/01/2022",

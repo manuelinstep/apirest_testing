@@ -319,9 +319,6 @@ class quote_general_new extends cls_dbtools
                 }
             }
 
-
-
-
             if ($ignoreRestrictions) {
                 $mostrar_R[0] = 1;
             } else {
@@ -611,9 +608,6 @@ class quote_general_new extends cls_dbtools
 
 
                     $losmeses = intval($diasxpersona / 30);
-                    if ('190.199.103.128' == $_SERVER['REMOTE_ADDR']) {
-                        die(var_dump("verificando,", $losmeses));
-                    }
                     if (($diasxpersona % 30) && $hay_adicional == 0) {
                         $losmeses++;
                     }

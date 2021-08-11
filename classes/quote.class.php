@@ -350,9 +350,9 @@
                         'total_tax'				=> $dataQuoteGeneral[0]['total_tax1'] + $dataQuoteGeneral[0]['total_tax2'],
                         'total_tax_mlc'			=> ($dataQuoteGeneral[0]['total_tax1'] + $dataQuoteGeneral[0]['total_tax2']) * $exchangeRate,
                         'lang'					=> $language,
-                        'procedencia_funcion'	=> '0',
-                        'prefijo'               => $prefix,
-                        'tasa_cambio_recibida'      => $tasa_cambio_recibida
+                        'procedencia_funcion'	=> '0'//,
+                        //'prefijo'               => $prefix,
+                        //'tasa_cambio_recibida'      => $tasa_cambio_recibida
                     ];
                     //En este punto, revisamos los guarnin
 
@@ -1814,6 +1814,7 @@
                      * Damned be the man who trusts in his code
                      */
                     //$quoteGeneral 					= new quote_general_new();
+
                     $api	      					= $datos['token'];
                     $departure   					= $datos['fecha_salida'];
                     $arrival     					= $datos['fecha_llegada'];
@@ -1825,7 +1826,7 @@
                     $language    					= trim($datos['lenguaje']);
                     $generalConsiderations			= $datos['consideraciones_generales'];
                     $issue       					= $datos['emision'];
-                    $upgrade						= $datos['upgrade'];	
+                    $upgrade						= $datos['upgrade'];
                     $propertyId						= $datos['propertyid']?$datos['propertyid']:'XXX';
                     $subscriberId					= $datos['subscriberid']?$datos['subscriberid']:0;
                     $relationId						= $datos['relationid']?$datos['relationid']:0;
@@ -1871,7 +1872,7 @@
                         '9059'	=> $this->verifyOrigin($origin),
                         '4029'	=> (empty($numberPassengers) or $numberPassengers == 0 or !is_numeric($numberPassengers))?0:1,
                         '5104'	=> (count($namePassenger)<=$numberPassengers) || ($numberPassengers>=count($namePassenger)),
-                        '1080'	=> $this->verifyOrigin($destination),
+                        /*se debe verificar esto*///'1080'	=> $this->verifyOrigin($destination),
                         '9012'	=> ($issue<1 || !is_numeric($issue) || $issue>4 )?0:1,
                         '1030'	=> $this->validLanguage($language),
                         '5101'	=> $subscriberId,
@@ -1972,8 +1973,8 @@
 
                     $countryAgency		= $this->getCountryAgency($api);
 
-                    $dataQuoteGeneral	= $quoteGeneral->quotePlanbenefis($idCategoryPlan ,$daysByPeople ,$countryAgency ,1 ,$origin ,$agesPassenger ,$departure ,$arrival ,$Agency ,$plan);
-
+                    $dataQuoteGeneral	= $quoteGeneral->quotePlanbenefis($idCategoryPlan ,$daysByPeople ,$countryAgency ,$destination ,$origin ,$agesPassenger ,$departure ,$arrival ,$Agency ,$plan);
+        
                     $validatBenefits	= $this->verifyBenefits($dataQuoteGeneral);
                     if($validatBenefits){
                         return $validatBenefits;
@@ -2381,6 +2382,7 @@
                     break;
                 case 'get_voucher_rci':
                     # code...
+                    $Llego = 'aqui1';
                     $code		= trim($datos['sucriber_id']);
                     $language	= $datos['lenguaje'];
                     $api		= $datos['api'];
@@ -2443,9 +2445,7 @@
                         break;
                     }
 
-                    
                     $getDataOdersIlsbsys	= $this->getDataOders('','',$code,$status,$statusRegister,'ilsbsys',$expired,50);
-                    
                     
                     if($getDataOdersIlsbsys){
                         $getDataOders = $getDataOdersIlsbsys;
@@ -2458,9 +2458,10 @@
                     }
 
                     $lang			= ($language=='spa')?'es':'en';
-                
+
                     if (count($getDataOders)){
                         foreach ($getDataOders as $key => $value) {
+                            
                             $getUpgradesOrden 				= $this->getUpgradesOrden($value['id'],'rci');
                             $upgOrder = ($getUpgradesOrden)?$getUpgradesOrden:false;
                             $dato[]	= [
@@ -3005,8 +3006,10 @@
             if (!empty($daysByPeople)) {
                 $arrayValidate[] = $this->verifyDaysPlan($daysByPeople, $plan);
             }
-            if (!empty($arrayValidate[0])) {
-                return  $arrayValidate[0];
+            foreach ($arrayValidate as $key) {
+                if (!empty($key)) {
+                    return  $key;
+                }
             }
         }
 
@@ -3064,7 +3067,6 @@
                 )";
             }
             $query .= (count($where) > 0 ? " WHERE " . implode(' AND ', $where) : " ");
-
             $response = $this->selectDynamic('', '', '', '', $query);
             if (!$response) {
                 return $_respuesta->getError('1050');
@@ -3089,6 +3091,7 @@
                     WHERE
                         restriction.id_plans = '$plan'
                         AND territory.id_territory = '$destination'";
+                    
                     $response = $this->selectDynamic('', '', '', '', $query);
 
                     if (!$response) {
@@ -3122,7 +3125,6 @@
             $_respuesta = new response;
             $daysConfigPlan  = $this->selectDynamic('', 'plans', "id='$plan'", array("min_tiempo", "max_tiempo", "compra_minima"))[0];
 
-
             if ($daysByPeople < $daysConfigPlan['min_tiempo']) {
 
                 return  $_respuesta->getError('9195');
@@ -3132,6 +3134,7 @@
 
                 return $_respuesta->getError('1247');
             }
+
             if (!empty($daysConfigPlan['compra_minima']) ? $daysByPeople < $daysConfigPlan['compra_minima'] : false) {
                 return $_respuesta->getError('1248');
             }
@@ -3339,13 +3342,17 @@
             $arrPricePassengers	= [];
             $arrUpgNotType2		= [];
             $idUpgradesOrden	= [];
-    
-    
-            for ($i = 0; $i < $countDataUpgrade; $i++) {
-    
-                $id 		= $data['upgrades'][$i];
-                $document 	= $data['upgrades'][$i]['documento'];
 
+            $upgrd2 = json_decode($data['upgrades'],true)['item'];
+            
+            for ($i = 0; $i < $countDataUpgrade; $i++) {
+                
+                /**
+                 * $id 		= $data['upgrades'][$i];
+                 * $document 	= $data['upgrades'][$i]['documento'];
+                 */
+                $id 		= $upgrd2[$i]['id'];
+                $document 	= $upgrd2[$i]['documento'];
                 $typeUpgrade	= $this->valUpgrades($plan, $id);
                 
                 if (!empty($typeUpgrade)) {
@@ -3799,13 +3806,12 @@
                     'precio_cost_mlc'   => $costo_local,
                     'tax_total'         => $tax_beneficiario,
                     'tax_total_mlc'     => $tax_local_beneficiario,
-                    'prefijo'           => $prefix,
+                    //'prefijo'           => $prefix,
                     'id'                => $idben,
                     'total_neto_benefit'       => $price,
                     'neto_cost'       => $cost
 
                 ];
-
             return $this->insertDynamic($data, 'beneficiaries');
         }
 

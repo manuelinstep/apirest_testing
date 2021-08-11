@@ -2,7 +2,7 @@
 
 Retorna los países restringidos por el plan
 
-* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/information```
+* Endpoint : ```rcibywta.com/apirest_v1/information```
 
 # Campos
 

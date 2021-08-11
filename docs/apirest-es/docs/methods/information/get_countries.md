@@ -2,7 +2,7 @@
 
 Retorna todos los paises guardados en el sistem en el idioma indicado. Los idiomas disponibles actualmente son español (spa) e inglés (eng)
 
-* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/information```
+* Endpoint : ```rcibywta.com/apirest_v1/information```
 
 # Campos
 

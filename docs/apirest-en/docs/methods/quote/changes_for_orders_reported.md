@@ -2,13 +2,13 @@
 
 Changes values of a reported order
 
-* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/quote```
+* Endpoint : ```rcibywta.com/apirest_v1/quote```
 
 # Fields
 
 ```JSON
 {
-    "request" : "report_order",
+    "request" : "changes_for_orders_reported",
     "token" : "123456789ABC",
     "codigo" : "TESTCODE-789988",
     "status" : "1",

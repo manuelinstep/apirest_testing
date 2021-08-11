@@ -2,13 +2,13 @@
 
 Returns the city of a specified state in a country
 
-* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/information```
+* Endpoint : ```rcibywta.com/apirest_v1/information```
 
 # Fields
 
 ```JSON
 {
-    "request" : "get_currencies",
+    "request" : "get_country_states_cities",
     "token" : "123456789ABC",
     "iso_country" : "CO",
     "iso_state" : "CO.14",

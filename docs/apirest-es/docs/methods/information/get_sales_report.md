@@ -2,7 +2,7 @@
 
 Retorna un enlace hacia el reporte de ventas generado en base al rango de fechas especificado
 
-* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/information```
+* Endpoint : ```rcibywta.com/apirest_v1/information```
 
 # Campos
 

@@ -2,13 +2,13 @@
 
 Returns the terms and conditions of the plan
 
-* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/information```
+* Endpoint : ```rcibywta.com/apirest_v1/information```
 
 # Fields
 
 ```JSON
 {
-    "request" : "get_currencies",
+    "request" : "get_terms",
     "token" : "123456789ABC",
     "id_plan" : "1800",
     "language" : "spa"

@@ -2,7 +2,7 @@
 
 function used for quotation
 
-* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/quote```
+* Endpoint : ```rcibywta.com/apirest_v1/quote```
 
 # Fields
 

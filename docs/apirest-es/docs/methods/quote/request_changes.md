@@ -2,7 +2,7 @@
 
 Cambia los valores de una orden añadida
 
-* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/quote```
+* Endpoint : ```rcibywta.com/apirest_v1/quote```
 
 # Campos
 

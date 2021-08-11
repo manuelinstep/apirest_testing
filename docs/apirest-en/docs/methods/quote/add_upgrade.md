@@ -2,7 +2,7 @@
 
 Adds an upgrade to the specified order
 
-* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/quote```
+* Endpoint : ```rcibywta.com/apirest_v1/quote```
 
 # Fields
 

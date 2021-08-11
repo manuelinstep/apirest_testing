@@ -2,7 +2,7 @@
 
 Retorna las ciudades dentro del estado específico de un país
 
-* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/information```
+* Endpoint : ```rcibywta.com/apirest_v1/information```
 
 # Campos
 

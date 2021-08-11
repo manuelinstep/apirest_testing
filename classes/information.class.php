@@ -574,6 +574,205 @@
                     }
                         return $response;
                     break;
+                case 'get_order_price_edad':
+                    # code...
+                    /**
+                     * para order price edad:
+                     * typerange: 2
+                     * returnrange: 3
+                     * se le pasa a la funcion la variable datos con las dos variables de arriba
+                     */
+                    $result = $this->getOrderPrice($datos,2,3);
+                    return $result;
+
+                    break;
+                case 'get_order_price_edad_plan':
+                    # code...
+                    /**
+                     * typerange: 2
+                     * returnrange: 2
+                     */
+                    $result = $this->getOrderPrice($datos,2,2);
+                    return $result;
+                    break;
+                case 'get_order_price_fecha':
+                    /**
+                     * typerange: 1
+                     * returnrange: 3
+                     */
+                    $result = $this->getOrderPrice($datos,1,3);
+                    return $result;
+                    break;
+                case 'get_order_price_fecha_plan':
+                    /**
+                     * typerange: 1
+                     * returnrange: 2
+                     */
+                    $result = $this->getOrderPrice($datos,1,2);
+                    return $result;
+                    break;
+                case 'get_voucher_rci':
+                    # code...
+                    $Llego = 'aqui1';
+                    $code		= trim($datos['sucriber_id']);
+                    $language	= $datos['lenguaje'];
+                    $api		= $datos['api'];
+                    $type		= $datos['type'];
+                    $statusRegister = false;
+                    
+                    $arrStatus	= [
+                        'Canceled',
+                        'Active',
+                        'To activate',
+                        'Expired',
+                        'Canceled',
+                        'Canceled',
+                        'Canceled',
+                        'Canceled',
+                        'Canceled',
+                        'Prueba',
+                        
+                    ];
+
+                    $dataValida	= [
+                        '6037'	=> !(empty($code) AND empty($language) AND empty($type)),
+                        '5101'	=> $code,
+                        '6021'	=> $language,
+                        '4444'	=> (in_array($type,[1,2,3,4,5])),
+                        '1030'	=> $this->validLanguage($language)
+                    ];
+
+                    $validatEmpty	= $this->validatEmpty($dataValida);
+                    if(!empty($validatEmpty)){
+                        return $validatEmpty;
+                    }
+                    $expired =  false;
+                    $error = 6063;
+                    switch ($type) {
+                        case 3:
+                            $statusRegister = true;
+                            $status 		= false;
+                            $error 			= 6062;
+                        break;
+                        
+                        case 1:
+                            $status 	= false;
+                            $error 		= 6063;
+                        break;
+
+                        case 2:
+                            $status 	= 1;	
+                            $expired 	= true;	
+                            $error 		= 6061;
+                        break;
+
+                        case 4:
+                            $status 	= 4;
+                            $error 		= 6060;	
+                        break;
+                        case 5:
+                            $status 	= 9;
+                            $error 		= 9107;	
+                        break;
+                    }
+
+                    $getDataOdersIlsbsys	= $this->getDataOders('','',$code,$status,$statusRegister,'ilsbsys',$expired,50);
+                    
+                    if($getDataOdersIlsbsys){
+                        $getDataOders = $getDataOdersIlsbsys;
+                    }else{
+                        
+                
+                        $getDataOdersRCI	= $this->getDataOders('','',$code,$status,$statusRegister,'rci',$expired,50);
+                        
+                        $getDataOders = $getDataOdersRCI;
+                    }
+
+                    $lang			= ($language=='spa')?'es':'en';
+
+                    if (count($getDataOders)){
+                        foreach ($getDataOders as $key => $value) {
+                            
+                            $getUpgradesOrden 				= $this->getUpgradesOrden($value['id'],'rci');
+                            $upgOrder = ($getUpgradesOrden)?$getUpgradesOrden:false;
+                            $dato[]	= [
+                                'code' 		=> $value['codigo'],
+                                'departure' => $value['salida'],
+                                'return'	=> $value['retorno'],
+                                'status'	=> $arrStatus[$value['status_order']],
+                                'completion_status' => $value['completion_status'],
+                                'product' 	=> $value['producto'],
+                                'property_id'=> $value['property_id'],
+                                'upgrades' 	=> $upgOrder
+                            ];
+                        }
+
+                        return $dato;
+
+                    }else{
+                        return $_response->getError($error);
+                    }
+                            break;
+                case 'get_upgrades_rci':
+                                $code = trim($datos['code']);
+                                $api  = $datos['token'];
+                                $type = $datos['type'];
+                                $lang = $datos['lenguaje'];
+                                $today= date('Y-m-d');
+                                $dataValida	= [
+                                    '6037'	=> !(empty($code) AND empty($lang)  AND empty($type)),
+                                    '6023'	=> $code,
+                                    '6021'	=> $lang,
+                                    '1030'	=> $this->validLanguage($lang),
+                                    '4444'	=> (in_array($type,[1,2])),
+                                ];
+            
+                                $validatEmpty	= $this->validatEmpty($dataValida);
+            
+                                if(!empty($validatEmpty)){
+                                    return $validatEmpty;
+                                }
+                                $dataOrderIlsbsys	= $this->selectDynamic('','orders',"codigo='$code'",['id','producto','status','salida'],false,false,false,'ilsbsys')[0];
+                                $plataform = "ilsbsys";
+                                if($dataOrderIlsbsys){
+                                    $dataOrder = $dataOrderIlsbsys;
+                                }else{
+                                    $dataOrderRCI	= $this->selectDynamic('','orders',"codigo='$code'",['id','producto','status','salida'],false,false,false,'rci')[0];
+                                    $dataOrder = $dataOrderRCI;
+                                    $plataform = "rci";
+                                }
+                                if($dataOrder){
+            
+            
+                                    if($dataOrder['status']==1 || $dataOrder['status']==9){
+                                        $idOrden = $dataOrder['id'];
+                                        $idPlan  = $dataOrder['producto'];
+                                        $upgradesOrder 		= $this->getUpgradesOrden($idOrden,$plataform);
+                                        $idUpgradesExist 	= implode(',',array_column($upgradesOrder,'id_upgrade'));
+                            
+                                        switch ($type) {
+                                            case '1':
+                                        
+                                                return ($upgradesOrder)?$upgradesOrder:$_respuesta->getError(4445);
+                            
+                                            break;
+                            
+                                            case '2':
+                                            
+                                                $dataUpgrades = $this->getDataUpgradesRCI($idPlan,$lang,$idUpgradesExist,$plataform);
+                                                return ($dataUpgrades)?$dataUpgrades:$_respuesta->getError(4446);
+                            
+                                            break;
+                                        }
+            
+                                    }else{
+                                        return $_respuesta->getError(1021);
+                                    }
+                                    
+                                }else{
+                                    return $_respuesta->getError(1020);
+                                }
+                    break;
                 default:
                     /**
                      * Se debe determinar si esta vacio, o si viene con un metodo
@@ -691,33 +890,39 @@
             return $response;
         }
 
-        private function selectDynamic($filters, $table = string, $where = '1', $fields, $querys = '', $die = false, $limit = 6)
-        {
-            /**
-             * Este código viene del anterior webservices
-             * Funciona, asi que no debería haber problema implementandolo
-             * Lo único que aún no entiendo del todo es como funciona el apartado filters, pero de momento
-             * no se usará, buscare un ejemplo en el anterior webservices para cersiorarme de que es lo que sucede
-             */
-            if (empty($querys)) {
-                $fields = !empty($fields) ? implode(',', $fields) : "*";
+        public function selectDynamic($filters,$table=string,$where='1',$fields, $querys='',$die=false,$limit=6,$database){
+        
+            if(empty($querys)){
+                $fields=!empty($fields)?implode(',',$fields):"*";
                 $query = "SELECT $fields FROM $table WHERE $where ";
-                foreach ($filters as $campo => $value) {
-                    if (!empty($campo) && !empty($value)) {
-                        $valor   = addslashes($value);
-                        $valor   = (is_array($value)) ? implode(',', $value) : "'$valor'";
-                        $query  .= " AND $campo IN ($valor) ";
+                    foreach ($filters as $campo => $value) {
+                        if(!empty($campo) && !empty($value)){
+                            $valor   = addslashes($value);
+                            $valor   = (is_array($value))?implode(',',$value):"'$valor'";
+                            $query  .= " AND $campo IN ($valor) ";
+                        }
                     }
+                    
+                if($limit){
+                    $query.=" LIMIT $limit ";
                 }
-                $query .= " LIMIT $limit ";
-            } else {
-
-                $query = $querys;
+                
+            }else{
+                
+                $query=$querys;
             }
-            if ($die) {
+            if($die){
                 die($query);
             }
-            return $this->_SQL_tool($this->SELECT, __METHOD__, $query);
+            if($database=='rci'){
+                $databaseRci = new database_rci();
+               
+                return $databaseRci->query($query);
+    
+            }else{
+                return $this->_SQL_tool($this->SELECT, __METHOD__, $query);
+            }
+            
         }
 
         private function get_plans($id_agencia, $plan, $language, $details = false){
@@ -1295,6 +1500,671 @@
             $url = "http://api.bit.ly/v3/shorten?" . $parameters;
 
             return file_get_contents($url);
+        }
+
+        public function getOrderPrice($data,$typeRange,$returnRange) //Cambiada por RCI
+        {
+        
+            $quoteGeneral 			= new quote_general_new();
+            $api					= $data['api'];
+            $plan					= $data['id_plan'];
+            $origin					= $data['pais_origen'];
+            $destination			= $data['territorio_destino'];
+            $departure				= $data['fecha_salida'];
+            $arrival				= $data['fecha_llegada'];
+            $numberPassengers		= $data['pasajeros'];
+            $dataRange				= ($typeRange==1)?$data['fecha_nacimiento']:$data['edad'];
+            $calculateRangeObj  	= (is_object($dataRange))?(array)$dataRange:json_decode($dataRange,true);
+            $calculateRange			= (array)$calculateRangeObj["item"];
+            $arrayMerge				= [];
+            $arrayRange				= [];
+            
+            if($typeRange==1){
+                $dataRange			= $data['fecha_nacimiento'];
+                $nameRange          = "nacimientos";
+                $errorRange         = "6026";
+            }else{
+                $dataRange          = $data['edad'];
+                $nameRange          = "edades";
+                $errorRange         = "6031";
+            }
+
+            if($returnRange==3){
+                $plan="0";
+            }
+            $dataValidate	= [
+                '6037'				=> !(empty($numberPassengers) AND empty($origin) AND empty($destination) AND empty($departure) AND empty($arrival)),
+                '9058'				=> (!is_numeric($plan))?0:1,
+                '6027'				=> $origin,
+                '6028'				=> $destination,
+                '6029'				=> $departure,
+                '6030'				=> $arrival, 
+                '6026'				=> $numberPassengers,
+                $errorRange			=> count($calculateRange),
+                '4029'				=> (empty($numberPassengers) || $numberPassengers == 0 || !is_numeric($numberPassengers))?0:1,
+                '6043'				=> ($this->countData($calculateRange ,$numberPassengers))?0:1,
+                '2001'				=> $this->checkDates($departure),
+                '1080'				=> ($destination == "1" OR $destination == "2" OR $destination == "9"),
+                '2002'				=> $this->checkDates($arrival),
+                '9059'				=> $this->verifyOrigin($origin),
+            ];
+
+            switch ($typeRange) {
+                case '1':
+                    $arrayRange		= [
+                        '1062'		=> $this->checkDates($calculateRange),
+                    ];
+                    break;
+                case '2':
+                    $arrayRange		= [
+                        '5016'		=> (is_numeric(implode('',$calculateRange))),
+                    ];
+                    break;
+            }
+
+            $arrivalTrans		= $this->transformerDate($arrival);
+            $departureTrans		= $this->transformerDate($departure);
+
+            $dataPlan			= $this->selectDynamic('','plans',"id='$plan'",array("id_plan_categoria","name","num_pas"));
+            $datAgency			= $this->datAgency($api);
+
+            $idCategoryPlan		= $dataPlan[0]['id_plan_categoria'];
+            $idAgency			= $datAgency[0]['id_broker'];
+            $isoCountry			= $datAgency[0]['id_country'];
+            $daysByPeople 		= $this->betweenDates($departureTrans ,$arrivalTrans);
+            $countryAgency		= $this->getCountryAgency($api);
+
+            if($returnRange!=3){
+                $arrayMerge	= [
+                    '6022'		=> $plan
+                ];
+                $validatePlans	= $this->validatePlans($plan ,$idAgency ,$origin ,$destination ,$daysByPeople);
+                if($validatePlans){
+                    return $validatePlans;
+                }
+            }
+
+            $dataValida			= $dataValidate+$arrayMerge+$arrayRange;
+
+            $validatEmpty		= $this->validatEmpty($dataValida);
+            if(!empty($validatEmpty)){
+                return $validatEmpty;
+            }
+            
+            $validateDateOrder	= $this->validateDateOrder($arrivalTrans,$departureTrans,$isoCountry);
+            if(!empty($validateDateOrder)){
+                return $validateDateOrder;
+            }
+
+            if ($typeRange==1) {
+
+                $agesPassenger	= $this->setAges($calculateRange ,$isoCountry);
+                foreach ($calculateRange as $value) {
+                    $rangeTrans[] 	= $this->transformerDate($value);
+                }
+                $betweenDates 	= $this->betweenDates('',$rangeTrans,'years');
+                if(!empty($betweenDates)){
+                    return $betweenDates;
+                }
+            }else{
+                $plan           = ($returnRange == 3)?'':$plan;
+                $agesPassenger	=  implode(',',$calculateRange);
+            }
+    
+            $dataQuoteGeneral	= $quoteGeneral->quotePlanbenefis($idCategoryPlan ,$daysByPeople ,$countryAgency ,$destination ,$origin ,$agesPassenger ,$departure ,$arrival ,$idAgency,$plan);
+
+            $validatBenefits	= $this->verifyBenefits($dataQuoteGeneral);
+            if($validatBenefits){
+                return $validatBenefits;
+            }
+
+            switch ($returnRange) {
+                case 1:
+                    $response			= [
+                        "total_orden"	=> $dataQuoteGeneral[0]['total'],
+                        "idplan"		=> $plan,
+                        "fecha_salida"	=> $departure,
+                        "fecha_regreso"	=> $arrival,
+                        "dias"			=> $daysByPeople,
+                        $nameRange      => $calculateRange
+                    ];
+                    break;
+                case 2:
+                    $response			= [
+                        "total_orden"	=> $dataQuoteGeneral[0]['total'],
+                        "idplan"		=> $plan,
+                        "fecha_salida"	=> $departure,
+                        "fecha_regreso"	=> $arrival,
+                        "dias"			=> $daysByPeople,
+                        $nameRange      => $calculateRange,
+                        "upgrade"		=> $this->dataUpgrades($plan,'spa' ,$dataQuoteGeneral[0]['total'],$daysByPeople,$numberPassengers)
+                    ];
+                    
+                    break;
+                case 3:
+                    $countDataQuoteGeneral	= count($dataQuoteGeneral);
+                    $responseExt = [
+                        "fecha_salida"	=> $departure,
+                        "fecha_regreso"	=> $arrival,
+                        "dias"			=> $daysByPeople,
+                        $nameRange      => $calculateRange
+                    ];
+                    for ($i=0; $i <$countDataQuoteGeneral ; $i++) {
+                        $responsePlans[$dataQuoteGeneral[$i]['idp']]= [
+                            'name'			=> $dataQuoteGeneral[$i]['name_plan'],
+                            'total_orden'	=> $dataQuoteGeneral[$i]['total'],
+                            "upgrade"		=> $this->dataUpgrades($dataQuoteGeneral[$i]['idp'],'spa' ,$dataQuoteGeneral[$i]['total'],$daysByPeople,$numberPassengers)
+                        ];
+                    }
+
+                    $response = $responseExt + ['planes'=>$responsePlans];
+                    break;
+            }
+
+            return $response;
+        }
+
+        public function countData($quantity, $vsquantity) //Listo
+        {
+            return (count($quantity) != $vsquantity) ? true : false;
+        }
+
+        public function verifyOrigin($origin) //Listo
+        {
+            $response = $this->selectDynamic('', 'countries', "iso_country='$origin'");
+            return ($response) ? true : false;
+        }
+
+        public function betweenDates($start, $end, $type) // Listo
+        {   
+            $_respuesta = new response;
+            $startdate ? date('Y-m-d') : $startdate;
+            switch ($type) {
+                case 'years':
+                    if (is_array($start) || is_array($end)) {
+                        foreach ($end as $value) {
+                            $query        = "SELECT timestampdiff(YEAR,'$value', '$start') as year";
+                            $response     = $this->selectDynamic('', '', '', '', $query)[0]['year'];
+                            return ($response < 0) ? $_respuesta->getError('1062') : false;
+                        }
+                    } else {
+                        $query      = "SELECT timestampdiff(YEAR,'$value', '$start') as year";
+                        return      $this->selectDynamic('', '', '', '', $query)[0]['year'];
+                    }
+                    break;
+                default:
+                    $query = "SELECT DATEDIFF('$end', '$start') + 1 AS dias";
+                    return $this->selectDynamic('', '', '', '', $query)[0]['dias'];
+                    break;
+            }
+        }
+
+        public function getCountryAgency($api) //Listo
+        {
+            $query = "SELECT
+                broker.id_country
+            FROM
+                users
+            Inner Join user_associate ON users.id = user_associate.id_user
+            Inner Join broker ON user_associate.id_associate = broker.id_broker
+            WHERE
+                users.api_key =  '$api'";
+            return $this->_SQL_tool($this->SELECT_SINGLE, __METHOD__, $query)['id_country'];
+        }
+
+        public function validatePlans($plan, $agency, $origin, $destination, $daysByPeople) //Listo
+        {
+            $arrayValidate = [];
+            if (!empty($agency)) {
+                $arrayValidate[] = $this->verifyRestrictionPlan($agency, $plan);
+            }
+            if (!empty($destination)) {
+                $arrayValidate[] = $this->verifyRestrictionDestination($destination, $plan);
+            }
+            if (!empty($origin)) {
+                $arrayValidate[] = $this->verifyRestrictionOrigin($origin, $plan);
+            }
+            if (!empty($daysByPeople)) {
+                $arrayValidate[] = $this->verifyDaysPlan($daysByPeople, $plan);
+            }
+            if (!empty($arrayValidate[0])) {
+                return  $arrayValidate[0];
+            }
+        }
+
+        public function verifyRestrictionPlan($agency,$plan,$languaje,$details=false,$api,$simple){ //Listo
+            $_respuesta = new response;
+            $agency     = (!empty($agency))?$agency:$this->datAgency($api)[0]['id_broker'];
+            $choicePlan = $this->selectDynamic('','broker',"id_broker in ($agency)",array("opcion_plan"))[0]['opcion_plan'];
+            
+            $query = "SELECT
+                plans.id ";
+            if($details){
+                $query.=", plan_detail.titulo,
+                    plan_detail.description,
+                    plan_detail.language_id,
+                    plans.id_plan_categoria,
+                    plan_detail.plan_id,
+                    plans.num_pas,
+                    plans.min_tiempo,
+                    plans.max_tiempo,
+                    plans.id_currence,
+                    plans.family_plan,
+                    plans.min_age,
+                    plans.max_age,
+                    plans.normal_age,
+                    plans.plan_local,
+                    plans.modo_plan,
+                    plans.original_id,
+                    plans.combo ";
+            }
+                $query.=" FROM
+                plans
+                INNER JOIN plan_detail ON plans.id = plan_detail.plan_id
+                INNER JOIN restriction ON plans.id = restriction.id_plans
+            ";
+            ($details)?:$where[]=" plans.id = '$plan'";
+            (!$details && (empty($languaje)))?:$where[]=" plan_detail.language_id = '$languaje'";
+            $where[] = " plans.activo = '1' ";
+            $where[] = " plans.eliminado = '1' ";
+            $where[] ="(
+                    plans.modo_plan = 'W'
+                    OR plans.modo_plan = 'T'
+            )";
+            if($choicePlan == '1'){
+                $where[] =
+                "(
+                    restriction.dirigido = 1
+                    OR (restriction.dirigido = 2 AND restriction.id_broker in ($agency))
+                    OR (restriction.dirigido = 6 AND restriction.id_broker in ($agency))
+                )";
+            }else if($choicePlan == '2'){
+                $where[] =
+                "(
+                    (restriction.dirigido = 2 AND restriction.id_broker in ($agency))
+                    OR (restriction.dirigido = 6 AND restriction.id_broker in ($agency))
+                )";
+            }
+    
+            $query.=(count($where)>0?" WHERE ".implode(' AND ',$where):" ");
+    
+            $response = $this->selectDynamic('','','','',$query);
+        
+            if(!$response){
+                $querycheck1 = "SELECT id from plans where plans.id = '$plan' and plans.activo != '1'";
+                $querycheck2 = "SELECT id from plans where plans.id = '$plan' and plans.eliminado != '1'";
+                $rpcheck1 = $this->selectDynamic('','','','',$querycheck1);
+                $rpcheck2 = $this->selectDynamic('','','','',$querycheck2);
+                if($rpcheck1){
+                    $error = '9201';
+                }else if($rpcheck2){
+                    $error = '9202';
+                }else{
+                    $error = '1050';
+                }
+                return $_respuesta->getError($error); 
+            }elseif($details){
+                return $response;
+            }
+        }
+
+        public function verifyRestrictionDestination($destination, $plan) //Listo
+        {   
+            $_respuesta = new response;
+            $restrictionTerritory = $this->selectDynamic('', 'restriction', "id_plans='$plan'", array("id_territory_destino"))[0]['id_territory_destino'];
+
+            if ($restrictionTerritory) {
+
+                if ($restrictionTerritory != '0') {
+                    $query = "SELECT
+                        territory.id_territory
+                    FROM
+                        restriction
+                        INNER JOIN territory ON restriction.id_territory_destino = territory.id_territory
+                    WHERE
+                        restriction.id_plans = '$plan'
+                        AND territory.id_territory = '$destination'";
+                    $response = $this->selectDynamic('', '', '', '', $query);
+
+                    if (!$response) {
+                        return $_respuesta->getError('1081');
+                    }
+                }
+            }
+        }
+
+        public function verifyDaysPlan($daysByPeople, $plan) //Listo
+        {
+            $_respuesta = new response;
+            $daysConfigPlan  = $this->selectDynamic('', 'plans', "id='$plan'", array("min_tiempo", "max_tiempo", "compra_minima"))[0];
+
+
+            if ($daysByPeople < $daysConfigPlan['min_tiempo']) {
+
+                return  $_respuesta->getError('1248');
+            }
+
+            if ($daysByPeople > $daysConfigPlan['max_tiempo']) {
+
+                return $_respuesta->getError('1247');
+            }
+            if (!empty($daysConfigPlan['compra_minima']) ? $daysByPeople < $daysConfigPlan['compra_minima'] : false) {
+                return $_respuesta->getError('1248');
+            }
+        }
+
+        public function validateDateOrder($arrival,$departure,$isoCountry){ //Listo
+            $_respuesta = new response;
+            $this->setTimeZone($isoCountry);
+            $today  = date('Y-m-d');
+            if($departure < $today or $arrival < $today){
+                return $_respuesta->getError('2004');
+            }elseif($arrival == $departure || $departure > $arrival){
+                return $_respuesta->getError('3030');
+            }
+        }
+
+        public function setAges($birthDayPassenger, $isoCountry) //Listo
+        {
+            foreach ($birthDayPassenger as $value) {
+                $transformateValue  = $this->transformerDate($value);
+                $calculate[]        = $this->calculateAge($transformateValue, $isoCountry);
+            }
+
+            return implode(',', $calculate);
+        }
+
+        public function verifyBenefits($dataQuoteGeneral) //Listo
+        {      
+            $_respuesta = new response; 
+            $benefits    = [
+                '1246'    => $dataQuoteGeneral[0]['error_age'],
+                '1100'    => $dataQuoteGeneral[0]['error_broker'],
+                '5003'    => $dataQuoteGeneral[0]['error_cant_passenger'],
+                '1090'    => $dataQuoteGeneral[0]['error_country'],
+                '1080'    => $dataQuoteGeneral[0]['error_territory'],
+                '1247'    => $dataQuoteGeneral[0]['error_time']
+            ];
+
+            $filter = array_filter($benefits, function ($var) {
+                return ($var == '0');
+            });
+            $filter = array_keys($filter);
+            return !empty($filter[0]) ? $_respuesta->getError($filter[0]) : false;
+        }
+
+        public function dataUpgrades($plan, $language, $price, $daysByPeople, $numberPassengers, $upgrade, $pricePassengers,$cost){ //Listo
+
+            $query="SELECT
+            raiders.id_raider,
+            raiders_detail.name_raider,
+            raiders.type_raider,
+            raiders.value_raider,
+     
+            raiders.rd_calc_type,
+            raiders.benefit_special,
+            raiders.benefit_special_type,
+            raiders.restriction_pass,
+            raiders.restriction_days,
+            CASE
+                 WHEN raiders.rd_calc_type= 1  THEN 
+                     IF(
+                         raiders.type_raider     = 1,
+                         ROUND(raiders.value_raider,2),
+                         ROUND(((raiders.value_raider / 100) * '$price'),2)
+                         
+                     )
+                 
+                     WHEN raiders.rd_calc_type   = 4   THEN 
+                     IF(
+                     raiders.type_raider  = 1,
+                     ROUND(raiders.value_raider * '$daysByPeople',2),
+                     ROUND((raiders.value_raider / 100) * '$price' * '$daysByPeople',2)
+                     )
+                 
+                     WHEN raiders.rd_calc_type   = 5  THEN 
+                     IF(
+                     raiders.type_raider = 1,
+                     ROUND((raiders.value_raider * '$daysByPeople' * '$numberPassengers'),2),
+                     ROUND(((raiders.value_raider / 100) * '$price') * '$daysByPeople'  * '$numberPassengers',2)
+                     )
+     
+                     WHEN raiders.rd_calc_type   = 2  THEN 
+                     IF(
+                     raiders.type_raider = 1,
+                     ROUND(raiders.value_raider + '$pricePassengers',2),
+                     ROUND((raiders.value_raider / 100) * '$pricePassengers',2)
+                     )
+                 ELSE 'Precio No disponible'
+                 END AS price_upgrade,
+            CASE
+                 WHEN raiders.rd_calc_type= 1  THEN 
+                     IF(
+                         raiders.type_raider     = 1,
+                         ROUND(raiders.cost_raider,2),
+                         ROUND(((raiders.cost_raider / 100) * '$cost'),2)
+                         
+                     )
+                     
+                 WHEN raiders.rd_calc_type   = 2  THEN 
+                     IF(
+                     raiders.type_raider = 1,
+                     ROUND(raiders.cost_raider + '$pricePassengers',2),
+                     ROUND((raiders.cost_raider / 100) * '$pricePassengers',2)
+                     )
+                 WHEN raiders.rd_calc_type   = 4   THEN 
+                     IF(
+                     raiders.type_raider  = 1,
+                     ROUND(raiders.cost_raider * '$daysByPeople',2),
+                     ROUND((raiders.cost_raider / 100) * '$cost' * '$daysByPeople',2)
+                     )
+                 
+                 WHEN raiders.rd_calc_type   = 5  THEN 
+                     IF(
+                     raiders.type_raider = 1,
+                     ROUND((raiders.cost_raider * '$daysByPeople' * '$numberPassengers'),2),
+                     ROUND(((raiders.cost_raider / 100) * '$cost') * '$daysByPeople'  * '$numberPassengers',2)
+                     )
+                 ELSE 0
+                 END AS costo_upgrade
+                     FROM raiders
+                 INNER JOIN raiders_detail ON raiders_detail.id_raider = raiders.id_raider
+                 INNER JOIN plan_raider ON raiders.id_raider = plan_raider.id_raider
+             WHERE
+                 plan_raider.id_plan = '$plan'
+             AND 
+                 raiders_detail.language_id  = '$language' ";
+     
+             if(!empty($upgrade)){
+             $query.= "AND 
+                 raiders.id_raider IN ($upgrade) ";
+             }
+     
+             $response   = $this->selectDynamic('','','','',$query);
+             if($response){
+     
+                 return $response;
+             }else{
+     
+                 return [
+                     "status"   => "No hay resultados",
+                     "message"  => "No hay upgrades asociados a éste Plan"
+                 ];
+             }
+        }
+
+        public function calculateAge($birthDayPassenger, $isoCountry) //Listo
+        {
+
+            $this->setTimeZone($isoCountry);
+            $birthDayPassenger  = new DateTime($birthDayPassenger);
+            $today              = new DateTime();
+            $difference         = $today->diff($birthDayPassenger);
+            return $difference->y;
+        }
+
+        public function setTimeZone($isoCountry) //Listo
+        {
+
+            $timeZone   = $this->selectDynamic('', 'cities', "iso_country='$isoCountry'", array("Timezone"))[0]['Timezone'];
+            $timeZone   = !empty($timeZone) ? $timeZone : 'America/Lima';
+            ini_set('date.timezone', $timeZone);
+        }
+
+        public function getDataOders($code,$idUser,$reference,$status,$statusRegister,$database='ilsbsys',$expired,$limit){
+
+            $query = "SELECT
+            orders.id,
+            orders.origen,
+            orders.destino,
+            orders.salida,
+            orders.retorno,
+            orders.programaplan,
+            orders.nombre_contacto,
+            orders.email_contacto,
+            orders.comentarios,
+            orders.telefono_contacto,
+            orders.producto,
+            orders.agencia,
+            orders.nombre_agencia,
+            orders.total,
+            orders.codigo,
+            orders.fecha,
+            orders.vendedor,
+            orders.cantidad,
+            orders.status,
+            IF (
+                DATEDIFF(orders.retorno, CURDATE()) > 0,
+                orders.status,
+                3
+            ) AS status_order,
+            orders.es_emision_corp,
+            orders.origin_ip,
+            orders.alter_cur,
+            orders.tasa_cambio,
+            orders.family_plan,
+            orders.referencia,
+            orders.Subscriber_id,
+            orders.Sequence_id,
+            orders.Relation_id,
+            orders.property_id,
+            IF (
+                orders.status_register NOT IN (1,2,3),
+                'completed',
+                'pending'
+            ) AS completion_status
+            FROM
+                orders
+            WHERE
+                1 ";
+    
+            /*if($idUser){
+                $query .= " AND orders.vendedor ='$idUser' ";
+            }*/
+    
+            if($code){
+                $query .= " AND orders.codigo ='$code' ";
+            }
+    
+            if($reference){
+                $query .= " AND orders.referencia LIKE '%$reference%' ";
+            }
+    
+            if($status){
+                $query .= " AND orders.status = '$status' ";
+            }
+    
+            if($statusRegister){
+                $query .= " AND (orders.status_register NOT IN (1, 2, 3)
+                OR orders.status_register IS NULL ) ";
+            }
+    
+            if($expired){
+                $query .= " AND DATEDIFF(orders.retorno,CURDATE())>0 ";
+            }
+    
+            
+            return $this->selectDynamic('','','','',$query,false,$limit,$database);  
+        }
+
+        public function getUpgradesOrden($idOrder,$database='ilsbsys'){
+            if($idOrder){
+                $query = "SELECT
+                orders_raider.id_raider AS id_upgrade,
+                orders_raider.value_raider AS value_upgrade,
+                orders_raider.cost_raider AS cost_upgrade,
+                name_raider AS name_upgrade
+                FROM
+                    orders_raider
+                INNER JOIN raiders ON raiders.id_raider = orders_raider.id_raider
+                WHERE
+                    orders_raider.id_orden = $idOrder ";
+    
+                $response   = $this->selectDynamic('','','','',$query,false,false,$database);
+               
+                return $response;
+            }else{
+                return false;
+            }
+        }
+
+        private function validLanguage($lng)
+        {
+
+            $lng   = strtolower($lng);
+            $query = "SELECT
+                languages.id
+            FROM
+                `languages`
+            WHERE
+                languages.active = '1'
+            AND languages.lg_id = '$lng'";
+            $response   = $this->selectDynamic('', '', '', '', $query);
+            return count($response);
+        }
+
+        public function getDataUpgradesRCI($idPlan,$lang,$idRaiders,$plataform)
+        {
+            
+            $query = "SELECT
+            plan_raider.id_raider,
+            raiders_detail.name_raider,
+            raiders.type_raider AS type_raider,
+            raiders.cost_raider AS cost_raider,
+            raiders.rd_calc_type AS rd_calc_type,
+            raiders.value_raider AS value_raider,
+            IF (
+                    raiders.benefit_special,
+                    CONCAT(
+                        raiders.benefit_special,
+                        ' ',
+
+                    IF (
+                        raiders.benefit_special_type = 'P',
+                        'Pasajeros Adicionales',
+                        'Dias Adicionales'
+                    )
+                    ),
+                    'N/A'
+                ) AS additional_value,
+                raiders.restriction_days, 
+                raiders.restriction_pass
+
+            FROM
+                plan_raider
+            INNER JOIN raiders ON raiders.id_raider = plan_raider.id_raider
+            INNER JOIN raiders_detail ON plan_raider.id_raider = raiders_detail.id_raider
+            AND language_id = '$lang'
+            WHERE
+                id_status = 1
+            AND id_plan = $idPlan ";
+
+            if($idRaiders){
+
+                $query.=" AND plan_raider.id_raider NOT IN($idRaiders) ";
+            }
+
+            return $this->selectDynamic('','','','',$query,false,false,$plataform);
         }
     }
 ?>

@@ -2,7 +2,7 @@
 
 Returns a report of all sales made in the specified period of time
 
-* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/information```
+* Endpoint : ```rcibywta.com/apirest_v1/information```
 
 # Fields
 

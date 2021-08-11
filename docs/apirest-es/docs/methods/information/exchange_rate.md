@@ -2,7 +2,7 @@
 
 Retorna la tasa de cambio del país especificado
 
-* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/information```
+* Endpoint : ```rcibywta.com/apirest_v1/information```
 
 # Campos
 

@@ -1,4 +1,4 @@
-site_name: API REST
+site_name: RCI API-REST
 nav:
     - Home: index.md
     - Auth :
@@ -13,6 +13,10 @@ nav:
         - methods/information/get_coverages.md
         - methods/information/get_currencies.md
         - methods/information/get_languages.md
+        - methods/information/get_order_price_edad.md
+        - methods/information/get_order_price_edad_plan.md
+        - methods/information/get_order_price_fecha.md
+        - methods/information/get_order_price_fecha_plan.md
         - methods/information/get_plan_category.md
         - methods/information/get_plans.md
         - methods/information/get_pvp_price.md
@@ -21,8 +25,11 @@ nav:
         - methods/information/get_upgrade.md
         - methods/information/get_voucher.md
         - methods/information/get_sales_report.md
+        - methods/information/get_voucher_rci.md
+        - methods/information/get_upgrades_rci.md
     - Quote : 
         - methods/quote/add_order.md
+        - methods/quote/add_order_rci.md
         - methods/quote/add_upgrade.md
         - methods/quote/request_cancellation.md
         - methods/quote/request_upgrade_cancellation.md

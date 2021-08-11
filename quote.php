@@ -30,6 +30,13 @@
             if(isset($_REQUEST)){
                 $send = $_REQUEST;
                 $getBody = json_encode($send);
+                $getBody2 = file_get_contents("php://input"); 
+                
+                $check1 = json_decode($getBody,true);
+                $check2 = json_decode($getBody2,true);
+                
+                $getBody = (isset($check1['request'])) ? $getBody : $getBody2;
+
             }else{
 
                 $getBody = file_get_contents("php://input"); 

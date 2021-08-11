@@ -2,7 +2,7 @@
 
 Returns all the currencies stored in the database
 
-* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/information```
+* Endpoint : ```rcibywta.com/apirest_v1/information```
 
 # Fields
 

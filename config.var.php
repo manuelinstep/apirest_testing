@@ -46,9 +46,9 @@
     $arrDB = array(
         '_DEFAULT' => array(
             'host' => 'localhost',
-        'user' => 'fasttravelass1st_system',
-        'pass' => '_}t!+P[ba1QR',
-        'db' => 'fasttravelass1st_db0'));
+           'user' => 'rcibywta_app',
+           'pass' => 'V?vTGH,7kb?.',
+           'db' => 'rcibywta_db0'));
     //Este array hay que cambiarlo por el array que tenemos guardado en connect
     define ( 'DEBUG', '0' );
 ?>

@@ -2,13 +2,13 @@
 
 Cancels the specified order
 
-* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/quote```
+* Endpoint : ```rcibywta.com/apirest_v1/quote```
 
 # Fields
 
 ```JSON
 {
-    "request" : "request_cancellation",
+    "request" : "request_upgrade_cancellation",
     "token" : "123456789ABC",
     "codigo" : "FT-K21JDD",
     "upgrade" : "126"

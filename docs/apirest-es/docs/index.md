@@ -1,9 +1,9 @@
-# API REST 
+# RCI API REST 
 
 API desarrollada bajo arquitectura REST
 
 ## endpoints
 
-* `fasttravelassistance.ilstechnik.com/apirest_testing/auth` - utilizado para autenticación
-* `fasttravelassistance.ilstechnik.com/apirest_testing/information` - métodos para obtener datos de la plataforma
-* `fasttravelassistance.ilstechnik.com/apirest_testing/quote` - Manejo y administración de ordenes
+* `rcibywta.com/apirest_v1/auth` - utilizado para autenticación
+* `rcibywta.com/apirest_v1/information` - métodos para obtener datos de la plataforma
+* `rcibywta.com/apirest_v1/quote` - Manejo y administración de ordenes

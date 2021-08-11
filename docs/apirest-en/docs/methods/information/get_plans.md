@@ -2,7 +2,7 @@
 
 Returns all the plans associated with the user's agency
 
-* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/information```
+* Endpoint : ```rcibywta.com/apirest_v1/information```
 
 # Fields
 

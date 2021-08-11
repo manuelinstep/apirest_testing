@@ -2,13 +2,13 @@
 
 Gets price from a plan based on the country specified
 
-* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/information```
+* Endpoint : ```rcibywta.com/apirest_v1/information```
 
 # Fields
 
 ```JSON
 {
-    "request" : "get_currencies",
+    "request" : "get_pvp_price",
     "token" : "123456789ABC",
     "id_plan" : "1234",
     "iso_country" : "CL"

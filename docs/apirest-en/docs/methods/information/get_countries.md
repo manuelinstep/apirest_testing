@@ -2,7 +2,7 @@
 
 Returns all the currently stored countries, depending on the language, currently supports spanish (spa), or english (eng)
 
-* Endpoint : ```fasttravelassistance.ilstechnik.com/apirest_testing/information```
+* Endpoint : ```rcibywta.com/apirest_v1/information```
 
 # Fields
 

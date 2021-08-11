@@ -1,9 +1,9 @@
 {
     "conexion":{
         "server" : "localhost" ,
-        "user" : "fasttravelass1st_system" ,
-        "password" : "_}t!+P[ba1QR",
-        "database" : "fasttravelass1st_db0" ,
+        "user" : "rcibywta_app" ,
+        "password" : "V?vTGH,7kb?.",
+        "database" : "rcibywta_db0" ,
         "port" : "3306"
     }
 }
