@@ -11,7 +11,7 @@ Retorna diferentes resultados dependiendo del type especificado
 ```JSON
 {
     "request" : "get_upgrades_rci",
-    "token" : "4E4HMJA9GBHE4BA7",
+    "token" : "1234567890ABCDEF",
     "code" : "RC-MM7HAG",
     "type" : "1",
     "lenguaje" : "spa"

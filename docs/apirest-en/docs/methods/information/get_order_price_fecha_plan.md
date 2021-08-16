@@ -9,7 +9,7 @@ Gets plans and their upgrades based on the provided birthday
 ```JSON
 {
     "request" : "get_order_price_fecha_plan",
-    "token" : "4E4HMJA9GBHE4BA7",
+    "token" : "1234567890ABCDEF",
     "id_plan" : "1703",
     "pais_origen" : "AR",
     "territorio_destino" : "2",

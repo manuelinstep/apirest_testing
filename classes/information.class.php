@@ -1514,8 +1514,9 @@
             $arrival				= $data['fecha_llegada'];
             $numberPassengers		= $data['pasajeros'];
             $dataRange				= ($typeRange==1)?$data['fecha_nacimiento']:$data['edad'];
-            $calculateRangeObj  	= (is_object($dataRange))?(array)$dataRange:json_decode($dataRange,true);
-            $calculateRange			= (array)$calculateRangeObj["item"];
+            $calculateRangeObj  	= (is_array($dataRange))?$dataRange:json_decode($dataRange,true);
+            $calculateRange			= (array)$calculateRangeObj;
+
             $arrayMerge				= [];
             $arrayRange				= [];
             

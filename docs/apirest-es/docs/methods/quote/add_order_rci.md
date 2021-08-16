@@ -9,7 +9,7 @@ Funcion utilizada para cotización de RCI
 ```JSON
 {
     "request" : "add_order_rci",
-    "token" : "4E4HMJA9GBHE4BA7",
+    "token" : "1234567890ABCDEF",
     "fecha_salida" : "01/01/2022",
     "fecha_llegada" : "08/01/2022",
     "id_plan" : "1672",

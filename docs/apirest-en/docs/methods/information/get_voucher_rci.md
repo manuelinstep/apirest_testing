@@ -9,7 +9,7 @@ Returns a voucher specified by the subscriber's id
 ```JSON
 {
     "request" : "get_voucher_rci",
-    "token" : "4E4HMJA9GBHE4BA7",
+    "token" : "1234567890ABCDEF",
     "sucriber_id" : "67170060500030001",
     "type" : "1",
     "lenguaje" : "spa"

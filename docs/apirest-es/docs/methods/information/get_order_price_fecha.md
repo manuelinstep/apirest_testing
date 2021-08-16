@@ -10,7 +10,7 @@ Retorna planes y sus respectivos upgrades dependiendo de la fecha de nacimiento 
 ```JSON
 {
     "request" : "get_order_price_fecha",
-    "token" : "4E4HMJA9GBHE4BA7",
+    "token" : "1234567890ABCDEF",
     "pais_origen" : "AR",
     "territorio_destino" : "2",
     "fecha_salida" : "01/01/2022",
