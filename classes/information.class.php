@@ -613,7 +613,8 @@
                     break;
                 case 'get_voucher_rci':
                     # code...
-                    $Llego = 'aqui1';
+                    $Llego = 'aqui2';
+                    
                     $code		= trim($datos['sucriber_id']);
                     $language	= $datos['lenguaje'];
                     $api		= $datos['api'];
@@ -675,7 +676,7 @@
                             $error 		= 9107;	
                         break;
                     }
-
+                    
                     $getDataOdersIlsbsys	= $this->getDataOders('','',$code,$status,$statusRegister,'ilsbsys',$expired,50);
                     
                     if($getDataOdersIlsbsys){
@@ -687,13 +688,14 @@
                         
                         $getDataOders = $getDataOdersRCI;
                     }
-
+                    
                     $lang			= ($language=='spa')?'es':'en';
 
                     if (count($getDataOders)){
                         foreach ($getDataOders as $key => $value) {
                             
                             $getUpgradesOrden 				= $this->getUpgradesOrden($value['id'],'rci');
+                            
                             $upgOrder = ($getUpgradesOrden)?$getUpgradesOrden:false;
                             $dato[]	= [
                                 'code' 		=> $value['codigo'],
@@ -1524,10 +1526,12 @@
                 $dataRange			= $data['fecha_nacimiento'];
                 $nameRange          = "nacimientos";
                 $errorRange         = "6026";
+                $erroramnt          = "6043";
             }else{
                 $dataRange          = $data['edad'];
                 $nameRange          = "edades";
                 $errorRange         = "6031";
+                $erroramnt          = "6042";
             }
 
             if($returnRange==3){
@@ -1543,7 +1547,7 @@
                 '6026'				=> $numberPassengers,
                 $errorRange			=> count($calculateRange),
                 '4029'				=> (empty($numberPassengers) || $numberPassengers == 0 || !is_numeric($numberPassengers))?0:1,
-                '6043'				=> ($this->countData($calculateRange ,$numberPassengers))?0:1,
+                $erroramnt			=> ($this->countData($calculateRange ,$numberPassengers))?0:1,
                 '2001'				=> $this->checkDates($departure),
                 '1080'				=> ($destination == "1" OR $destination == "2" OR $destination == "9"),
                 '2002'				=> $this->checkDates($arrival),
@@ -2100,9 +2104,7 @@
                 INNER JOIN raiders ON raiders.id_raider = orders_raider.id_raider
                 WHERE
                     orders_raider.id_orden = $idOrder ";
-    
-                $response   = $this->selectDynamic('','','','',$query,false,false,$database);
-               
+                $response   = $this->selectDynamic('','','','',$query);
                 return $response;
             }else{
                 return false;
