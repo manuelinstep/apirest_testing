@@ -2542,6 +2542,298 @@
                         return $this->getError(1020);
                     }
                     break;
+                /**
+                 * Métodos de suscripción:
+                 * Los 5 métodos de suscripción se organizan de la siguiente manera:
+                 * addsubscription y reportsubscription llaman a subscriptionsCrud
+                 * extend, changes y cancel subscription llaman a subscriptionChanges
+                 * 
+                 * a subscriptionsCrud se le deben pasar 2 parametros cuyo key es 'one'
+                 * ADD y REPORT
+                 * para subschanges es
+                 * EXTEND, CHANGES y CANCEL
+                 */
+                case 'add_subscription':
+                    
+                    return $this->subscriptionsCrud($datos,'ADD');
+                    break;
+                case 'report_subscription':
+                    
+                    return $this->subscriptionsCrud($datos,'REPORT');
+                    break;
+                case 'extend_subscription':
+                    
+                    return $this->subscriptionChanges($datos,'EXTEND');
+                    break;
+                case 'change_subscription':
+                    
+                    return $this->subscriptionChanges($datos,'CHANGES');
+                    break;
+                case 'cancel_subscription':
+                    
+                    return $this->subscriptionChanges($datos,'CANCEL');
+                    break;
+                case 'get_assistance':
+
+                    $code		= $datos['codigo'];
+                    $language	= $datos['lenguaje'];
+                    $api		= $datos['api'];
+
+                    $dataValida	= [
+                        '6037'	=> !(empty($code) and empty($language)),
+                        '1020'	=> $code,
+                        '6021'	=> $language,
+                        '1030'	=> $this->validLanguage($language)
+                    ];
+
+                    $validatEmpty	= $this->validatEmpty($dataValida);
+                    if (!empty($validatEmpty)) {
+                        return $validatEmpty;
+                    }
+
+                    $datAgency 		= $this->datAgency($api);
+                    $prefijo		= $datAgency[0]['prefijo'];
+                    $getDataOders	= $this->getDataOdersPrefijo($code, $prefijo);
+
+
+                    if ($getDataOders) {
+
+                        $vocuher = $getDataOders['codigo'];
+                        $token = api_client_wta_info::initApi()
+                            ->functions('getAssistance')
+                            ->parameters([
+                                'codeVoucher' => $vocuher ?: "NO_ENVIA_VOUCHER"
+                            ])->callApi();
+
+
+
+                        if ($token["RESPONSE"]["size"] == 0) {
+                            return $_respuesta->getError('9178');
+                        }
+
+                        return	$token;
+                    } else {
+                        return $_respuesta->getError('1020');
+                    }
+                    break;
+                case 'get_assistance_detail':
+                    
+                    $idAsistance = $datos['idAsistance'];
+                    $language	= $datos['lenguaje'];
+                    $api		= $datos['api'];
+
+                    $dataValida	= [
+                        '6037'	=> !(empty($idAsistance) and empty($language)),
+                        '9179'	=> $idAsistance,
+                        '6021'	=> $language,
+                        '1030'	=> $this->validLanguage($language)
+                    ];
+
+
+                    $validatEmpty	= $this->validatEmpty($dataValida);
+                    if (!empty($validatEmpty)) {
+                        return $validatEmpty;
+                    }
+
+                    $datAgency 		= $this->datAgency($api);
+                    $idPrefijo		= $datAgency[0]['prefijo'];
+
+                    $token = api_client_wta_info::initApi()
+                        ->functions('assistBelongToClient')
+                        ->parameters([
+                            'idAssist' => $idAsistance ?: "NO_ENVIA_ASISTENCIA",
+                            'prefix' => $idPrefijo ?: "NO_ENVIA_PREFIJO"
+                        ])->callApi();
+
+                    if ($token["RESPONSE"] == "NO") {
+                        return $_respuesta->getError('9181');
+                    } else {
+
+                        $token = api_client_wta_info::initApi()
+                            ->functions('GetAssistanceDetail')
+                            ->parameters([
+                                'idAssist' => $idAsistance ?: "NO_ENVIA_ASISTENCIA"
+                            ])->callApi();
+
+                        if (!$token["RESPONSE"]) {
+                            return $_respuesta->getError('9180');
+                        } else {
+                            return	$token;
+                        }
+                    }
+                    break;
+                case 'get_timeline':
+                    
+                    $idAsistance = $datos['idAsistance'];
+                    $language	= $datos['lenguaje'];
+                    $api		= $datos['api'];
+
+                    $dataValida	= [
+                        '6037'	=> !(empty($idAsistance) and empty($language)),
+                        '9179'	=> $idAsistance,
+                        '6021'	=> $language,
+                        '1030'	=> $this->validLanguage($language)
+                    ];
+
+                    $validatEmpty	= $this->validatEmpty($dataValida);
+                    if (!empty($validatEmpty)) {
+                        return $validatEmpty;
+                    }
+
+                    $datAgency 		= $this->datAgency($api);
+                    $idPrefijo		= $datAgency[0]['prefijo'];
+
+                    $token = api_client_wta_info::initApi()
+                        ->functions('assistBelongToClient')
+                        ->parameters([
+                            'idAssist' => $idAsistance ?: "NO_ENVIA_ASISTENCIA",
+                            'prefix' => $idPrefijo ?: "NO_ENVIA_PREFIJO"
+                        ])->callApi();
+
+                    if ($token["RESPONSE"] == "NO") {
+                        return $_respuesta->getError('9181');
+                    } else {
+
+                        $token = api_client_wta_info::initApi()
+                            ->functions('getTimeLine')
+                            ->parameters([
+                                'idAssist' => $idAsistance ?: "NO_ENVIA_ASISTENCIA"
+                            ])->callApi();
+
+
+                        if (!$token["RESPONSE"]) {
+                            return $_respuesta->getError('9180');
+                        } else {
+                            return	$token;
+                        }
+                    }
+                    break;
+                case 'get_benefit_to_case':
+                    
+                    $idAsistance = $datos['idAsistance'];
+                    $language	 = $datos['lenguaje'];
+                    $api		 = $datos['api'];
+
+                    $dataValida	= [
+                        '6037'	=> !(empty($idAsistance) and empty($language)),
+                        '9179'	=> $idAsistance,
+                        '6021'	=> $language,
+                        '1030'	=> $this->validLanguage($language)
+                    ];
+
+                    $validatEmpty	= $this->validatEmpty($dataValida);
+                    if (!empty($validatEmpty)) {
+                        return $validatEmpty;
+                    }
+                    $datAgency 		= $this->datAgency($api);
+                    $idPrefijo		= $datAgency[0]['prefijo'];
+
+                    /*if('201.208.47.95' == $_SERVER['REMOTE_ADDR']){
+                        die(var_dump("ojo ",$idPrefijo));
+                    }*/
+
+                    $token = api_client_wta_info::initApi()
+                        ->functions('assistBelongToClient')
+                        ->parameters([
+                            'idAssist' => $idAsistance ?: "NO_ENVIA_ASISTENCIA",
+                            'prefix' => $idPrefijo ?: "NO_ENVIA_PREFIJO"
+                        ])->callApi();
+
+                    if ($token["RESPONSE"] == "NO") {
+                        return $_respuesta->getError('9181');
+                    } else {
+
+                        $token = api_client_wta_info::initApi()
+                            ->functions('GetBenefitToCase')
+                            ->parameters([
+                                'idAssist' => $idAsistance ?: "NO_ENVIA_ASISTENCIA"
+                            ])->callApi();
+
+                        if (!$token["RESPONSE"]) {
+                            return $_respuesta->getError('9180');
+                        } else {
+                            return	$token;
+                        }
+                    }
+                    break;
+                case 'get_beneficiaries_by_code':
+                    $apikey = $datos['token'];
+                    $voucher = $datos['code'];
+                    if(empty($apikey) AND empty($voucher)){
+                        return $_respuesta->geterror("6037");
+                    }
+                    $ArrayValida= array(
+                        '6020'=>$apikey,
+                        '6023'=>$voucher
+                    );
+                    $valid=$this->valida_empty($ArrayValida);
+                    if(!empty($valid)){
+                        return $valid;
+                    }
+                    if(!$this->checkapiKey($apikey)){
+                        return $this->geterror("1005");
+                    }
+                    $data_broker=$this->data_broker($apikey);
+                    $id_broker = $data_broker['id_broker'];
+                    $user_agencia = $data_broker['user_id'];
+                    $validar_voucher = $this->validar_voucher($voucher,$user_agencia,$data_broker['id_country'],false,true);
+                    if($validar_voucher){
+                        return $validar_voucher;
+                    }
+                    $arraBenef=$this->datos_beneficiaries($voucher,true);
+                    return ($arraBenef)?$arraBenef:$this->getError('1051');
+
+                    # Este método debe ser revisado bien a fondo
+                    break;
+                case 'get_exchange_rate_by_date':
+                    
+                    if(empty($apikey) AND empty($valueIso) AND empty($date)){
+                        return $this->getError('6020');
+                    }
+            
+                    if(!$this->checkapiKey($apikey)){
+                        return $this->geterror("1005");
+                    }
+            
+                    $quoteGeneral = new Quote_general();
+            
+                    $ArrayValida= array(
+            
+                        '6034'=>$valueIso,
+                    );
+            
+                    
+                    if(!empty($date)){
+                        $validDays	= $this->buscar_dias($date,date('d/m/Y'))-1;
+                        $dateImplode =  explode('/',$date);
+                        $validDate = checkdate($dateImplode[1],$dateImplode[0],$dateImplode[2]);
+                        if($validDays<0 || !$validDate){
+                            return $this->getError('9063');
+                        }
+                    }
+            
+                    $validateEmpty	=	$this->valida_empty($ArrayValida);
+                    if(!empty($validateEmpty)){
+                        return $validateEmpty;
+                    }
+                    
+                    $date 		= !empty($date)?$this->transformer_date($date):date('Y-m-d');
+            
+                    $idCurrency = $this->getIdCurrency($valueIso);
+            
+                    if($valueIso=='USD' || empty($idCurrency)){
+                        return $this->getError('1022');
+                    }
+                    $tasa = $quoteGeneral->exchangeRate($idCurrency,$date);
+                    if(empty($tasa)){
+                        return $this->getError('1022');
+                    }else{
+                        return [
+                            'exchange_rate'=>$tasa,
+                        ];
+                    }
+            
+                    break;
                 default:
                     # code...
                     
@@ -4507,6 +4799,504 @@
             }else{
                 return false;
             }
+        }
+
+        public function subscriptionsCrud($data, $type = 'ADD')
+        {
+            
+            $api 			= $data["api"];
+            $inceptionDate	= $data["InceptionDate"];
+            $renewalDate	= $data["RenewalDate"];
+            $subscriptionId	= $data["SubscriptionId"];
+            $reference 		= $data["Reference"];
+            $masterId		= $data["MasterId"];
+            $planId			= $data["PlanId"];
+            $countryOrigin	= $data["CountryOrigin"];
+            $subscriberName	= $data["SubscriberName"];
+            $subscriberLastName	= $data["SubscriberLastName"];
+            $subscriberEmail	= $data["SubscriberEmail"];
+            $subscriberPhone	= $data["SubscriberPhone"];
+            $generalConsiderations	= $data['consideraciones_generales'];
+            $language			= $data["Language"];
+            $emission			= $data["Emission"];
+            $procedencia 		= 1;
+
+            $arrValida	= [
+                '6037'	=> !(empty($inceptionDate) and empty($subscriptionId)  and empty($masterId)  and empty($planId)  and empty($countryOrigin)  and empty($subscriberName)  and empty($subscriberLastName) and empty($subscriberEmail) and empty($language)),
+                '9071'	=> $inceptionDate,
+                '9086'	=> ($type == 'REPORT') ? $subscriptionId : true,
+                '9072'	=> $masterId,
+                '9024'	=> $planId,
+                '6027'	=> $countryOrigin,
+                '9073'	=> $subscriberName,
+                '9074'	=> $subscriberLastName,
+                '9075'	=> $subscriberEmail,
+                '6021'	=> $language,
+                '9076'	=> $this->checkDates($inceptionDate),
+                '9077'	=> (!empty($renewalDate)) ? $this->checkDates($renewalDate) : true,
+                '9078'	=> (!$this->selectDynamic('', 'orders', "codigo='$subscriptionId'", array("codigo"))) ? 1 : 0,
+                '9079'	=> (strlen($subscriptionId) > 30) ? 0 : 1,
+                '1090'	=> $this->verifyOrigin($countryOrigin),
+                //'9080'	=> (!preg_match('(^[a-zA-Z ]*$)',$subscriberName))?0:1,
+                '9080'	=> (!preg_match('(^([a-zA-Z ÑñÁ-ú]{2,50})$)', $subscriberName)) ? 0 : 1,
+                //'9081'	=> (!preg_match('(^[a-zA-Z ]*$)',$subscriberLastName))?0:1,
+                '9081'	=> (!preg_match('(^([a-zA-Z ÑñÁ-ú]{2,50})$)', $subscriberLastName)) ? 0 : 1,
+                '9082'	=> (!empty($subscriberPhone)) ? (is_numeric($subscriberPhone)) : true,
+                '9088'	=> (is_numeric($masterId)),
+                '9083'	=> (!$this->verifyMail($subscriberEmail)) ? 0 : 1,
+                '1030'	=> $this->validLanguage($language),
+                '9012'	=> ($type == 'ADD') ? (in_array($emission, [1, 2, 3, 4, 5])) : true
+            ];
+
+            $inputValidation = $this->validatEmpty($arrValida);
+
+            if (!empty($inputValidation)) {
+                return $inputValidation;
+            }
+
+            $datAgency			= $this->datAgency($api);
+            $renewalDate 		= (!empty($renewalDate)) ? $renewalDate : '31/12/9999';
+            $inceptionDateTrans	= $this->transformerDate($inceptionDate);
+            $renewalDateTrans	= $this->transformerDate($renewalDate);
+            $daysByPeople   	= $this->betweenDates($inceptionDateTrans, $renewalDateTrans);
+            $idAgency			= $datAgency[0]['id_broker'];
+            $isoCountry			= $datAgency[0]['id_country'];
+            $nameAgency			= $datAgency[0]['broker'];
+            $userAgency			= $datAgency[0]['user_id'];
+            $dataPlan			= $this->selectDynamic('', 'plans', "id='$planId'", array("id_plan_categoria", "name", "num_pas"));
+            $idCategoryPlan 	= $dataPlan[0]['id_plan_categoria'];
+
+
+            if ($type == 'ADD') {
+                $prefix	= $datAgency[0]['prefijo'];
+                $subscriptionId	= $prefix . '-' . $this->valueRandom(6);
+                $procedencia = 0;
+            } else {
+                $prefix	= $datAgency[0]['prefijo'];
+            }
+
+            $validateDateOrder 	= $this->validateDateOrder($renewalDateTrans, $inceptionDateTrans, $isoCountry);
+            if ($validateDateOrder) {
+                return $validateDateOrder;
+            }
+
+            $validatePlans 		= $this->validatePlans($planId, $idAgency, $countryOrigin, 1);
+            if ($validatePlans) {
+                return $validatePlans;
+            }
+
+            $DataWta = $this->GetId($prefix);
+            $OrderId =  $this->getLastIdOrder();
+
+
+            $BeneficiarieId = $this->getLastIdBeneficiarie();
+            $WtaopsId = $DataWta['order'];
+            $WtaopsBen = $DataWta['beneficiary'];
+            $Id = (($WtaopsId > $OrderId) ? $WtaopsId : $OrderId) + 1;
+            $beneficiary = (($WtaopsBen > $BeneficiarieId) ? $WtaopsBen : $BeneficiarieId) + 1;
+            $dataSubscriptions	= [
+                'id'                    => $Id,
+                'codigo'				=> $subscriptionId,
+                'salida'				=> $inceptionDateTrans,
+                'referencia'			=> $reference,
+                'retorno'				=> $renewalDateTrans,
+                'producto'				=> $planId,
+                'destino'				=> 1,
+                'origen'				=> strtoupper($countryOrigin),
+                'agencia'				=> $idAgency,
+                'nombre_agencia'		=> $nameAgency,
+                'vendedor'				=> $userAgency,
+                'programaplan'			=> $idCategoryPlan,
+                'fecha'					=> 'now()',
+                'cantidad'				=> 1,
+                'status'				=> 1,
+                'origin_ip'				=> $_SERVER['REMOTE_ADDR'],
+                'total'					=> 0,
+                'tiempo_x_producto'		=> $daysByPeople,
+                'neto_prov'				=> 0,
+                'id_emision_type'		=> '2',
+                'validez'				=> '1',
+                'hora'					=> 'now()',
+                'territory'				=> 1,
+                'lang'					=> $language,
+                'procedencia_funcion'	=> $procedencia,
+                'masterid'				=> $masterId,
+                'prefijo'               => $prefix,
+                'comentarios'			=> $generalConsiderations
+
+            ];
+
+            if ($emission == 5) {
+                $dataSubscriptions['status'] = 9;
+            }
+            if ($type == 'REPORT' && strtolower($reference) == '5wbs') {
+                $dataSubscriptions['status'] = 9;
+            }
+
+
+            $transactionId	= $this->insertDynamic($dataSubscriptions, 'orders');
+
+            $idben = $beneficiary;
+            if ($transactionId) {
+                $addSubscriber	= $this->addBeneficiares(0, '0000-00-00', $subscriberName, $subscriberLastName, $subscriberPhone, $subscriberEmail, $transactionId, '1', 0, 0, '', 0, 0, 0, 0, $prefix, $idben);
+            }
+
+            $linkSale = "https://ilsbsys.com/app/reports/certificate_subscription.php?codigo=" . $subscriptionId . "&selectLanguage=$language&broker_sesion=$idAgency";
+
+            $arrOutPut =  [
+                1	=>	[
+                    'transactionStatus'	=> 'OK'
+                ],
+                2	=>	[
+                    'subscriptionId'	=> $subscriptionId,
+                ],
+                3	=>	[
+                    'transactionId'		=> $transactionId,
+                ],
+                4	=>	[
+                    'linkVoucher'		=> $linkSale,
+                ]
+            ];
+
+            switch ($emission) {
+                case '1':
+                    return $arrOutPut[1] + $arrOutPut[2];
+                    break;
+                case '2':
+                    $this->sendMailSubscription($subscriberEmail, $transactionId, $language, $this->shortLang[$language]);
+
+                    return $arrOutPut[1] + $arrOutPut[2];
+
+                    break;
+                case '3':
+                    $this->sendMailSubscription($subscriberEmail, $transactionId, $language, $this->shortLang[$language]);
+                    return  array_merge($arrOutPut[1], $arrOutPut[2], $arrOutPut[4]);
+                case '4':
+                    $shortLink = $this->shortUrl($linkSale);
+                    $message = [
+                        'spa'	=> "Se ha creado una Nueva Suscripción Código: $subscriptionId, Enlace Para Observar los detalles: $shortLink ",
+                        'eng'	=> "A New Subscription Subscription Code has been created: $subscriptionId, Link to Observe the details: $shortLink ",
+                        'por'	=> "Um novo código de assinatura de assinatura foi criado: $subscriptionId, Link para observar os detalhes: $shortLink ",
+                        'fra' 	=> "Un nouveau code d'abonnement d'abonnement a été créé: $subscriptionId, Lien pour observer les détails: $shortLink "
+                    ];
+                    $codPhone 	= substr($subscriberPhone, 0, 2);
+                    $Phone 		= substr($subscriberPhone, 2, 20);
+                    if (!empty($subscriberPhone)) {
+                        $sendSms	= $this->sendSms($codPhone, $Phone, $message[$language]);
+                    }
+                    $responseSms = ($dataSms) ? 'SUCCESS' : 'FAILED';
+                    return array_merge($arrOutPut[1], $arrOutPut[2], ['sendSms' => $responseSms]);
+                    break;
+                default:
+                    //return $arrOutPut[1];
+                    $this->sendMailSubscription($subscriberEmail, $transactionId, $language, $this->shortLang[$language]);
+                    return $arrOutPut[1] + $arrOutPut[2];
+
+                    break;
+            }
+        }
+
+        public function subscriptionChanges($data, $type)
+        {
+
+            $api 			= $data["api"];
+            $subscriptionId	= $data["SubscriptionId"];
+            $inceptionDate	= $data["InceptionDate"];
+            $effectiveDate	= $data["EffectiveDate"];
+            $renewalDate	= $data["RenewalDate"];
+            $reference 		= $data["Reference"];
+            $masterId		= $data["MasterId"];
+            $planId			= $data["PlanId"];
+            $countryOrigin	= $data["CountryOrigin"];
+            $subscriberName	= $data["SubscriberName"];
+            $subscriberLastName	= $data["SubscriberLastName"];
+            $subscriberEmail	= $data["SubscriberEmail"];
+            $subscriberPhone	= $data["SubscriberPhone"];
+            $language			= !empty($data["Language"]) ? ($data["Language"]) : 'spa';
+            $emission			= $data["Emission"];
+            $generalConsiderations	= $data['consideraciones_generales'];
+
+            $arrValidaType 	= [];
+            $dataSubscriberUpdate 	= [];
+            $dataSubscriptionUpdate = [];
+            $procedenciaBack = $data['procedenciaBack'];
+
+            if (!$procedenciaBack) {
+                $procedenciaBack = '1';
+            }
+
+            $arrayValida	= [
+                '9086'	=> $subscriptionId,
+                '9087'	=> ($this->selectDynamic('', 'orders', "codigo='$subscriptionId'", array("codigo"))) ? 1 : 0,
+                '9079'	=> (strlen($subscriptionId) > 30) ? 0 : 1,
+            ];
+
+            $idOrder = $this->selectDynamic('', 'orders', "codigo='$subscriptionId'", array("id"))[0]['id'];
+
+
+            switch ($type) {
+                case 'CHANGES':
+                    $status = $this->selectDynamic('', 'orders', "codigo='$subscriptionId'", array("status"))[0]['status'];
+
+                    $arrValidaType	= [
+                        '9084'	=> !empty($effectiveDate) ? $this->checkDates($effectiveDate) : true,
+                        '9076'	=> !empty($inceptionDate) ? $this->checkDates($inceptionDate) : true,
+                        '9077'	=> !empty($renewalDate) ? $this->checkDates($renewalDate) : true,
+                        '1090'	=> !empty($countryOrigin) ? $this->verifyOrigin($countryOrigin) : true,
+                        '9080'	=> !empty($subscriberName) ? (!preg_match('(^[a-zA-Z ]*$)', $subscriberName)) ? 0 : 1 : true,
+                        '9081'	=> !empty($subscriberLastName) ? (!preg_match('(^[a-zA-Z ]*$)', $subscriberLastName)) ? 0 : 1 : true,
+                        '9082'	=> (!empty($subscriberPhone)) ? (is_numeric($subscriberPhone)) : true,
+                        '9083'	=> !empty($subscriberName) ? (!$this->verifyMail($subscriberEmail)) ? 0 : 1 : true,
+                        '1030'	=> !empty($subscriberName) ? $this->validLanguage($language) : true,
+                        '9088'	=> !empty($masterId) ? (is_numeric($masterId)) : true,
+                        '9012'	=> (in_array($emission, [1, 2, 3, 4, 5])),
+                        '9137'	=> ($procedenciaBack == '2'  && $status != '9') ? 0 : 1
+                    ];
+
+                    $inceptionDateTrans	= $this->transformerDate($inceptionDate);
+                    $renewalDateTrans	= $this->transformerDate($renewalDate);
+
+                    $dataSubscriptionUpdate = [
+                        'salida'				=> $inceptionDateTrans,
+                        'retorno'				=> $renewalDateTrans,
+                        'producto'				=> $planId,
+                        'referencia'			=> $reference,
+                        'masterid'				=> $masterId,
+                        'origen'				=> strtoupper($countryOrigin),
+                        'origin_ip'				=> $_SERVER['REMOTE_ADDR'],
+                        'comentarios'           => $generalConsiderations
+                    ];
+
+                    $dataSubscriberUpdate = [
+                        'nombre'            => $subscriberName,
+                        'apellido'          => $subscriberLastName,
+                        'telefono'          => $subscriberPhone,
+                        'email'             => $subscriberEmail
+                    ];
+
+                    $typeSms = "Actualizado";
+
+                    break;
+
+                case 'EXTEND':
+                    //$departure = $this->selectDynamic('','orders',"codigo='$subscriptionId'",array("salida"))[0]['salida'];
+                    $departure = $this->selectDynamic('', 'orders', "codigo='$subscriptionId'", array("salida", "status"));
+
+
+                    $effectiveDateTrans = $this->transformerDate($effectiveDate);
+
+                    $dataSubscriptionUpdate = [
+                        'retorno'	=> $this->transformerDate($effectiveDate),
+                        'origin_ip'	=> $_SERVER['REMOTE_ADDR']
+                    ];
+
+                    $typeSms = "Extendido";
+
+                    break;
+                case 'CANCEL':
+
+                    $statusSuscrip = $this->selectDynamic(['status' => '9'], 'orders', "codigo='$subscriptionId'", array("status"))[0]['status'];
+
+
+                    $arrValidaType	= [
+                        '9085'	=> $effectiveDate,
+                        '9076'	=> $this->checkDates($effectiveDate),
+                        '9135'	=> ($statusSuscrip) ? 0 : 1,
+                        '9012'	=> (in_array($emission, [2, 4])),
+                        '9137'	=> ($procedenciaBack == '2'  && !$statusSuscrip) ? 0 : 1,
+
+                    ];
+
+                    $typeSms = "Cancelado";
+
+                    $dataSubscriptionUpdate = [
+                        'retorno'				=> $this->transformerDate($effectiveDate),
+                        'status'				=> 5,
+                        'origin_ip'				=> $_SERVER['REMOTE_ADDR']
+                    ];
+
+                    break;
+            }
+
+            $dataValida = $arrayValida + $arrValidaType;
+
+            $inputValidation = $this->validatEmpty($dataValida);
+            if (!empty($inputValidation)) {
+                return $inputValidation;
+            }
+
+            if (empty($subscriberEmail) || empty($subscriberPhone)) {
+                $subscriberData = $this->selectDynamic('', 'beneficiaries', "id_orden='$idOrder'", ["email", "telefono"]);
+                $subscriberPhone	= $subscriberData[0]['telefono'];
+                $subscriberEmail	= $subscriberData[0]['email'];
+            }
+
+            $datAgency			= $this->datAgency($api);
+            $idAgency			= $datAgency[0]['id_broker'];
+            $userAgency			= $datAgency[0]['user_id'];
+            $isoCountry			= $datAgency[0]['id_country'];
+
+            $verifySubscription	= $this->verifyVoucher($subscriptionId, $userAgency, $isoCountry, 'ADD');
+
+            if ($verifySubscription && $type != 'EXTEND') {
+                return $verifySubscription;
+            }
+            $updateSubscription	= $this->updateDynamic('orders', 'id', $idOrder, $dataSubscriptionUpdate);
+
+            $updateSuscriber	= $this->updateDynamic('beneficiaries', 'id_orden', $idOrder, $dataSubscriberUpdate);
+
+
+            $linkSale = LINK_REPORTE_VENTAS . $subscriptionId . "&selectLanguage=$language&broker_sesion=$idAgency";
+
+            $arrOutPut =  [
+                1	=>	[
+                    'transactionStatus'	=> 'OK'
+                ],
+                2	=>	[
+                    'subscriptionId'	=> $subscriptionId,
+                ],
+                3	=>	[
+                    'transactionId'		=> $updateSubscription,
+                ],
+                4	=>	[
+                    'linkVoucher'		=> $linkSale,
+                ],
+
+            ];
+
+            switch ($emission) {
+                case '1':
+                    return $arrOutPut[1] + $arrOutPut[2];
+                    break;
+                case '2':
+                    if ($type == 'CANCEL') {
+                        $this->sendMailCancel($subscriptionId, $idAgency, $language, 'SUBSCRIPTION_CANCEL');
+                        /**
+                         * Este método, si bien se encuentra en este archivo, no esta habilitado debido a las variables que utiliza
+                         * se debe probar y verificar cual es el funcionamiento original de dicho método
+                         * y los requisitos para su funcionamiento
+                         */
+                    } else {
+                        $this->sendMailSubscription($subscriberEmail, $idOrder, $language, $this->shortLang[$language], $type);
+                    }
+
+                    return $arrOutPut[1] + $arrOutPut[2];
+
+                    break;
+                case '3':
+                    $this->sendMailSubscription($subscriberEmail, $idOrder, $language, $this->shortLang[$language], $type);
+                    return  array_merge($arrOutPut[1], $arrOutPut[2], $arrOutPut[4]);
+                case '4':
+                    $shortLink = $this->shortUrl($linkSale);
+                    $message = [
+                        'spa'	=> "Se ha $typeSms su Suscripción de Código: $subscriptionId, Enlace Para Observar los detalles: $shortLink ",
+                        'eng'	=> "A New Subscription Subscription Code has been created: $subscriptionId, Link to Observe the details: $shortLink ",
+                        'por'	=> "Um novo código de assinatura de assinatura foi criado: $subscriptionId, Link para observar os detalhes: $shortLink ",
+                        'fra' 	=> "Un nouveau code d'abonnement d'abonnement a été créé: $subscriptionId, Lien pour observer les détails: $shortLink "
+                    ];
+                    $codPhone 	= substr($subscriberPhone, 0, 2);
+                    $Phone 		= substr($subscriberPhone, 2, 20);
+                    if (!empty($subscriberPhone)) {
+                        $sendSms	= $this->sendSms($codPhone, $Phone, $message[$language]);
+                    }
+                    $responseSms = ($dataSms) ? 'SUCCESS' : 'FAILED';
+                    return array_merge($arrOutPut[1], $arrOutPut[2], ['sendSms' => $responseSms]);
+                    break;
+                default:
+                    return $arrOutPut[1];
+
+                    break;
+            }
+        }
+
+        public function sendMailSubscription($email, $id_orden, $lg_id, $lang, $type)
+        {
+            $post_url = 'http://ilsbsys.com/app/reports/email_subscriptions.php?';
+            $post_values = [
+                "id_orden" => $id_orden,
+                "email"    => $email,
+                "lang"     => $lg_id,
+                "short"    => $lang,
+                "broker_sesion" => $this->getBrokerSesion($id_orden),
+                "selectLanguage" => $lang,
+                "typeMail"      => $type
+            ];
+
+            $parameters = http_build_query($post_values);
+            $request = curl_init($post_url);
+            curl_setopt($request, CURLOPT_HEADER, 0);
+            curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($request, CURLOPT_POSTFIELDS, $parameters);
+            curl_setopt($request, CURLOPT_SSL_VERIFYPEER, FALSE);
+            $post_response = curl_exec($request);
+            curl_close($request);
+        }
+
+        public function getBrokerSesion($id)
+        {
+            $query = "SELECT agencia FROM orders WHERE id='$id'";
+            return $this->_SQL_tool($this->SELECT, __METHOD__, $query)[0]['agencia'];
+        }
+
+        public function sendSms($codPhone, $phone, $message)
+        {
+            $post_url = DOMAIN_APP . "/admin/sms.php";
+            $dataMessage = array(
+                "type"     => 'Send_message',
+                "codPhone" => $codPhone,
+                "phone"    => $phone,
+                "message"  => $message,
+                "typeMessage" => 'SEND_SUSCRIPTION',
+            );
+            $post_values = array(
+                "type"     => 'Send_message',
+                "codPhone" => $codPhone,
+                "phone"    => $phone,
+                "message"  => $message,
+                "typeMessage" => 'SEND_SUSCRIPTION',
+                "dataMessage" => $dataMessage
+            );
+            $post_string = "";
+            foreach ($post_values as $key => $value) {
+                $post_string .= "$key=" . urlencode($value) . "&";
+            }
+            $post_string = rtrim($post_string, "& ");
+            $request = curl_init($post_url);
+            curl_setopt($request, CURLOPT_HEADER, 0);
+            curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($request, CURLOPT_POSTFIELDS, $post_string);
+            curl_setopt($request, CURLOPT_SSL_VERIFYPEER, FALSE);
+            $post_response = curl_exec($request);
+            curl_close($request);
+            return $post_response;
+        }
+
+        public function shortUrl($url)
+        {
+            $arrData = [
+                'login'    => 'o_2icvb72cce',
+                'apiKey' => 'R_5633378002a147d2b9c03fde3a244b65',
+                'uri'    => $url,
+                'format' => 'txt'
+            ];
+            $parameters = http_build_query($arrData);
+            $url = "http://api.bit.ly/v3/shorten?" . $parameters;
+
+            return file_get_contents($url);
+        }
+
+        public function getDataOdersPrefijo($code, $prefijo)
+        {
+            $query = "SELECT
+            orders.id,
+            orders.prefijo,
+            orders.codigo
+            FROM
+                orders
+            WHERE
+                orders.codigo ='$code'
+            AND orders.prefijo ='$prefijo'";
+            return $this->_SQL_tool($this->SELECT_SINGLE, __METHOD__, $query);
         }
     }
 ?>
