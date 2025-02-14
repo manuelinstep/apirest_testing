@@ -1,12 +1,6 @@
 <?php 
 class apiClientWta{
-    private $urlApi = 'https://wtaops.com/app/apiwta/';
-    private $method = 'POST';
-    private $auth=['users'=>'RobotMailing','pass'=>'d2pw'];
-    private $function ='';
-    private $parameters = [];
-    private $urlParams  = [];
-    public static function initApi($urlApi=null){
+pi($urlApi=null){
         $intance=new static();
         if($urlApi){
             $intance->urlApi=$urlApi;
