@@ -17,14 +17,6 @@
             $document_root .= $arrDirectoryHierarchy[$i].DIRECTORY_SEPARATOR;
         }
     }
-    
-    define ( 'APPROOT', $document_root  );
-    define ( 'COREROOT', $document_root );
-    // Ej: se usa para los includes
-    define ( 'DOMAIN_ROOT', 'https://' . $_SERVER ['SERVER_NAME'] . '/apirest_testing/' );
-    define ( 'ASSETS', 'https://' . $_SERVER ['SERVER_NAME'] . '/wbs_2/assets/' );
-    // Ej: se usa para las im�genes, link, etc.
-    define ( 'LOCAL_PEAR_DIR', COREROOT . 'PEAR/' );
     define ( 'LOCAL_READERS_WRITERS_EXCEL_DIR', COREROOT . '/classes/PHPExcel/' );
     // Link webservice para WSDL 'RCI'
     define('LINK_WEBSERVICE','https://' .$_SERVER ['SERVER_NAME'].'/apirest_testing/');
@@ -44,11 +36,5 @@
     //Variables de conexion a la base de datos
 
     $arrDB = array(
-        '_DEFAULT' => array(
-            'host' => 'localhost',
-        'user' => 'fasttravelass1st_system',
-        'pass' => '_}t!+P[ba1QR',
-        'db' => 'fasttravelass1st_db0'));
-    //Este array hay que cambiarlo por el array que tenemos guardado en connect
     define ( 'DEBUG', '0' );
 ?>
